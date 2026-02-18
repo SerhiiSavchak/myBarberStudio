@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Rajdhani, Share_Tech_Mono } from "next/font/google";
 import "./globals.css";
+import SiteLoader from "@/components/SiteLoader";
 
 const rajdhani = Rajdhani({
   subsets: ["latin"],
@@ -41,7 +42,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="uk" className={`${rajdhani.variable} ${shareTechMono.variable}`}>
-      <body className="font-sans antialiased overflow-x-hidden">{children}</body>
+      <body className="font-sans antialiased overflow-x-hidden">
+        <SiteLoader />
+        {children}
+      </body>
     </html>
   );
 }

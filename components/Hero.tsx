@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
 const VIDEO_SRC = "/hero-video.mp4";
@@ -9,70 +9,46 @@ const BOOKING_URL = "https://mybarber.com.ua/";
 
 export default function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
-  const [mobileVideoPlaying, setMobileVideoPlaying] = useState(false);
 
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check, { passive: true });
-    return () => window.removeEventListener("resize", check);
-  }, []);
+    const video = videoRef.current;
+    if (!video) return;
 
-  useEffect(() => {
-    if (!isMobile && videoRef.current) {
-      videoRef.current.play().catch(() => {});
-    }
-  }, [isMobile]);
+    const playVideo = () => {
+      video.play().catch(() => {});
+    };
 
-  const handleMobilePlay = useCallback(() => {
-    setMobileVideoPlaying(true);
-    if (videoRef.current) {
-      videoRef.current.src = VIDEO_SRC;
-      videoRef.current.load();
-      videoRef.current.play().catch(() => {});
+    if (video.readyState >= 3) {
+      playVideo();
+    } else {
+      video.addEventListener("canplay", playVideo, { once: true });
+      video.addEventListener("loadeddata", playVideo, { once: true });
     }
+
+    return () => {
+      video.removeEventListener("canplay", playVideo);
+      video.removeEventListener("loadeddata", playVideo);
+    };
   }, []);
 
   return (
     <section id="hero" className="grain vignette relative flex min-h-screen items-end overflow-hidden pb-20 md:items-center md:pb-0">
-      {/* Video / Poster Background */}
+      {/* Video Background - одинаково на мобильном и десктопе */}
       <div className="absolute inset-0 z-0">
-        {isMobile && !mobileVideoPlaying ? (
-          <div className="relative h-full w-full">
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `url(${POSTER_SRC})` }}
-            />
-            <div className="absolute inset-0 bg-background/65" />
-            <button
-              onClick={handleMobilePlay}
-              className="absolute left-1/2 top-1/3 z-10 -translate-x-1/2 -translate-y-1/2 flex h-14 w-14 items-center justify-center rounded-full border border-foreground/20 bg-background/40 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:bg-background/60"
-              aria-label="Відтворити відео"
-            >
-              <svg viewBox="0 0 24 24" fill="hsl(var(--foreground))" className="ml-0.5 h-5 w-5 opacity-80">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            </button>
-          </div>
-        ) : (
-          <>
-            <video
-              ref={videoRef}
-              autoPlay={!isMobile}
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              poster={POSTER_SRC}
-              className="absolute inset-0 h-full w-full object-cover"
-            >
-              {!isMobile && <source src={VIDEO_SRC} type="video/mp4" />}
-            </video>
-            {/* Cinematic overlay: gradient + subtle warm tint */}
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/30" />
-          </>
-        )}
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster={POSTER_SRC}
+          className="absolute inset-0 h-full w-full object-cover"
+        >
+          <source src={VIDEO_SRC} type="video/mp4" />
+        </video>
+        {/* Cinematic overlay: gradient + subtle warm tint */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/30" />
       </div>
 
       {/* Content */}
