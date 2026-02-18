@@ -17,20 +17,19 @@ const shareTechMono = Share_Tech_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MyBarberStudio | Cyberpunk Barbershop in Lviv",
+  title: "M&Y Barber Studio | Барбершоп у Львові",
   description:
-    "Premium barbershop in Lviv with a futuristic cyberpunk aesthetic. Haircuts, beard styling, and grooming for the modern urban man.",
-  keywords: ["barbershop", "Lviv", "cyberpunk", "haircut", "beard", "grooming"],
+    "Преміум барбершоп у Львові. Чоловічі стрижки, бороди, догляд за обличчям. Запишись онлайн.",
+  keywords: ["барбершоп", "Львів", "стрижка", "борода", "barber", "MyBarber"],
   openGraph: {
-    title: "MyBarberStudio | Cyberpunk Barbershop in Lviv",
-    description:
-      "Premium barbershop in Lviv with a futuristic cyberpunk aesthetic.",
+    title: "M&Y Barber Studio | Барбершоп у Львові",
+    description: "Преміум барбершоп у Львові. Стиль народжується тут.",
     type: "website",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0a0a0f",
+  themeColor: "#0b0c10",
   width: "device-width",
   initialScale: 1,
 };
@@ -41,7 +40,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${rajdhani.variable} ${shareTechMono.variable}`}>
+    <html lang="uk" className={`${rajdhani.variable} ${shareTechMono.variable}`}>
       <body className="font-sans antialiased overflow-x-hidden">{children}</body>
     </html>
   );
