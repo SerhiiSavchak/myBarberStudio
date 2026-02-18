@@ -65,8 +65,7 @@ function BeforeAfterSlider() {
           alt="До"
           fill
           sizes="(max-width: 640px) 100vw, 50vw"
-          className="object-cover"
-          style={{ width: `${100 / (pos / 100)}%`, maxWidth: "none" }}
+          className="object-cover object-left"
         />
       </div>
       {/* Divider line */}
