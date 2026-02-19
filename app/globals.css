@@ -5,6 +5,10 @@
 @layer base {
   :root,
   .dark {
+    --section-padding-y: 6rem;
+    --section-padding-y-md: 8rem;
+    --section-padding-x: 1.5rem;
+    --section-padding-x-lg: 2rem;
     --background: 0 0% 4%;
     --foreground: 0 0% 90%;
     --neon-red: 0 90% 50%;
@@ -123,6 +127,11 @@
   /* Industrial label style */
   .industrial-label {
     @apply font-mono text-[9px] uppercase tracking-[0.35em] text-muted-foreground;
+  }
+
+  /* Secondary/body text — improved readability (font-weight 400→500) */
+  .text-muted-foreground {
+    font-weight: 500;
   }
 
   /* Scrollbar hide */
@@ -262,6 +271,18 @@
 .light .neon-btn:hover {
   background: hsl(var(--neon-red) / 0.12);
   box-shadow: 0 0 12px hsl(var(--neon-red) / 0.2);
+}
+
+/* Hero: improved contrast for gray text on video */
+.hero-subtitle {
+  text-shadow: 0 1px 2px hsl(var(--background) / 0.8), 0 0 20px hsl(var(--background) / 0.5);
+}
+.hero-subtitle-line {
+  text-shadow: 0 1px 3px hsl(var(--background) / 0.6), 0 0 15px hsl(var(--background) / 0.4);
+}
+.light .hero-subtitle,
+.light .hero-subtitle-line {
+  text-shadow: 0 1px 2px hsl(var(--background) / 0.9);
 }
 
 /* Glitch section divider */

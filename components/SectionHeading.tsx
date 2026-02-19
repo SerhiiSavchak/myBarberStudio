@@ -43,13 +43,14 @@ export default function SectionHeading({ tag, title, description, id }: SectionH
         />
       </motion.div>
 
-      {/* Title with heading font + scanline pass */}
-      <div className="relative overflow-hidden">
+      {/* Title — clamp, balance, no overflow */}
+      <div className="relative overflow-visible">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, delay: 0.15 }}
-          className="text-balance font-heading text-4xl font-bold uppercase tracking-tight text-foreground md:text-5xl lg:text-6xl"
+          className="font-heading text-[clamp(1.75rem,4vw,3.5rem)] font-bold uppercase leading-[1.15] tracking-tight text-foreground"
+          style={{ textWrap: "balance" }}
         >
           {title}
         </motion.h2>
@@ -73,12 +74,12 @@ export default function SectionHeading({ tag, title, description, id }: SectionH
         </motion.p>
       )}
 
-      {/* TRON-style edge line divider */}
+      {/* TRON-style edge line divider — increased gap from heading */}
       <motion.div
         initial={{ scaleX: 0 }}
         animate={inView ? { scaleX: 1 } : {}}
         transition={{ duration: 1, delay: 0.4 }}
-        className="mt-6 h-px w-full max-w-xs origin-left"
+        className="mt-10 h-px w-full max-w-xs origin-left"
         style={{
           background: "linear-gradient(90deg, hsl(var(--neon-red) / 0.4), transparent)",
           boxShadow: "0 0 8px hsl(var(--neon-red) / 0.15)",

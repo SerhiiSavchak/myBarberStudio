@@ -6,60 +6,71 @@ import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import SectionHeading from "./SectionHeading";
 import { useLocale } from "@/lib/locale-context";
 
-/* Animated cyberpunk counter — glitch build-up + segmented digits */
+const scrambleChars = "0123456789#$%&@!";
+
+/* Animated count-up with IntersectionObserver, prefers-reduced-motion, single run */
 function CyberCounter({
   target,
   suffix = "",
   inView,
   delay = 0,
+  reducedMotion,
 }: {
   target: number;
   suffix?: string;
   inView: boolean;
   delay?: number;
+  reducedMotion?: boolean;
 }) {
   const [display, setDisplay] = useState("0");
   const [glitching, setGlitching] = useState(false);
   const [done, setDone] = useState(false);
+  const hasAnimated = useRef(false);
 
   const scramble = useCallback((final: string) => {
-    const chars = "0123456789#$%&@!";
     return final
       .split("")
       .map((ch) => {
-        if (/\d/.test(ch)) return chars[Math.floor(Math.random() * chars.length)];
+        if (/\d/.test(ch)) return scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
         return ch;
       })
       .join("");
   }, []);
 
   useEffect(() => {
-    if (!inView) return;
+    if (!inView || hasAnimated.current) return;
+
     const finalStr = `${target}${suffix}`;
+
+    if (reducedMotion) {
+      setDisplay(finalStr);
+      setDone(true);
+      hasAnimated.current = true;
+      return;
+    }
+
     let frame = 0;
     const totalFrames = 30;
     const delayMs = delay * 1000;
 
     const timeout = setTimeout(() => {
+      hasAnimated.current = true;
       setGlitching(true);
       const interval = setInterval(() => {
         frame++;
         if (frame < totalFrames * 0.6) {
-          // Glitch phase — random characters
           setDisplay(scramble(finalStr));
         } else if (frame < totalFrames * 0.85) {
-          // Settling phase — mix real + glitch
           const progress = (frame - totalFrames * 0.6) / (totalFrames * 0.25);
           const revealed = Math.floor(progress * finalStr.length);
           const result = finalStr
             .split("")
             .map((ch, i) => {
               if (i < revealed) return ch;
-              if (/\d/.test(ch)) return chars[Math.floor(Math.random() * chars.length)];
+              if (/\d/.test(ch)) return scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
               return ch;
             })
             .join("");
-          const chars = "0123456789#$%&";
           setDisplay(result);
         } else {
           setDisplay(finalStr);
@@ -73,7 +84,7 @@ function CyberCounter({
     }, delayMs);
 
     return () => clearTimeout(timeout);
-  }, [inView, target, suffix, delay, scramble]);
+  }, [inView, target, suffix, delay, scramble, reducedMotion]);
 
   return (
     <span
@@ -85,7 +96,6 @@ function CyberCounter({
       }}
     >
       {display}
-      {/* Glow pulse ring when done */}
       {done && (
         <span
           className="absolute -inset-2 animate-pulse-red pointer-events-none"
@@ -102,7 +112,16 @@ export default function About() {
   const ref = useRef(null);
   const sectionRef = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
+  const [reducedMotion, setReducedMotion] = useState(false);
   const { t } = useLocale();
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReducedMotion(mq.matches);
+    const handler = () => setReducedMotion(mq.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -120,8 +139,7 @@ export default function About() {
   return (
     <section ref={sectionRef} id="about" className="relative px-6 py-24 md:py-32 lg:px-8">
       <div className="absolute top-0 left-0 right-0 glitch-divider" />
-
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto max-w-7xl pt-6">
         <SectionHeading
           tag={t("about.tag")}
           title={t("about.title")}
@@ -194,6 +212,7 @@ export default function About() {
                     suffix={stat.suffix}
                     inView={inView}
                     delay={0.6 + i * 0.2}
+                    reducedMotion={reducedMotion}
                   />
                   <span className="mt-1 block font-mono text-[8px] uppercase tracking-[0.3em] text-muted-foreground">
                     {stat.label}

@@ -138,14 +138,13 @@ export default function Contacts() {
       style={{ background: "linear-gradient(180deg, hsl(var(--background)) 0%, hsl(0 0% 2%) 100%)" }}
     >
       <div className="absolute left-0 right-0 top-0 glitch-divider" />
-
       <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse at center, transparent 40%, hsl(0 0% 0% / 0.6) 100%)" }} />
       <div className="pointer-events-none absolute inset-0 cyber-grid opacity-40" />
 
       <div className="pointer-events-none absolute left-1/4 top-1/3 h-64 w-64 rounded-full" style={{ background: "radial-gradient(circle, hsl(var(--neon-red) / 0.04) 0%, transparent 70%)" }} />
       <div className="pointer-events-none absolute right-1/4 bottom-1/3 h-48 w-48 rounded-full" style={{ background: "radial-gradient(circle, hsl(var(--neon-cyan) / 0.03) 0%, transparent 70%)" }} />
 
-      <div ref={ref} className="relative z-10 mx-auto max-w-7xl">
+      <div ref={ref} className="relative z-10 mx-auto max-w-7xl pt-6">
         <SectionHeading
           tag={t("contacts.tag")}
           title={t("contacts.title")}
