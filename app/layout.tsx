@@ -1,7 +1,16 @@
 import type { Metadata, Viewport } from "next";
-import { Rajdhani, Share_Tech_Mono } from "next/font/google";
+import { Orbitron, Rajdhani, Share_Tech_Mono } from "next/font/google";
 import "./globals.css";
 import SiteLoader from "@/components/SiteLoader";
+import { LocaleProvider } from "@/lib/locale-context";
+import { ThemeProvider } from "@/lib/theme-context";
+
+const orbitron = Orbitron({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  variable: "--font-heading",
+  display: "swap",
+});
 
 const rajdhani = Rajdhani({
   subsets: ["latin"],
@@ -41,10 +50,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="uk" className={`${rajdhani.variable} ${shareTechMono.variable}`}>
+    <html lang="uk" className={`dark ${orbitron.variable} ${rajdhani.variable} ${shareTechMono.variable}`}>
       <body className="font-sans antialiased overflow-x-hidden">
-        <SiteLoader />
-        {children}
+        <ThemeProvider>
+          <LocaleProvider>
+            <SiteLoader />
+            {children}
+          </LocaleProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

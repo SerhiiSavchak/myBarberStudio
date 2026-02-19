@@ -1,6 +1,10 @@
 "use client";
 
+import { useLocale } from "@/lib/locale-context";
+
 export default function Footer() {
+  const { t } = useLocale();
+
   return (
     <footer className="relative border-t border-neon-red/10 px-6 py-8 lg:px-8">
       {/* Top TRON edge line */}
@@ -34,7 +38,7 @@ export default function Footer() {
           </span>
           <span className="h-1 w-1 bg-neon-red/20" />
           <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-muted-foreground/20">
-            вул. Мирослава Скорика, 21
+            {t("footer.address")}
           </span>
         </div>
       </div>
