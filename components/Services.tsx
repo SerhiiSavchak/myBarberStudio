@@ -3,65 +3,66 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import SectionHeading from "./SectionHeading";
-
-const SERVICES = [
-  {
-    name: "Чоловічі стрижки",
-    price: "від 500 грн",
-    description: "Класичні та сучасні стрижки з урахуванням структури волосся та форми обличчя.",
-    id: "SVC-001",
-    est: "45 хв",
-  },
-  {
-    name: "Бороди",
-    price: "від 350 грн",
-    description: "Моделювання, корекція та догляд за бородою. Гарячий рушник включено.",
-    id: "SVC-002",
-    est: "30 хв",
-  },
-  {
-    name: "Стрижка + борода",
-    price: "від 750 грн",
-    description: "Повний комплекс: стрижка та оформлення бороди в одному сеансі.",
-    id: "SVC-003",
-    est: "75 хв",
-  },
-  {
-    name: "Догляд за обличчям",
-    price: "від 400 грн",
-    description: "Чистка, зволоження, масаж обличчя. Преміум косметика та релакс.",
-    id: "SVC-004",
-    est: "40 хв",
-  },
-  {
-    name: "Татуювання",
-    price: "за домовленістю",
-    description: "Авторські тату від майстра Сергія. Індивідуальний ескіз та консультація.",
-    id: "SVC-005",
-    est: "120+ хв",
-  },
-];
+import { useLocale } from "@/lib/locale-context";
 
 export default function Services() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
+  const { t } = useLocale();
+
+  const SERVICES = [
+    {
+      name: t("services.haircuts.name"),
+      price: t("services.price.haircuts"),
+      description: t("services.haircuts.desc"),
+      id: "SVC-001",
+      est: "45 min",
+    },
+    {
+      name: t("services.beard.name"),
+      price: t("services.price.beard"),
+      description: t("services.beard.desc"),
+      id: "SVC-002",
+      est: "30 min",
+    },
+    {
+      name: t("services.combo.name"),
+      price: t("services.price.combo"),
+      description: t("services.combo.desc"),
+      id: "SVC-003",
+      est: "75 min",
+    },
+    {
+      name: t("services.face.name"),
+      price: t("services.price.face"),
+      description: t("services.face.desc"),
+      id: "SVC-004",
+      est: "40 min",
+    },
+    {
+      name: t("services.tattoo.name"),
+      price: t("services.price.tattoo"),
+      description: t("services.tattoo.desc"),
+      id: "SVC-005",
+      est: "120+ min",
+    },
+  ];
 
   return (
     <section id="services" className="relative px-6 py-24 md:py-32 lg:px-8">
-      {/* Glitch divider */}
       <div className="absolute top-0 left-0 right-0 glitch-divider" />
 
       <div className="mx-auto max-w-7xl">
         <SectionHeading
-          tag="Послуги"
-          title="Що ми пропонуємо"
-          description="Кожна послуга -- це індивідуальний підхід, преміум інструменти та увага до деталей."
+          tag={t("services.tag")}
+          title={t("services.title")}
+          description={t("services.description")}
         />
 
         <div ref={ref} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {SERVICES.map((service, i) => (
             <motion.div
-              key={service.name}
+              key={service.id}
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: i * 0.1 }}
@@ -89,7 +90,7 @@ export default function Services() {
               <div className="absolute bottom-0 left-0 h-5 w-5 border-l border-b border-neon-red/0 transition-all duration-500 group-hover:border-neon-red/40 group-hover:h-6 group-hover:w-6" />
               <div className="absolute right-0 bottom-0 h-5 w-5 border-r border-b border-neon-red/0 transition-all duration-500 group-hover:border-neon-red/40 group-hover:h-6 group-hover:w-6" />
 
-              <h3 className="mb-2 text-lg font-semibold uppercase tracking-wide text-foreground">
+              <h3 className="mb-2 font-heading text-lg font-semibold uppercase tracking-wide text-foreground">
                 {service.name}
               </h3>
 
@@ -97,7 +98,6 @@ export default function Services() {
                 {service.description}
               </p>
 
-              {/* Bottom: price + est time */}
               <div className="flex items-center justify-between">
                 <span
                   className="font-mono text-xs uppercase tracking-wider text-neon-red/70"
@@ -110,7 +110,6 @@ export default function Services() {
                 </span>
               </div>
 
-              {/* Bottom neon line */}
               <div
                 className="absolute bottom-0 left-0 h-px w-0 transition-all duration-700 group-hover:w-full"
                 style={{

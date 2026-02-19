@@ -23,7 +23,6 @@ export default function SectionHeading({ tag, title, description, id }: SectionH
         transition={{ duration: 0.6 }}
         className="mb-4 flex items-center gap-3"
       >
-        {/* Animated red line */}
         <motion.span
           className="block h-px w-10 bg-neon-red/60"
           initial={{ scaleX: 0 }}
@@ -37,7 +36,6 @@ export default function SectionHeading({ tag, title, description, id }: SectionH
         <span className="font-mono text-[9px] uppercase tracking-[0.5em] text-neon-red/60">
           {tag}
         </span>
-        {/* Small signal dot */}
         <motion.span
           className="h-1 w-1 bg-neon-red/40"
           animate={inView ? { opacity: [0.3, 1, 0.3] } : { opacity: 0 }}
@@ -45,17 +43,16 @@ export default function SectionHeading({ tag, title, description, id }: SectionH
         />
       </motion.div>
 
-      {/* Title with scanline pass effect */}
+      {/* Title with heading font + scanline pass */}
       <div className="relative overflow-hidden">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, delay: 0.15 }}
-          className="text-balance text-3xl font-bold uppercase tracking-tight text-foreground md:text-5xl"
+          className="text-balance font-heading text-4xl font-bold uppercase tracking-tight text-foreground md:text-5xl lg:text-6xl"
         >
           {title}
         </motion.h2>
-        {/* Neon scanline pass on reveal */}
         <motion.div
           className="absolute left-0 right-0 h-[2px] bg-neon-red/30"
           initial={{ top: 0, opacity: 0 }}
@@ -70,7 +67,7 @@ export default function SectionHeading({ tag, title, description, id }: SectionH
           initial={{ opacity: 0, y: 10 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="mt-4 max-w-lg text-sm leading-relaxed text-muted-foreground"
+          className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground"
         >
           {description}
         </motion.p>

@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import SectionHeading from "./SectionHeading";
+import { useLocale } from "@/lib/locale-context";
 
 const BOOKING_URL = "https://mybarber.com.ua/";
 
@@ -12,8 +13,6 @@ const CONTACT_INFO = {
   email: "mybarbershop36@gmail.com",
   hours: "Пн-Нд: 10:00-20:00",
   mapsUrl: "https://maps.google.com/?q=Львів+вул+Мирослава+Скорика+21",
-  mapsEmbed:
-    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2573.4!2d24.0232!3d49.8397!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z0JvRjNCy0ZbQsg!5e0!3m2!1suk!2sua!4v1",
 };
 
 const SOCIALS = [
@@ -48,66 +47,45 @@ const SOCIALS = [
   },
 ];
 
-/* Corner bracket decoration */
 function CornerBrackets({ className = "" }: { className?: string }) {
   return (
     <div className={`pointer-events-none absolute inset-0 ${className}`}>
-      {/* Top-left */}
       <div className="absolute left-0 top-0 h-4 w-4 border-l border-t border-neon-red/30" />
-      {/* Top-right */}
       <div className="absolute right-0 top-0 h-4 w-4 border-r border-t border-neon-red/30" />
-      {/* Bottom-left */}
       <div className="absolute bottom-0 left-0 h-4 w-4 border-b border-l border-neon-red/30" />
-      {/* Bottom-right */}
       <div className="absolute bottom-0 right-0 h-4 w-4 border-b border-r border-neon-red/30" />
     </div>
   );
 }
 
-/* Radar animation behind map */
 function RadarOverlay() {
   return (
     <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden">
-      {/* Radar circles */}
       {[0, 1, 2].map((i) => (
         <div
           key={i}
           className="absolute rounded-full border border-neon-cyan/10 animate-radar-pulse"
-          style={{
-            width: "200px",
-            height: "200px",
-            animationDelay: `${i * 0.7}s`,
-          }}
+          style={{ width: "200px", height: "200px", animationDelay: `${i * 0.7}s` }}
         />
       ))}
-      {/* Radar sweep line */}
       <div
         className="absolute h-[100px] w-px origin-bottom animate-radar-spin"
-        style={{
-          background: "linear-gradient(to top, hsl(var(--neon-cyan) / 0.2), transparent)",
-        }}
+        style={{ background: "linear-gradient(to top, hsl(var(--neon-cyan) / 0.2), transparent)" }}
       />
     </div>
   );
 }
 
-/* Location marker with pulse */
 function LocationMarker() {
   return (
     <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-      {/* Ping rings */}
       <div className="absolute -inset-3 animate-signal-ping rounded-full border border-neon-red/40" />
-      <div
-        className="absolute -inset-3 animate-signal-ping rounded-full border border-neon-red/20"
-        style={{ animationDelay: "0.5s" }}
-      />
-      {/* Center dot */}
+      <div className="absolute -inset-3 animate-signal-ping rounded-full border border-neon-red/20" style={{ animationDelay: "0.5s" }} />
       <div className="relative h-3 w-3 rounded-full bg-neon-red animate-marker-glow" />
     </div>
   );
 }
 
-/* Info block with reveal animation */
 function InfoBlock({
   label,
   children,
@@ -130,25 +108,19 @@ function InfoBlock({
       onMouseLeave={() => setHovered(false)}
       className="group relative overflow-hidden border border-neon-red/10 bg-card p-5 transition-all duration-500 hover:border-neon-red/25 hover:bg-muted"
     >
-      {/* Micro label */}
       <span className="mb-3 block font-mono text-[7px] uppercase tracking-[0.6em] text-neon-cyan/30">
         {label}
       </span>
       {children}
-      {/* Light streak on hover */}
       {hovered && (
         <motion.div
           className="absolute left-0 top-0 h-full w-8"
-          style={{
-            background:
-              "linear-gradient(90deg, transparent, hsl(var(--neon-red) / 0.08), transparent)",
-          }}
+          style={{ background: "linear-gradient(90deg, transparent, hsl(var(--neon-red) / 0.08), transparent)" }}
           initial={{ x: "-100%" }}
           animate={{ x: "calc(100% + 400px)" }}
           transition={{ duration: 0.6 }}
         />
       )}
-      {/* Corner brackets */}
       <CornerBrackets />
     </motion.div>
   );
@@ -157,53 +129,29 @@ function InfoBlock({
 export default function Contacts() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
+  const { t } = useLocale();
 
   return (
     <section
       id="contacts"
       className="relative overflow-hidden px-6 py-24 md:py-32 lg:px-8"
-      style={{
-        background:
-          "linear-gradient(180deg, hsl(var(--background)) 0%, hsl(0 0% 2%) 100%)",
-      }}
+      style={{ background: "linear-gradient(180deg, hsl(var(--background)) 0%, hsl(0 0% 2%) 100%)" }}
     >
-      {/* Glitch divider top */}
       <div className="absolute left-0 right-0 top-0 glitch-divider" />
 
-      {/* Vignette edges */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse at center, transparent 40%, hsl(0 0% 0% / 0.6) 100%)",
-        }}
-      />
-
-      {/* Grid overlay */}
+      <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse at center, transparent 40%, hsl(0 0% 0% / 0.6) 100%)" }} />
       <div className="pointer-events-none absolute inset-0 cyber-grid opacity-40" />
 
-      {/* Ambient glow spots */}
-      <div
-        className="pointer-events-none absolute left-1/4 top-1/3 h-64 w-64 rounded-full"
-        style={{
-          background: "radial-gradient(circle, hsl(var(--neon-red) / 0.04) 0%, transparent 70%)",
-        }}
-      />
-      <div
-        className="pointer-events-none absolute right-1/4 bottom-1/3 h-48 w-48 rounded-full"
-        style={{
-          background: "radial-gradient(circle, hsl(var(--neon-cyan) / 0.03) 0%, transparent 70%)",
-        }}
-      />
+      <div className="pointer-events-none absolute left-1/4 top-1/3 h-64 w-64 rounded-full" style={{ background: "radial-gradient(circle, hsl(var(--neon-red) / 0.04) 0%, transparent 70%)" }} />
+      <div className="pointer-events-none absolute right-1/4 bottom-1/3 h-48 w-48 rounded-full" style={{ background: "radial-gradient(circle, hsl(var(--neon-cyan) / 0.03) 0%, transparent 70%)" }} />
 
       <div ref={ref} className="relative z-10 mx-auto max-w-7xl">
         <SectionHeading
-          tag="Контакти"
-          title="Локація"
-          description="Координати нашого барбер-хабу в серці Львова."
+          tag={t("contacts.tag")}
+          title={t("contacts.title")}
+          description={t("contacts.description")}
         />
 
-        {/* District label */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
@@ -217,45 +165,30 @@ export default function Contacts() {
         </motion.div>
 
         <div className="grid gap-6 lg:grid-cols-2">
-          {/* LEFT COLUMN — Info Terminal */}
+          {/* LEFT COLUMN */}
           <div className="flex flex-col gap-3">
-            {/* Address */}
             <InfoBlock label="Location Node" delay={0.1} inView={inView}>
-              <p className="text-sm font-medium text-foreground">
-                {CONTACT_INFO.address}
-              </p>
+              <p className="text-sm font-medium text-foreground">{CONTACT_INFO.address}</p>
               <a
                 href={CONTACT_INFO.mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-3 inline-flex items-center gap-2 font-mono text-[8px] uppercase tracking-[0.3em] text-muted-foreground transition-colors hover:text-neon-red"
               >
-                {/* Signal dot */}
-                <span
-                  className="inline-block h-1.5 w-1.5 animate-pulse-red bg-neon-red/60"
-                  style={{ boxShadow: "0 0 6px hsl(var(--neon-red) / 0.4)" }}
-                />
-                Прокласти маршрут
-                <svg
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  className="h-3 w-3"
-                >
+                <span className="inline-block h-1.5 w-1.5 animate-pulse-red bg-neon-red/60" style={{ boxShadow: "0 0 6px hsl(var(--neon-red) / 0.4)" }} />
+                {t("contacts.route")}
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-3 w-3">
                   <path d="M5 11L11 5M11 5H6M11 5v5" />
                 </svg>
               </a>
             </InfoBlock>
 
-            {/* Phone */}
             <InfoBlock label="Comms Channel" delay={0.2} inView={inView}>
               <a
                 href={`tel:${CONTACT_INFO.phone.replace(/[\s()]/g, "")}`}
                 className="group/phone relative inline-block text-sm font-medium text-foreground transition-all duration-300 hover:text-neon-red"
               >
                 <span className="relative z-10">{CONTACT_INFO.phone}</span>
-                {/* Glow pulse on hover */}
                 <span className="absolute -inset-x-2 -inset-y-1 rounded bg-neon-red/0 transition-all duration-300 group-hover/phone:bg-neon-red/5" />
               </a>
               <a
@@ -266,34 +199,21 @@ export default function Contacts() {
               </a>
             </InfoBlock>
 
-            {/* Hours */}
             <InfoBlock label="Schedule // Uptime" delay={0.3} inView={inView}>
-              <p className="text-sm font-medium text-foreground">
-                {CONTACT_INFO.hours}
-              </p>
+              <p className="text-sm font-medium text-foreground">{CONTACT_INFO.hours}</p>
               <div className="mt-3 flex items-center gap-2">
-                <span
-                  className="h-1.5 w-1.5 animate-pulse-red bg-neon-red/50"
-                  style={{
-                    boxShadow: "0 0 6px hsl(var(--neon-red) / 0.4)",
-                  }}
-                />
-                <span className="font-mono text-[7px] uppercase tracking-[0.5em] text-neon-cyan/30">
-                  System Online
-                </span>
+                <span className="h-1.5 w-1.5 animate-pulse-red bg-neon-red/50" style={{ boxShadow: "0 0 6px hsl(var(--neon-red) / 0.4)" }} />
+                <span className="font-mono text-[7px] uppercase tracking-[0.5em] text-neon-cyan/30">System Online</span>
               </div>
             </InfoBlock>
 
-            {/* Social Icons */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.4 }}
               className="relative border border-neon-red/10 bg-card p-5"
             >
-              <span className="mb-4 block font-mono text-[7px] uppercase tracking-[0.6em] text-neon-cyan/30">
-                Network Links
-              </span>
+              <span className="mb-4 block font-mono text-[7px] uppercase tracking-[0.6em] text-neon-cyan/30">Network Links</span>
               <div className="flex items-center gap-3">
                 {SOCIALS.map((social) => (
                   <a
@@ -305,7 +225,6 @@ export default function Contacts() {
                     className="group/icon relative flex h-10 w-10 items-center justify-center border border-neon-red/15 bg-background text-muted-foreground transition-all duration-300 hover:border-neon-red/40 hover:text-neon-red"
                   >
                     {social.icon}
-                    {/* Neon activation glow */}
                     <span className="pointer-events-none absolute inset-0 bg-neon-red/0 transition-all duration-300 group-hover/icon:bg-neon-red/5 group-hover/icon:shadow-[0_0_15px_hsl(var(--neon-red)/0.15)]" />
                   </a>
                 ))}
@@ -314,152 +233,73 @@ export default function Contacts() {
             </motion.div>
           </div>
 
-          {/* RIGHT COLUMN — Map Terminal */}
+          {/* RIGHT COLUMN — Map */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.3 }}
             className="relative flex flex-col"
           >
-            {/* Map terminal frame */}
             <div className="relative flex-1 overflow-hidden border border-neon-red/15 bg-card">
-              {/* Terminal header bar */}
               <div className="flex items-center justify-between border-b border-neon-red/10 px-4 py-2">
                 <div className="flex items-center gap-2">
-                  <span
-                    className="h-1.5 w-1.5 animate-pulse-red bg-neon-red/60"
-                    style={{
-                      boxShadow: "0 0 4px hsl(var(--neon-red) / 0.3)",
-                    }}
-                  />
-                  <span className="font-mono text-[7px] uppercase tracking-[0.5em] text-neon-red/40">
-                    Location Terminal
-                  </span>
+                  <span className="h-1.5 w-1.5 animate-pulse-red bg-neon-red/60" style={{ boxShadow: "0 0 4px hsl(var(--neon-red) / 0.3)" }} />
+                  <span className="font-mono text-[7px] uppercase tracking-[0.5em] text-neon-red/40">Location Terminal</span>
                 </div>
-                <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-muted-foreground/30">
-                  49.8397N // 24.0232E
-                </span>
+                <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-muted-foreground/30">49.8397N // 24.0232E</span>
               </div>
 
-              {/* Map area with radar overlay */}
               <div className="relative aspect-square w-full md:aspect-[4/3] lg:aspect-auto lg:h-full lg:min-h-[420px]">
-                {/* Dark styled Google Map iframe */}
                 <iframe
                   title="M&Y Barber Studio Location"
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2573.4!2d24.0232!3d49.8397!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z0JvRjNCy0ZbQsg!5e0!3m2!1suk!2sua!4v1"
                   className="absolute inset-0 h-full w-full"
-                  style={{
-                    border: 0,
-                    filter: "invert(0.9) hue-rotate(180deg) saturate(0.3) brightness(0.6) contrast(1.3)",
-                  }}
+                  style={{ border: 0, filter: "invert(0.9) hue-rotate(180deg) saturate(0.3) brightness(0.6) contrast(1.3)" }}
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                 />
-
-                {/* Neon overlay tint */}
-                <div
-                  className="pointer-events-none absolute inset-0 z-[2] mix-blend-multiply"
-                  style={{
-                    background:
-                      "linear-gradient(180deg, hsl(0 0% 2% / 0.3) 0%, hsl(0 0% 2% / 0.15) 50%, hsl(0 0% 2% / 0.4) 100%)",
-                  }}
-                />
-
-                {/* Scan lines over map */}
-                <div
-                  className="pointer-events-none absolute inset-0 z-[3]"
-                  style={{
-                    backgroundImage:
-                      "repeating-linear-gradient(0deg, transparent, transparent 3px, hsl(0 0% 0% / 0.04) 3px, hsl(0 0% 0% / 0.04) 6px)",
-                  }}
-                />
-
-                {/* Grid lines overlay */}
-                <div
-                  className="pointer-events-none absolute inset-0 z-[3] opacity-20"
-                  style={{
-                    backgroundImage:
-                      "linear-gradient(hsl(var(--neon-red) / 0.08) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--neon-red) / 0.08) 1px, transparent 1px)",
-                    backgroundSize: "40px 40px",
-                  }}
-                />
-
-                {/* Radar animation */}
-                <div className="pointer-events-none absolute inset-0 z-[4]">
-                  <RadarOverlay />
-                </div>
-
-                {/* Location marker */}
-                <div className="pointer-events-none absolute inset-0 z-[5]">
-                  <LocationMarker />
-                </div>
-
-                {/* Corner frame elements */}
-                <div className="pointer-events-none absolute inset-0 z-[6]">
-                  <CornerBrackets />
-                </div>
+                <div className="pointer-events-none absolute inset-0 z-[2] mix-blend-multiply" style={{ background: "linear-gradient(180deg, hsl(0 0% 2% / 0.3) 0%, hsl(0 0% 2% / 0.15) 50%, hsl(0 0% 2% / 0.4) 100%)" }} />
+                <div className="pointer-events-none absolute inset-0 z-[3]" style={{ backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 3px, hsl(0 0% 0% / 0.04) 3px, hsl(0 0% 0% / 0.04) 6px)" }} />
+                <div className="pointer-events-none absolute inset-0 z-[3] opacity-20" style={{ backgroundImage: "linear-gradient(hsl(var(--neon-red) / 0.08) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--neon-red) / 0.08) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+                <div className="pointer-events-none absolute inset-0 z-[4]"><RadarOverlay /></div>
+                <div className="pointer-events-none absolute inset-0 z-[5]"><LocationMarker /></div>
+                <div className="pointer-events-none absolute inset-0 z-[6]"><CornerBrackets /></div>
               </div>
 
-              {/* Terminal footer */}
               <div className="flex items-center justify-between border-t border-neon-red/10 px-4 py-2">
-                <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-muted-foreground/25">
-                  Signal Locked
-                </span>
+                <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-muted-foreground/25">Signal Locked</span>
                 <div className="flex items-center gap-2">
                   <span className="h-px w-4 bg-neon-cyan/15" />
-                  <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-neon-cyan/20">
-                    LVIV // UA
-                  </span>
+                  <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-neon-cyan/20">LVIV // UA</span>
                 </div>
               </div>
             </div>
           </motion.div>
         </div>
 
-        {/* CTA — Neon Signage Panel */}
+        {/* CTA */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, delay: 0.6 }}
           className="mt-12 flex flex-col items-center"
         >
-          {/* Decorative line */}
-          <div
-            className="mb-8 h-px w-full max-w-md"
-            style={{
-              background:
-                "linear-gradient(90deg, transparent, hsl(var(--neon-red) / 0.2), transparent)",
-            }}
-          />
-
-          {/* CTA block */}
+          <div className="mb-8 h-px w-full max-w-md" style={{ background: "linear-gradient(90deg, transparent, hsl(var(--neon-red) / 0.2), transparent)" }} />
           <div className="relative px-8 py-6 text-center">
-            {/* Neon sign frame */}
             <div className="pointer-events-none absolute inset-0 border border-neon-red/20" />
             <div className="pointer-events-none absolute inset-[3px] border border-neon-red/10" />
-
-            <span className="mb-3 block font-mono text-[7px] uppercase tracking-[0.7em] text-neon-cyan/25">
-              Ready to Deploy
-            </span>
-
+            <span className="mb-3 block font-mono text-[7px] uppercase tracking-[0.7em] text-neon-cyan/25">Ready to Deploy</span>
             <a
               href={BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="neon-btn inline-flex items-center gap-3 px-10 py-4 font-mono text-xs uppercase tracking-[0.35em] neon-flicker"
             >
-              <span
-                className="h-1.5 w-1.5 animate-pulse-red bg-neon-red/60"
-                style={{ boxShadow: "0 0 6px hsl(var(--neon-red) / 0.4)" }}
-              />
-              Записатись зараз
+              <span className="h-1.5 w-1.5 animate-pulse-red bg-neon-red/60" style={{ boxShadow: "0 0 6px hsl(var(--neon-red) / 0.4)" }} />
+              {t("contacts.bookNow")}
             </a>
-
-            <p className="mt-3 font-mono text-[7px] uppercase tracking-[0.5em] text-muted-foreground/30">
-              Booking System // Online
-            </p>
-
+            <p className="mt-3 font-mono text-[7px] uppercase tracking-[0.5em] text-muted-foreground/30">Booking System // Online</p>
             <CornerBrackets />
           </div>
         </motion.div>

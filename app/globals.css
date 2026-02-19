@@ -3,7 +3,8 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
+  :root,
+  .dark {
     --background: 0 0% 4%;
     --foreground: 0 0% 90%;
     --neon-red: 0 90% 50%;
@@ -14,6 +15,21 @@
     --card-foreground: 0 0% 90%;
     --border: 0 0% 12%;
     --accent: 0 90% 50%;
+    --accent-foreground: 0 0% 100%;
+    --radius: 0px;
+  }
+
+  .light {
+    --background: 0 0% 97%;
+    --foreground: 0 0% 10%;
+    --neon-red: 210 90% 50%;
+    --neon-cyan: 185 85% 40%;
+    --muted: 0 0% 93%;
+    --muted-foreground: 0 0% 45%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --border: 0 0% 85%;
+    --accent: 210 90% 50%;
     --accent-foreground: 0 0% 100%;
     --radius: 0px;
   }

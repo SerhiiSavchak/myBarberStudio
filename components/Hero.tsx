@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { useLocale } from "@/lib/locale-context";
 
 const VIDEO_SRC = "/hero-video.mp4";
 const POSTER_SRC = "/hero-poster.jpg";
@@ -10,6 +11,7 @@ const BOOKING_URL = "https://mybarber.com.ua/";
 export default function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
+  const { t } = useLocale();
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -49,12 +51,10 @@ export default function Hero() {
         >
           <source src={VIDEO_SRC} type="video/mp4" />
         </video>
-        {/* Dark overlay with red tint */}
         <motion.div
           className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30"
           style={{ opacity: overlayOpacity }}
         />
-        {/* Subtle red wash */}
         <div className="absolute inset-0 bg-neon-red/[0.03] mix-blend-overlay" />
       </motion.div>
 
@@ -70,7 +70,7 @@ export default function Hero() {
         className="relative z-10 mx-auto w-full max-w-7xl px-6 lg:px-8"
         style={{ y: contentY }}
       >
-        <div className="max-w-3xl">
+        <div className="max-w-4xl">
           {/* District tag */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -86,19 +86,19 @@ export default function Hero() {
               }}
             />
             <span className="font-mono text-[8px] uppercase tracking-[0.5em] text-neon-red/50">
-              LVIV DISTRICT 07 // Night Session
+              {t("hero.tag")}
             </span>
           </motion.div>
 
-          {/* Cinematic masked title reveal */}
+          {/* Cinematic masked title reveal — responsive clamped sizes */}
           <div className="mb-3 overflow-hidden">
             <motion.h1
               initial={{ y: "110%" }}
               animate={{ y: 0 }}
               transition={{ duration: 1, delay: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-              className="text-6xl font-bold uppercase leading-[0.9] tracking-tight md:text-8xl lg:text-9xl"
+              className="font-heading text-[clamp(3rem,10vw,8rem)] font-bold uppercase leading-[0.9] tracking-tight text-foreground"
             >
-              <span className="text-foreground">Стиль</span>
+              {t("hero.line1")}
             </motion.h1>
           </div>
           <div className="mb-3 overflow-hidden">
@@ -106,9 +106,9 @@ export default function Hero() {
               initial={{ y: "110%" }}
               animate={{ y: 0 }}
               transition={{ duration: 1, delay: 0.55, ease: [0.25, 0.1, 0.25, 1] }}
-              className="text-6xl font-bold uppercase leading-[0.9] tracking-tight text-foreground/30 md:text-8xl lg:text-9xl"
+              className="font-heading text-[clamp(3rem,10vw,8rem)] font-bold uppercase leading-[0.9] tracking-tight text-foreground/30"
             >
-              народжується
+              {t("hero.line2")}
             </motion.h1>
           </div>
           <div className="mb-10 overflow-hidden">
@@ -116,9 +116,9 @@ export default function Hero() {
               initial={{ y: "110%" }}
               animate={{ y: 0 }}
               transition={{ duration: 1, delay: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
-              className="neon-glow-red text-6xl font-bold uppercase leading-[0.9] tracking-tight text-neon-red md:text-8xl lg:text-9xl"
+              className="neon-glow-red font-heading text-[clamp(3rem,10vw,8rem)] font-bold uppercase leading-[0.9] tracking-tight text-neon-red"
             >
-              тут
+              {t("hero.line3")}
             </motion.h1>
           </div>
 
@@ -139,9 +139,9 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1 }}
-            className="mb-10 max-w-md text-sm leading-relaxed text-muted-foreground"
+            className="mb-10 max-w-md text-base leading-relaxed text-muted-foreground"
           >
-            {"M&Y Barber Studio -- місце, де кожна стрижка стає мистецтвом. Преміум сервіс у серці Львова."}
+            {t("hero.subtitle")}
           </motion.p>
 
           {/* CTAs */}
@@ -157,13 +157,13 @@ export default function Hero() {
               rel="noopener noreferrer"
               className="neon-btn neon-flicker inline-flex items-center justify-center gap-2 px-10 py-4 font-mono text-[11px] uppercase tracking-[0.25em]"
             >
-              Записатись
+              {t("hero.cta")}
             </a>
             <a
               href="#services"
               className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground transition-colors duration-300 hover:text-neon-red"
             >
-              Наші послуги
+              {t("hero.services")}
               <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-3.5 w-3.5">
                 <path d="M8 3v10m0 0l-3-3m3 3l3-3" />
               </svg>
