@@ -9,18 +9,29 @@ import Reviews from "@/components/Reviews";
 import Contacts from "@/components/Contacts";
 import Footer from "@/components/Footer";
 
+function SectionDivider() {
+  return <div className="glitch-divider mx-auto max-w-7xl" />;
+}
+
 export default function Home() {
   return (
     <>
       <Header />
       <main>
         <Hero />
+        <SectionDivider />
         <About />
+        <SectionDivider />
         <Services />
+        <SectionDivider />
         <BookingFlow />
+        <SectionDivider />
         <Masters />
+        <SectionDivider />
         <Gallery />
+        <SectionDivider />
         <Reviews />
+        <SectionDivider />
         <Contacts />
       </main>
       <Footer />

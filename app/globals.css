@@ -211,6 +211,33 @@
   }
 }
 
+/* Light mode overrides */
+.light .grain::after {
+  opacity: 0.02;
+}
+.light .cyber-grid {
+  background-image:
+    linear-gradient(hsl(var(--neon-red) / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--neon-red) / 0.05) 1px, transparent 1px);
+}
+.light .scanlines::after {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    hsl(0 0% 0% / 0.02) 2px,
+    hsl(0 0% 0% / 0.02) 4px
+  );
+}
+.light .neon-glow-red {
+  text-shadow: none;
+  color: hsl(var(--neon-red));
+}
+.light .neon-glow-cyan {
+  text-shadow: none;
+  color: hsl(var(--neon-cyan));
+}
+
 /* Neon sign button */
 .neon-btn {
   position: relative;
@@ -225,6 +252,16 @@
   background: hsl(var(--neon-red) / 0.15);
   box-shadow: 0 0 15px hsl(var(--neon-red) / 0.4), 0 0 60px hsl(var(--neon-red) / 0.15), inset 0 0 15px hsl(var(--neon-red) / 0.1);
   text-shadow: 0 0 15px hsl(var(--neon-red) / 0.8);
+}
+.light .neon-btn {
+  border-color: hsl(var(--neon-red) / 0.4);
+  background: hsl(var(--neon-red) / 0.06);
+  text-shadow: none;
+  box-shadow: 0 0 8px hsl(var(--neon-red) / 0.1);
+}
+.light .neon-btn:hover {
+  background: hsl(var(--neon-red) / 0.12);
+  box-shadow: 0 0 12px hsl(var(--neon-red) / 0.2);
 }
 
 /* Glitch section divider */
