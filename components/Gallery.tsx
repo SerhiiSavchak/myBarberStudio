@@ -154,14 +154,13 @@ function BeforeAfterSlider() {
     >
       {/* "After" image — full background, no scaling */}
       <Image src="/gallery/gallery-1.jpg" alt="After" fill sizes="(max-width: 640px) 100vw, 50vw" className="object-cover" />
-      {/* "Before" image — clipped, no scaling */}
+      {/* "Before" image — clipped via overflow, pinned to container width */}
       <div className="absolute inset-0 overflow-hidden" style={{ width: `${pos}%` }}>
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src="/gallery/gallery-3.jpg"
           alt="Before"
-          fill
-          sizes="(max-width: 640px) 100vw, 50vw"
-          className="object-cover"
+          className="absolute inset-0 h-full object-cover"
           style={{ width: `${containerRef.current?.offsetWidth || 800}px`, maxWidth: "none" }}
         />
       </div>
