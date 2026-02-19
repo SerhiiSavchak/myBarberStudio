@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Orbitron, Rajdhani, Share_Tech_Mono } from "next/font/google";
+import { Orbitron, Rajdhani, Share_Tech_Mono, Manrope, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import SiteLoader from "@/components/SiteLoader";
 import { LocaleProvider } from "@/lib/locale-context";
@@ -23,6 +23,20 @@ const shareTechMono = Share_Tech_Mono({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-mono",
+  display: "swap",
+});
+
+/* Fallback для кириллицы — Orbitron, Rajdhani, Share Tech Mono её не поддерживают */
+const manrope = Manrope({
+  subsets: ["latin", "cyrillic"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-cyrillic",
+  display: "swap",
+});
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin", "cyrillic"],
+  weight: "400",
+  variable: "--font-mono-cyrillic",
   display: "swap",
 });
 
@@ -50,7 +64,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="uk" className={`dark ${orbitron.variable} ${rajdhani.variable} ${shareTechMono.variable}`}>
+    <html lang="uk" className={`dark ${orbitron.variable} ${rajdhani.variable} ${shareTechMono.variable} ${manrope.variable} ${jetbrainsMono.variable}`}>
       <body className="font-sans antialiased overflow-x-hidden">
         <ThemeProvider>
           <LocaleProvider>

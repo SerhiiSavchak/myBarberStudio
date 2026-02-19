@@ -60,8 +60,7 @@ export default function Masters() {
   return (
     <section id="masters" className="relative px-6 py-24 md:py-32 lg:px-8">
       <div className="absolute top-0 left-0 right-0 glitch-divider" />
-
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto max-w-7xl pt-6">
         <SectionHeading
           tag={t("masters.tag")}
           title={t("masters.title")}
@@ -110,7 +109,7 @@ export default function Masters() {
                 <div className="pointer-events-none absolute left-2 top-2 h-5 w-5 border-l border-t border-neon-red/0 transition-all duration-500 group-hover:border-neon-red/30" />
                 <div className="pointer-events-none absolute right-2 bottom-2 h-5 w-5 border-r border-b border-neon-red/0 transition-all duration-500 group-hover:border-neon-red/30" />
 
-                {/* Content */}
+                {/* Content — фиксированный блок, описание оверлеем чтобы не подпрыгивал */}
                 <div className="relative z-10 p-6 md:absolute md:inset-x-0 md:bottom-0 md:p-8">
                   <span className="mb-2 block font-mono text-[7px] uppercase tracking-[0.5em] text-neon-red/20">
                     {master.tag}
@@ -138,7 +137,6 @@ export default function Masters() {
                         <p className="text-sm leading-relaxed text-muted-foreground">
                           {master.description}
                         </p>
-                        {/* Neon accent divider */}
                         <div
                           className="mt-4 h-px w-20"
                           style={{ background: "linear-gradient(90deg, hsl(var(--neon-red) / 0.4), transparent)" }}

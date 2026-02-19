@@ -35,7 +35,7 @@ export default function Hero() {
     <section
       ref={sectionRef}
       id="hero"
-      className="grain vignette scanlines relative flex min-h-screen items-end overflow-hidden pb-20 md:items-center md:pb-0"
+      className="grain vignette scanlines relative flex min-h-[100dvh] min-h-[100svh] items-end overflow-hidden pb-20 md:items-center md:pb-0"
     >
       {/* Video Background with parallax */}
       <motion.div className="absolute inset-0 z-0" style={{ y: bgY }}>
@@ -70,7 +70,7 @@ export default function Hero() {
         className="relative z-10 mx-auto w-full max-w-7xl px-6 lg:px-8"
         style={{ y: contentY }}
       >
-        <div className="max-w-4xl">
+        <div className="max-w-4xl w-full">
           {/* District tag */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -90,33 +90,34 @@ export default function Hero() {
             </span>
           </motion.div>
 
-          {/* Cinematic masked title reveal — responsive clamped sizes */}
-          <div className="mb-3 overflow-hidden">
+          {/* Cinematic masked title reveal — responsive clamped sizes, no overflow */}
+          <div className="mb-2 overflow-visible">
             <motion.h1
               initial={{ y: "110%" }}
               animate={{ y: 0 }}
               transition={{ duration: 1, delay: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-              className="font-heading text-[clamp(3rem,10vw,8rem)] font-bold uppercase leading-[0.9] tracking-tight text-foreground"
+              className="font-heading text-[clamp(2.25rem,8vw,6.5rem)] font-bold uppercase leading-[1.05] tracking-tight text-foreground"
+              style={{ textWrap: "balance" }}
             >
               {t("hero.line1")}
             </motion.h1>
           </div>
-          <div className="mb-3 overflow-hidden">
+          <div className="mb-2 overflow-visible">
             <motion.h1
               initial={{ y: "110%" }}
               animate={{ y: 0 }}
               transition={{ duration: 1, delay: 0.55, ease: [0.25, 0.1, 0.25, 1] }}
-              className="font-heading text-[clamp(3rem,10vw,8rem)] font-bold uppercase leading-[0.9] tracking-tight text-foreground/30"
+              className="font-heading text-[clamp(2.25rem,8vw,6.5rem)] font-bold uppercase leading-[1.05] tracking-tight text-foreground/40 hero-subtitle-line"
             >
               {t("hero.line2")}
             </motion.h1>
           </div>
-          <div className="mb-10 overflow-hidden">
+          <div className="mb-8 overflow-visible">
             <motion.h1
               initial={{ y: "110%" }}
               animate={{ y: 0 }}
               transition={{ duration: 1, delay: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
-              className="neon-glow-red font-heading text-[clamp(3rem,10vw,8rem)] font-bold uppercase leading-[0.9] tracking-tight text-neon-red"
+              className="neon-glow-red font-heading text-[clamp(2.25rem,8vw,6.5rem)] font-bold uppercase leading-[1.05] tracking-tight text-neon-red"
             >
               {t("hero.line3")}
             </motion.h1>
@@ -134,12 +135,12 @@ export default function Hero() {
             }}
           />
 
-          {/* Subtitle */}
+          {/* Subtitle — improved contrast on video background */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1 }}
-            className="mb-10 max-w-md text-base leading-relaxed text-muted-foreground"
+            className="hero-subtitle mb-10 max-w-md text-base leading-relaxed text-muted-foreground"
           >
             {t("hero.subtitle")}
           </motion.p>

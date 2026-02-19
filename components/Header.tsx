@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/lib/locale-context";
-import { useTheme } from "@/lib/theme-context";
 import { LOCALES } from "@/lib/i18n";
+import ThemeToggle from "./ThemeToggle";
 
 const NAV_LINKS = [
   { key: "nav.services" as const, href: "#services" },
@@ -21,7 +21,6 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
   const { locale, setLocale, t } = useLocale();
-  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -30,8 +29,30 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = mobileOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    if (mobileOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.overflow = "hidden";
+    } else {
+      const top = document.body.style.top;
+      const scrollY = top ? Math.abs(parseInt(top, 10)) : 0;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.overflow = "";
+      if (scrollY > 0) window.scrollTo(0, scrollY);
+    }
+    return () => {
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.overflow = "";
+    };
   }, [mobileOpen]);
 
   const currentLocale = LOCALES.find((l) => l.code === locale)!;
@@ -127,22 +148,7 @@ export default function Header() {
           </div>
 
           {/* Theme Toggle */}
-          <button
-            onClick={toggleTheme}
-            className="flex h-8 w-8 items-center justify-center border border-neon-red/15 bg-background/50 text-muted-foreground transition-all duration-300 hover:border-neon-red/30 hover:text-neon-red"
-            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-          >
-            {theme === "dark" ? (
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" className="h-3.5 w-3.5">
-                <circle cx="8" cy="8" r="3" />
-                <path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41" />
-              </svg>
-            ) : (
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" className="h-3.5 w-3.5">
-                <path d="M13.36 11.36a6 6 0 01-8.72-8.72A6 6 0 1013.36 11.36z" />
-              </svg>
-            )}
-          </button>
+          <ThemeToggle variant="desktop" />
 
           {/* Futuristic separator */}
           <div className="mx-1 h-5 w-px bg-neon-red/10" />
@@ -170,12 +176,14 @@ export default function Header() {
         </button>
       </nav>
 
-      {/* Mobile Menu — Cyberpunk sliding panel */}
+      {/* Mobile Menu — fixed, stable, scroll locked */}
       <div
         className={cn(
-          "fixed inset-0 z-40 flex flex-col bg-background/98 backdrop-blur-2xl transition-all duration-500 lg:hidden",
-          mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          "fixed inset-0 z-40 flex flex-col bg-background/98 backdrop-blur-2xl transition-opacity duration-300 lg:hidden",
+          "min-h-[100dvh] min-h-[100svh]",
+          mobileOpen ? "opacity-100 pointer-events-auto visible" : "opacity-0 pointer-events-none invisible"
         )}
+        style={{ top: 0, left: 0, right: 0, bottom: 0 }}
       >
         {/* Scanning horizontal line */}
         {mobileOpen && (
@@ -236,26 +244,22 @@ export default function Header() {
           />
 
           {/* Mobile language + theme */}
-          <div className="flex items-center gap-4">
-            {LOCALES.map((l) => (
-              <button
-                key={l.code}
-                onClick={() => setLocale(l.code)}
-                className={cn(
-                  "font-mono text-[10px] uppercase tracking-[0.3em] transition-colors duration-200",
-                  locale === l.code ? "text-neon-red" : "text-muted-foreground/40 hover:text-muted-foreground"
-                )}
-              >
-                {l.short}
-              </button>
-            ))}
-            <div className="h-3 w-px bg-neon-red/15" />
-            <button
-              onClick={toggleTheme}
-              className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/40 transition-colors hover:text-neon-red"
-            >
-              {theme === "dark" ? "LIGHT" : "DARK"}
-            </button>
+          <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6">
+            <div className="flex items-center gap-3">
+              {LOCALES.map((l) => (
+                <button
+                  key={l.code}
+                  onClick={() => setLocale(l.code)}
+                  className={cn(
+                    "font-mono text-[10px] uppercase tracking-[0.3em] transition-colors duration-200",
+                    locale === l.code ? "text-neon-red font-medium" : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  {l.short}
+                </button>
+              ))}
+            </div>
+            <ThemeToggle variant="mobile" />
           </div>
 
           {/* CTA */}

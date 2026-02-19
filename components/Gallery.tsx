@@ -202,8 +202,7 @@ export default function Gallery() {
   return (
     <section id="gallery" className="relative px-6 py-24 md:py-32 lg:px-8">
       <div className="absolute top-0 left-0 right-0 glitch-divider" />
-
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto max-w-7xl pt-6">
         <SectionHeading
           tag={t("gallery.tag")}
           title={t("gallery.title")}
@@ -240,13 +239,11 @@ export default function Gallery() {
                 {img.tag}
               </span>
 
-              {/* Expand icon on hover */}
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <div className="flex h-10 w-10 items-center justify-center border border-neon-red/30 bg-background/60 text-neon-red/60 backdrop-blur-sm">
-                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4">
-                    <path d="M10 2h4v4M6 14H2v-4M14 2L9 7M2 14l5-5" />
-                  </svg>
-                </div>
+              {/* Expand icon — top right, larger, subtle hover animation */}
+              <div className="absolute right-3 top-3 flex h-12 w-12 items-center justify-center rounded border border-neon-red/25 bg-background/70 text-foreground opacity-0 shadow-lg backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 group-hover:scale-105 group-hover:border-neon-red/50">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5 text-neon-red">
+                  <path d="M10 2h4v4M6 14H2v-4M14 2L9 7M2 14l5-5" />
+                </svg>
               </div>
 
               <div className="absolute left-0 top-0 h-6 w-6 border-l border-t border-neon-red/0 transition-all duration-500 group-hover:border-neon-red/30" />

@@ -21,12 +21,18 @@ const config: Config = {
         "accent-foreground": "hsl(var(--accent-foreground))",
       },
       fontFamily: {
-        sans: ["var(--font-sans)"],
-        mono: ["var(--font-mono)"],
-        heading: ["var(--font-heading)"],
+        sans: ["var(--font-sans)", "var(--font-cyrillic)", "sans-serif"],
+        mono: ["var(--font-mono)", "var(--font-mono-cyrillic)", "monospace"],
+        heading: ["var(--font-heading)", "var(--font-cyrillic)", "sans-serif"],
       },
       borderRadius: {
         DEFAULT: "var(--radius)",
+      },
+      spacing: {
+        "section-y": "var(--section-padding-y)",
+        "section-y-md": "var(--section-padding-y-md)",
+        "section-x": "var(--section-padding-x)",
+        "section-x-lg": "var(--section-padding-x-lg)",
       },
       keyframes: {
         "fade-in-up": {
