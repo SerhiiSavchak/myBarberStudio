@@ -42,18 +42,18 @@ export default function Reviews() {
 
         <div ref={ref} className="relative">
           {/* Horizontal scroll */}
-          <div className="scrollbar-hide flex snap-x snap-mandatory gap-px overflow-x-auto bg-border pb-4">
+          <div className="scrollbar-hide flex snap-x snap-mandatory gap-px overflow-x-auto bg-border/50 pb-4">
             {REVIEWS.map((review, i) => (
               <motion.div
                 key={review.name}
                 initial={{ opacity: 0, x: 40 }}
                 animate={inView ? { opacity: 1, x: 0 } : {}}
-                transition={{ duration: 0.5, delay: i * 0.08 }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
                 className="w-[320px] flex-shrink-0 snap-start bg-card p-8 md:w-[380px]"
               >
                 {/* Quote mark */}
-                <span className="mb-4 block text-3xl font-light leading-none text-foreground/10">
-                  {'\u201C'}
+                <span className="mb-4 block text-3xl font-light leading-none text-foreground/8">
+                  {"\u201C"}
                 </span>
 
                 <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
@@ -61,10 +61,10 @@ export default function Reviews() {
                 </p>
 
                 <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center border border-border bg-muted font-mono text-[10px] uppercase text-foreground/60">
+                  <div className="flex h-8 w-8 items-center justify-center border border-border bg-muted font-mono text-[10px] uppercase text-foreground/50">
                     {review.name.charAt(0)}
                   </div>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/60">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/50">
                     {review.name}
                   </span>
                 </div>
@@ -73,7 +73,7 @@ export default function Reviews() {
           </div>
 
           {/* Fade edges */}
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-background to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-background to-transparent" />
         </div>
       </div>
     </section>

@@ -32,11 +32,11 @@ export default function Contacts() {
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="grid gap-px bg-border md:grid-cols-3"
+          className="grid gap-px bg-border/50 md:grid-cols-3"
         >
           {/* Address */}
           <div className="flex flex-col gap-3 bg-card p-8">
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/50">
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/40">
               Адреса
             </span>
             <p className="text-sm text-foreground">{CONTACT_INFO.address}</p>
@@ -55,12 +55,12 @@ export default function Contacts() {
 
           {/* Contact */}
           <div className="flex flex-col gap-3 bg-card p-8">
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/50">
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/40">
               Контакти
             </span>
             <a
               href={`tel:${CONTACT_INFO.phone.replace(/[\s()]/g, "")}`}
-              className="text-sm text-foreground transition-colors hover:text-neon-accent"
+              className="text-sm text-foreground transition-colors hover:text-neon-magenta/70"
             >
               {CONTACT_INFO.phone}
             </a>
@@ -74,7 +74,7 @@ export default function Contacts() {
 
           {/* Hours + CTA */}
           <div className="flex flex-col gap-3 bg-card p-8">
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/50">
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/40">
               Графік роботи
             </span>
             <p className="text-sm text-foreground">{CONTACT_INFO.hours}</p>
@@ -82,7 +82,7 @@ export default function Contacts() {
               href={BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-auto inline-flex items-center gap-2 border border-foreground/20 bg-foreground/5 px-6 py-3 font-mono text-[10px] uppercase tracking-[0.2em] text-foreground transition-all duration-300 hover:bg-foreground/10 hover:border-foreground/40"
+              className="mt-auto inline-flex items-center gap-2 border border-foreground/15 bg-foreground/5 px-6 py-3 font-mono text-[10px] uppercase tracking-[0.2em] text-foreground transition-all duration-300 hover:bg-foreground/10 hover:border-neon-magenta/30"
             >
               Записатись
             </a>

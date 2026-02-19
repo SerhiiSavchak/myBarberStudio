@@ -9,25 +9,29 @@ const MASTERS = [
   {
     name: "Мирослав",
     title: "Експерт / Власник",
-    description: "Засновник M&Y Barber Studio. Багаторічний досвід, авторський підхід до кожної стрижки. Спеціалізується на класичних та сучасних чоловічих стрижках.",
+    description:
+      "Засновник M&Y Barber Studio. Багаторічний досвід, авторський підхід до кожної стрижки. Спеціалізується на класичних та сучасних чоловічих стрижках.",
     image: "/masters/master-1.jpg",
   },
   {
     name: "Олег",
     title: "Експерт",
-    description: "Майстер з бездоганним відчуттям стилю. Фейди, текстурні стрижки, креативні рішення. Кожна робота -- як витвір мистецтва.",
+    description:
+      "Майстер з бездоганним відчуттям стилю. Фейди, текстурні стрижки, креативні рішення. Кожна робота -- як витвір мистецтва.",
     image: "/masters/master-2.jpg",
   },
   {
     name: "Роман",
     title: "Експерт",
-    description: "Спеціаліст з бороди та комплексного догляду. Точність ліній, увага до деталей та індивідуальний підхід до кожного клієнта.",
+    description:
+      "Спеціаліст з бороди та комплексного догляду. Точність ліній, увага до деталей та індивідуальний підхід до кожного клієнта.",
     image: "/masters/master-3.jpg",
   },
   {
     name: "Сергій",
     title: "Тату-майстер",
-    description: "Авторські татуювання в різних стилях. Індивідуальні ескізи, консультація та професійний підхід. Кожна робота унікальна.",
+    description:
+      "Авторські татуювання в різних стилях. Індивідуальні ескізи, консультація та професійний підхід. Кожна робота унікальна.",
     image: "/masters/master-1.jpg",
   },
 ];
@@ -46,7 +50,7 @@ export default function Masters() {
           description="Експерти, які формують ваш стиль."
         />
 
-        <div ref={ref} className="flex flex-col gap-px bg-border md:flex-row">
+        <div ref={ref} className="flex flex-col gap-px bg-border/50 md:flex-row">
           {MASTERS.map((master, i) => {
             const isExpanded = expanded === i;
 
@@ -55,12 +59,10 @@ export default function Masters() {
                 key={master.name}
                 initial={{ opacity: 0, y: 30 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
+                transition={{ duration: 0.6, delay: i * 0.12 }}
                 onClick={() => setExpanded(isExpanded ? null : i)}
                 className="group relative cursor-pointer overflow-hidden bg-card transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] md:min-h-[500px]"
-                style={{
-                  flex: isExpanded ? 3 : 1,
-                }}
+                style={{ flex: isExpanded ? 3 : 1 }}
               >
                 {/* Image */}
                 <div className="relative h-64 overflow-hidden md:absolute md:inset-0 md:h-auto">
@@ -71,25 +73,23 @@ export default function Masters() {
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                   />
-                  {/* Cinematic gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-card via-card/60 to-transparent md:bg-gradient-to-t md:from-card md:via-card/40 md:to-card/10" />
+                  {/* Cinematic gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent md:from-card md:via-card/30 md:to-card/5" />
                 </div>
 
-                {/* Content - always visible at bottom */}
+                {/* Content */}
                 <div className="relative z-10 p-6 md:absolute md:inset-x-0 md:bottom-0 md:p-8">
-                  {/* Industrial index */}
-                  <span className="mb-2 block font-mono text-[9px] uppercase tracking-[0.4em] text-muted-foreground/40">
+                  <span className="mb-2 block font-mono text-[9px] uppercase tracking-[0.4em] text-muted-foreground/30">
                     {String(i + 1).padStart(2, "0")}
                   </span>
 
                   <h3 className="text-xl font-bold uppercase tracking-wider text-foreground">
                     {master.name}
                   </h3>
-                  <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-neon-accent/70">
+                  <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-neon-magenta/50">
                     {master.title}
                   </p>
 
-                  {/* Expanded description */}
                   <AnimatePresence>
                     {isExpanded && (
                       <motion.p
@@ -105,8 +105,8 @@ export default function Masters() {
                   </AnimatePresence>
                 </div>
 
-                {/* Subtle edge accent */}
-                <div className="absolute bottom-0 left-0 h-px w-0 bg-neon-accent/20 transition-all duration-700 group-hover:w-full" />
+                {/* Accent line */}
+                <div className="absolute bottom-0 left-0 h-px w-0 bg-neon-magenta/15 transition-all duration-700 group-hover:w-full" />
               </motion.div>
             );
           })}

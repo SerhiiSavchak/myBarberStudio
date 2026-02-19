@@ -45,17 +45,17 @@ export default function Services() {
           description="Кожна послуга -- це індивідуальний підхід, преміум інструменти та увага до деталей."
         />
 
-        <div ref={ref} className="grid gap-px bg-border sm:grid-cols-2 lg:grid-cols-3">
+        <div ref={ref} className="grid gap-px bg-border/50 sm:grid-cols-2 lg:grid-cols-3">
           {SERVICES.map((service, i) => (
             <motion.div
               key={service.name}
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: i * 0.08 }}
+              transition={{ duration: 0.6, delay: i * 0.1 }}
               className="group relative bg-card p-8 transition-colors duration-500 hover:bg-muted"
             >
               {/* Index number */}
-              <span className="mb-4 block font-mono text-[10px] text-muted-foreground/40">
+              <span className="mb-4 block font-mono text-[10px] text-muted-foreground/30">
                 {String(i + 1).padStart(2, "0")}
               </span>
 
@@ -67,12 +67,12 @@ export default function Services() {
                 {service.description}
               </p>
 
-              <span className="font-mono text-xs uppercase tracking-wider text-neon-accent/80">
+              <span className="font-mono text-xs uppercase tracking-wider text-neon-magenta/60">
                 {service.price}
               </span>
 
               {/* Subtle accent line on hover */}
-              <div className="absolute bottom-0 left-0 h-px w-0 bg-neon-accent/30 transition-all duration-700 group-hover:w-full" />
+              <div className="absolute bottom-0 left-0 h-px w-0 bg-neon-magenta/20 transition-all duration-700 group-hover:w-full" />
             </motion.div>
           ))}
         </div>

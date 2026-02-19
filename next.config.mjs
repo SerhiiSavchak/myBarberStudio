@@ -1,9 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  devIndicators: {
-    appIsrStatus: false,
-    buildActivity: false,
-    buildActivityPosition: "bottom-right",
+  images: {
+    unoptimized: true,
   },
 };
 

@@ -22,7 +22,7 @@ export default function SectionHeading({ tag, title, description }: SectionHeadi
         transition={{ duration: 0.6 }}
         className="mb-4 flex items-center gap-3"
       >
-        <span className="block h-px w-8 bg-neon-accent/50" />
+        <span className="block h-px w-8 bg-neon-magenta/40" />
         <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-muted-foreground">
           {tag}
         </span>

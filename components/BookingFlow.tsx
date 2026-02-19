@@ -38,18 +38,25 @@ export default function BookingFlow() {
         />
 
         <div ref={ref} className="relative">
-          {/* Steps */}
+          {/* Connecting line behind steps (desktop) */}
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={inView ? { scaleX: 1 } : {}}
+            transition={{ duration: 1.2, delay: 0.3 }}
+            className="absolute top-10 left-0 right-0 hidden h-px origin-left bg-border md:block"
+          />
+
           <div className="grid gap-12 md:grid-cols-3 md:gap-8">
             {STEPS.map((step, i) => (
               <motion.div
                 key={step.number}
                 initial={{ opacity: 0, y: 40 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.7, delay: i * 0.15 }}
+                transition={{ duration: 0.7, delay: 0.2 + i * 0.2 }}
                 className="relative"
               >
                 {/* Step number */}
-                <span className="mb-4 block text-5xl font-bold text-foreground/[0.06] md:text-6xl">
+                <span className="mb-4 block text-5xl font-bold text-foreground/[0.04] md:text-6xl">
                   {step.number}
                 </span>
 
@@ -61,16 +68,14 @@ export default function BookingFlow() {
                   {step.description}
                 </p>
 
-                {/* Connecting line (between steps, desktop only) */}
-                {i < STEPS.length - 1 && (
-                  <motion.div
-                    initial={{ scaleX: 0 }}
-                    animate={inView ? { scaleX: 1 } : {}}
-                    transition={{ duration: 1, delay: 0.5 + i * 0.2 }}
-                    className="absolute right-0 top-8 hidden h-px w-8 origin-left -translate-x-4 bg-neon-accent/20 md:block lg:w-16"
-                    style={{ right: "-1rem" }}
-                  />
-                )}
+                {/* Subtle neon dot */}
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={inView ? { scale: 1 } : {}}
+                  transition={{ duration: 0.3, delay: 0.5 + i * 0.2 }}
+                  className="absolute -top-1 left-0 hidden h-2 w-2 bg-neon-magenta/30 md:block"
+                  style={{ boxShadow: "0 0 8px hsl(var(--neon-magenta) / 0.2)" }}
+                />
               </motion.div>
             ))}
           </div>
@@ -79,14 +84,14 @@ export default function BookingFlow() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.8 }}
+            transition={{ duration: 0.6, delay: 0.9 }}
             className="mt-16"
           >
             <a
               href={BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 border border-foreground/20 bg-foreground/5 px-8 py-4 font-mono text-[11px] uppercase tracking-[0.2em] text-foreground transition-all duration-400 hover:bg-foreground/10 hover:border-foreground/40"
+              className="inline-flex items-center gap-3 border border-foreground/15 bg-foreground/5 px-8 py-4 font-mono text-[11px] uppercase tracking-[0.2em] text-foreground transition-all duration-300 hover:bg-foreground/10 hover:border-neon-magenta/30"
             >
               Записатись онлайн
               <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-3.5 w-3.5">

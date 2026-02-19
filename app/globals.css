@@ -4,18 +4,18 @@
 
 @layer base {
   :root {
-    --background: 220 10% 4%;
-    --foreground: 30 5% 90%;
-    --neon-accent: 270 60% 55%;
-    --neon-warm: 35 80% 55%;
-    --muted: 220 8% 10%;
-    --muted-foreground: 220 5% 45%;
-    --card: 220 8% 7%;
-    --card-foreground: 30 5% 90%;
-    --border: 220 6% 14%;
-    --accent: 270 60% 55%;
+    --background: 220 8% 5%;
+    --foreground: 30 4% 88%;
+    --neon-magenta: 330 80% 55%;
+    --neon-cyan: 185 70% 50%;
+    --muted: 220 6% 9%;
+    --muted-foreground: 220 4% 42%;
+    --card: 220 6% 7%;
+    --card-foreground: 30 4% 88%;
+    --border: 220 5% 12%;
+    --accent: 330 80% 55%;
     --accent-foreground: 0 0% 100%;
-    --radius: 0.25rem;
+    --radius: 0.125rem;
   }
 
   html {
@@ -34,30 +34,22 @@
   }
 
   ::-webkit-scrollbar {
-    width: 4px;
+    width: 3px;
   }
   ::-webkit-scrollbar-track {
     background: hsl(var(--background));
   }
   ::-webkit-scrollbar-thumb {
-    background: hsl(var(--muted-foreground) / 0.3);
+    background: hsl(var(--muted-foreground) / 0.2);
     border-radius: 2px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--muted-foreground) / 0.5);
+    background: hsl(var(--muted-foreground) / 0.4);
   }
 }
 
 @layer utilities {
-  .text-gradient {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(
-      135deg,
-      hsl(var(--foreground)),
-      hsl(var(--muted-foreground))
-    );
-  }
-
+  /* Film grain overlay */
   .grain {
     position: relative;
   }
@@ -65,12 +57,23 @@
     content: "";
     position: absolute;
     inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
     background-repeat: repeat;
     pointer-events: none;
     z-index: 1;
   }
 
+  /* Vignette effect */
+  .vignette::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, hsl(var(--background) / 0.7) 100%);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Scrollbar hide */
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -79,22 +82,39 @@
     display: none;
   }
 
-  .vignette::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at center, transparent 50%, hsl(var(--background)) 100%);
-    pointer-events: none;
-    z-index: 2;
-  }
-
+  /* Cinematic bottom fade mask */
   .cinematic-fade-b {
     mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
   }
 
+  /* Industrial label style */
   .industrial-label {
     @apply font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground;
+  }
+
+  /* Subtle bloom glow on neon elements */
+  .neon-glow-magenta {
+    text-shadow: 0 0 20px hsl(var(--neon-magenta) / 0.3), 0 0 60px hsl(var(--neon-magenta) / 0.1);
+  }
+  .neon-glow-cyan {
+    text-shadow: 0 0 20px hsl(var(--neon-cyan) / 0.3), 0 0 60px hsl(var(--neon-cyan) / 0.1);
+  }
+
+  /* Scanline effect */
+  .scanlines::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      hsl(var(--background) / 0.03) 2px,
+      hsl(var(--background) / 0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 3;
   }
 }
 
@@ -110,6 +130,6 @@
 }
 
 ::selection {
-  background: hsl(var(--neon-accent) / 0.25);
+  background: hsl(var(--neon-magenta) / 0.2);
   color: hsl(var(--foreground));
 }
