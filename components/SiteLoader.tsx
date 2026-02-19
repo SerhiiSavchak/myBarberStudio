@@ -3,19 +3,25 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const DURATION_MS = 2000;
+const BOOT_DURATION = 2800;
 
 export default function SiteLoader() {
   const [visible, setVisible] = useState(true);
+  const [phase, setPhase] = useState(0);
 
   useEffect(() => {
-    const start = performance.now();
-    let tid: ReturnType<typeof setTimeout>;
+    const timers = [
+      setTimeout(() => setPhase(1), 300),
+      setTimeout(() => setPhase(2), 900),
+      setTimeout(() => setPhase(3), 1600),
+      setTimeout(() => setPhase(4), 2200),
+    ];
 
+    const start = performance.now();
     const hide = () => {
       const elapsed = performance.now() - start;
-      const remaining = Math.max(0, DURATION_MS - elapsed);
-      tid = setTimeout(() => setVisible(false), remaining);
+      const remaining = Math.max(0, BOOT_DURATION - elapsed);
+      timers.push(setTimeout(() => setVisible(false), remaining));
     };
 
     if (document.readyState === "complete") hide();
@@ -23,7 +29,7 @@ export default function SiteLoader() {
 
     return () => {
       window.removeEventListener("load", hide);
-      clearTimeout(tid);
+      timers.forEach(clearTimeout);
     };
   }, []);
 
@@ -32,97 +38,163 @@ export default function SiteLoader() {
       {visible && (
         <motion.div
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, scale: 1.05 }}
-          transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-background"
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-background cyber-grid"
         >
-          {/* Film grain */}
-          <div className="grain absolute inset-0" />
+          {/* Faint red grid bg */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
 
-          {/* Triangle logo outline - stroke reveal */}
-          <div className="relative flex h-40 w-40 items-center justify-center">
-            <svg viewBox="0 0 100 100" className="absolute h-full w-full">
-              <motion.path
-                d="M50 10 L90 85 L10 85 Z"
-                fill="none"
-                stroke="hsl(var(--foreground))"
-                strokeWidth="0.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 1 }}
-                transition={{ duration: 1.2, ease: "easeInOut" }}
-              />
-            </svg>
+          {/* Corner brackets */}
+          <div className="absolute left-6 top-6 h-10 w-10 border-l border-t border-neon-red/20" />
+          <div className="absolute right-6 top-6 h-10 w-10 border-r border-t border-neon-red/20" />
+          <div className="absolute bottom-6 left-6 h-10 w-10 border-l border-b border-neon-red/20" />
+          <div className="absolute right-6 bottom-6 h-10 w-10 border-r border-b border-neon-red/20" />
 
-            {/* Inner glow pulse */}
-            <motion.div
-              className="absolute h-20 w-20"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: [0, 0.15, 0.05, 0.12, 0] }}
-              transition={{ duration: 1.8, delay: 0.6, ease: "easeInOut" }}
-              style={{
-                background: "radial-gradient(circle, hsl(var(--neon-magenta) / 0.4) 0%, transparent 70%)",
-              }}
-            />
+          {/* Top-left district tag */}
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={{ opacity: phase >= 1 ? 0.3 : 0 }}
+            className="absolute left-6 top-20 font-mono text-[8px] uppercase tracking-[0.5em] text-neon-red/40"
+          >
+            LVIV DISTRICT 07
+          </motion.span>
 
-            {/* Logo text inside triangle */}
+          {/* Center: Logo outline draws in red */}
+          <div className="relative flex flex-col items-center gap-6">
+            <div className="relative h-32 w-32">
+              <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full">
+                <motion.path
+                  d="M50 8 L92 88 L8 88 Z"
+                  fill="none"
+                  stroke="hsl(var(--neon-red))"
+                  strokeWidth="0.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: phase >= 1 ? 1 : 0, opacity: phase >= 1 ? 1 : 0 }}
+                  transition={{ duration: 1.2, ease: "easeInOut" }}
+                  style={{
+                    filter: "drop-shadow(0 0 8px hsl(var(--neon-red) / 0.5))",
+                  }}
+                />
+              </svg>
+
+              {/* Inner red glow pulse */}
+              <motion.div
+                className="absolute inset-0 flex items-center justify-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: phase >= 2 ? [0, 0.4, 0.15, 0.3, 0.1] : 0 }}
+                transition={{ duration: 2, ease: "easeInOut" }}
+              >
+                <div
+                  className="h-16 w-16"
+                  style={{
+                    background: "radial-gradient(circle, hsl(var(--neon-red) / 0.4) 0%, transparent 70%)",
+                  }}
+                />
+              </motion.div>
+
+              {/* Logo text */}
+              <motion.span
+                className="absolute inset-0 flex items-center justify-center font-mono text-[11px] font-bold uppercase tracking-[0.4em] text-neon-red"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: phase >= 2 ? 1 : 0 }}
+                transition={{ duration: 0.4 }}
+                style={{ textShadow: "0 0 10px hsl(var(--neon-red) / 0.6)" }}
+              >
+                {"M&Y"}
+              </motion.span>
+            </div>
+
+            {/* Subtitle */}
             <motion.span
-              className="relative font-mono text-[9px] uppercase tracking-[0.4em] text-foreground/80"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.8 }}
+              className="font-mono text-[9px] uppercase tracking-[0.6em] text-foreground/40"
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: phase >= 2 ? 1 : 0, y: phase >= 2 ? 0 : 5 }}
+              transition={{ duration: 0.5 }}
             >
-              {"M&Y"}
+              Barber Studio
             </motion.span>
+
+            {/* System initializing text */}
+            <motion.div
+              className="flex flex-col items-center gap-1"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: phase >= 3 ? 1 : 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <span className="font-mono text-[8px] uppercase tracking-[0.4em] text-neon-cyan/40">
+                SYSTEM INITIALIZING...
+              </span>
+              {/* Loading bar */}
+              <div className="mt-2 h-px w-40 overflow-hidden bg-border/30">
+                <motion.div
+                  className="h-full bg-neon-red/60"
+                  initial={{ width: "0%" }}
+                  animate={{ width: phase >= 3 ? "100%" : "0%" }}
+                  transition={{ duration: 1, ease: "easeInOut" }}
+                  style={{ boxShadow: "0 0 8px hsl(var(--neon-red) / 0.4)" }}
+                />
+              </div>
+            </motion.div>
           </div>
 
-          {/* Horizontal scanline */}
+          {/* Horizontal scanline pass */}
+          <motion.div
+            className="absolute left-0 right-0 h-[2px]"
+            style={{
+              background: "linear-gradient(90deg, transparent 10%, hsl(var(--neon-red) / 0.5) 50%, transparent 90%)",
+            }}
+            initial={{ top: "20%" }}
+            animate={{ top: phase >= 2 ? "80%" : "20%" }}
+            transition={{ duration: 1.2, delay: 0.3, ease: "easeInOut" }}
+          />
+
+          {/* Secondary cyan scanline */}
           <motion.div
             className="absolute left-0 right-0 h-px"
             style={{
-              background: "linear-gradient(90deg, transparent, hsl(var(--neon-cyan) / 0.5), transparent)",
+              background: "linear-gradient(90deg, transparent 20%, hsl(var(--neon-cyan) / 0.3) 50%, transparent 80%)",
             }}
-            initial={{ top: "30%" }}
-            animate={{ top: "70%" }}
-            transition={{ duration: 0.8, delay: 1.0, ease: "easeInOut" }}
+            initial={{ top: "70%" }}
+            animate={{ top: phase >= 3 ? "30%" : "70%" }}
+            transition={{ duration: 0.8, delay: 0.1, ease: "easeInOut" }}
           />
 
           {/* Glitch flash */}
           <motion.div
-            className="absolute inset-0"
+            className="absolute inset-0 mix-blend-screen"
             initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 0, 0.08, 0, 0.05, 0] }}
-            transition={{ duration: 0.4, delay: 1.3, ease: "linear" }}
-            style={{ background: "hsl(var(--neon-cyan) / 0.15)" }}
+            animate={{ opacity: phase >= 4 ? [0, 0.12, 0, 0.06, 0] : 0 }}
+            transition={{ duration: 0.3, ease: "linear" }}
+            style={{ background: "hsl(var(--neon-red) / 0.2)" }}
           />
 
-          {/* Bottom text */}
-          <motion.div
-            className="absolute bottom-[15%] flex flex-col items-center gap-2"
+          {/* Bottom-right serial number */}
+          <motion.span
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
+            animate={{ opacity: phase >= 1 ? 0.15 : 0 }}
+            className="absolute bottom-6 right-6 font-mono text-[7px] uppercase tracking-[0.3em] text-muted-foreground"
           >
-            <span className="font-mono text-[9px] uppercase tracking-[0.5em] text-muted-foreground/50">
-              Barber Studio
-            </span>
-            <motion.div
-              className="h-px w-16"
-              style={{
-                background: "linear-gradient(90deg, transparent, hsl(var(--neon-magenta) / 0.3), transparent)",
-              }}
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 0.8, delay: 0.7 }}
-            />
-          </motion.div>
+            SN-2077-MYB-001
+          </motion.span>
 
-          {/* Corner marks */}
-          <div className="absolute left-8 top-8 h-6 w-6 border-l border-t border-foreground/8" />
-          <div className="absolute right-8 top-8 h-6 w-6 border-r border-t border-foreground/8" />
-          <div className="absolute bottom-8 left-8 h-6 w-6 border-l border-b border-foreground/8" />
-          <div className="absolute right-8 bottom-8 h-6 w-6 border-r border-b border-foreground/8" />
+          {/* Signal indicator dots */}
+          <motion.div
+            className="absolute bottom-6 left-1/2 flex -translate-x-1/2 gap-1.5"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: phase >= 3 ? 1 : 0 }}
+          >
+            {[0, 1, 2].map((d) => (
+              <motion.div
+                key={d}
+                className="h-1 w-1 bg-neon-red/50"
+                animate={{ opacity: [0.3, 1, 0.3] }}
+                transition={{ duration: 0.8, delay: d * 0.2, repeat: Infinity }}
+              />
+            ))}
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
