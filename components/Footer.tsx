@@ -27,7 +27,7 @@ export default function Footer() {
               strokeWidth="1"
             />
           </svg>
-          <span className="font-mono text-[9px] uppercase tracking-[0.4em] text-muted-foreground/30">
+          <span className="font-mono text-[9px] uppercase tracking-[0.4em] text-muted-foreground/70">
             {"M&Y Barber Studio \u00A9"} {new Date().getFullYear()}
           </span>
         </div>
@@ -37,7 +37,7 @@ export default function Footer() {
             LVIV // DISTRICT 07
           </span>
           <span className="h-1 w-1 bg-neon-red/20" />
-          <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-muted-foreground/20">
+          <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-muted-foreground/70">
             {t("footer.address")}
           </span>
         </div>

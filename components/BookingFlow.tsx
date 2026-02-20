@@ -1,15 +1,13 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import SectionHeading from "./SectionHeading";
 import { useLocale } from "@/lib/locale-context";
-
-const BOOKING_URL = "https://mybarber.com.ua/";
+import { BOOKING_URL } from "@/constants/routes";
+import { useSectionInView } from "@/hooks/use-section-in-view";
 
 export default function BookingFlow() {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const { ref, inView } = useSectionInView();
   const { t } = useLocale();
 
   const STEPS = [
@@ -61,8 +59,8 @@ export default function BookingFlow() {
                 />
 
                 <span
-                  className="mb-4 block font-heading text-5xl font-bold text-neon-red/[0.06] md:text-6xl"
-                  style={{ textShadow: "0 0 30px hsl(var(--neon-red) / 0.05)" }}
+                  className="mb-4 block font-display text-5xl font-bold text-neon-red/25 md:text-6xl"
+                  style={{ textShadow: "0 0 40px hsl(var(--neon-red) / 0.2), 0 0 80px hsl(var(--neon-red) / 0.1)" }}
                 >
                   {step.number}
                 </span>
@@ -71,7 +69,7 @@ export default function BookingFlow() {
                   {step.tag}
                 </span>
 
-                <h3 className="mb-3 font-heading text-xl font-semibold uppercase tracking-wide text-foreground">
+                <h3 className="mb-3 font-body text-xl font-semibold uppercase tracking-wide text-foreground">
                   {step.title}
                 </h3>
 
@@ -92,7 +90,7 @@ export default function BookingFlow() {
               href={BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="neon-btn neon-flicker inline-flex items-center gap-3 px-10 py-4 font-mono text-[11px] uppercase tracking-[0.25em]"
+              className="neon-btn neon-flicker inline-flex items-center gap-3 px-10 py-4 font-body text-[13px] font-medium uppercase tracking-[0.2em] cursor-pointer select-none"
             >
               {t("booking.cta")}
               <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-3.5 w-3.5">

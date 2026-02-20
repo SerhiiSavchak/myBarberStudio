@@ -1,13 +1,13 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import SectionHeading from "./SectionHeading";
 import { useLocale } from "@/lib/locale-context";
+import { useSectionInView } from "@/hooks/use-section-in-view";
+import { SECTION_IDS } from "@/constants/routes";
 
 export default function Services() {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const { ref, inView } = useSectionInView();
   const { t } = useLocale();
 
   const SERVICES = [
@@ -49,7 +49,7 @@ export default function Services() {
   ];
 
   return (
-    <section id="services" className="relative px-6 py-24 md:py-32 lg:px-8">
+    <section id={SECTION_IDS.services} className="relative px-6 py-24 md:py-32 lg:px-8">
       <div className="absolute top-0 left-0 right-0 glitch-divider" />
       <div className="mx-auto max-w-7xl pt-6">
         <SectionHeading
@@ -65,7 +65,7 @@ export default function Services() {
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: i * 0.1 }}
-              className="tron-edge holo-shimmer group relative bg-card p-8 transition-all duration-500 hover:bg-muted"
+              className="tron-edge holo-shimmer group relative cursor-default bg-card p-8 transition-all duration-500 hover:bg-muted select-none"
             >
               {/* Red edge glow on hover */}
               <div
@@ -89,17 +89,17 @@ export default function Services() {
               <div className="absolute bottom-0 left-0 h-5 w-5 border-l border-b border-neon-red/0 transition-all duration-500 group-hover:border-neon-red/40 group-hover:h-6 group-hover:w-6" />
               <div className="absolute right-0 bottom-0 h-5 w-5 border-r border-b border-neon-red/0 transition-all duration-500 group-hover:border-neon-red/40 group-hover:h-6 group-hover:w-6" />
 
-              <h3 className="mb-2 font-heading text-lg font-semibold uppercase tracking-wide text-foreground">
+              <h3 className="mb-2 font-body text-lg font-semibold uppercase tracking-wide text-foreground">
                 {service.name}
               </h3>
 
-              <p className="mb-5 text-sm leading-relaxed text-muted-foreground">
+              <p className="mb-5 font-body text-[clamp(0.8125rem,1.2vw,0.875rem)] leading-[1.6] text-muted-foreground">
                 {service.description}
               </p>
 
               <div className="flex items-center justify-between">
                 <span
-                  className="font-mono text-xs uppercase tracking-wider text-neon-red/70"
+                  className="font-display text-sm font-semibold tracking-wide text-neon-red/70"
                   style={{ textShadow: "0 0 8px hsl(var(--neon-red) / 0.3)" }}
                 >
                   {service.price}

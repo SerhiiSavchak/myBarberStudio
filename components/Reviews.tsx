@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import SectionHeading from "./SectionHeading";
 import { useLocale } from "@/lib/locale-context";
+import { useSectionInView } from "@/hooks/use-section-in-view";
+import { SECTION_IDS } from "@/constants/routes";
 
 const REVIEWS = [
   {
@@ -39,12 +40,11 @@ const REVIEWS = [
 ];
 
 export default function Reviews() {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const { ref, inView } = useSectionInView();
   const { t } = useLocale();
 
   return (
-    <section id="reviews" className="relative px-6 py-24 md:py-32 lg:px-8">
+    <section id={SECTION_IDS.reviews} className="relative px-6 py-24 md:py-32 lg:px-8">
       <div className="absolute top-0 left-0 right-0 glitch-divider" />
       <div className="mx-auto max-w-7xl pt-6">
         <SectionHeading
@@ -84,7 +84,7 @@ export default function Reviews() {
 
               {/* Quote mark */}
               <span
-                className="mb-3 block font-heading text-4xl leading-none text-neon-red/10"
+                className="mb-3 block font-display text-4xl leading-none text-neon-red/10"
                 style={{ textShadow: "0 0 20px hsl(var(--neon-red) / 0.08)" }}
               >
                 {"\u201C"}
@@ -104,7 +104,7 @@ export default function Reviews() {
               {/* Author */}
               <div className="flex items-center gap-3">
                 <div
-                  className="flex h-9 w-9 items-center justify-center border border-neon-red/20 bg-muted font-heading text-[11px] uppercase text-neon-red/50"
+                  className="flex h-9 w-9 items-center justify-center border border-neon-red/20 bg-muted font-body text-[11px] font-medium uppercase text-neon-red/50"
                   style={{ boxShadow: "0 0 6px hsl(var(--neon-red) / 0.1)" }}
                 >
                   {review.name.charAt(0)}

@@ -88,7 +88,7 @@ function CyberCounter({
 
   return (
     <span
-      className={`relative inline-block font-heading text-4xl font-bold tabular-nums text-neon-red md:text-5xl ${glitching ? "animate-glitch" : ""}`}
+      className={`relative inline-block font-display text-4xl font-bold tabular-nums text-neon-red md:text-5xl ${glitching ? "animate-glitch" : ""}`}
       style={{
         textShadow: done
           ? "0 0 20px hsl(var(--neon-red) / 0.4), 0 0 60px hsl(var(--neon-red) / 0.15)"
@@ -110,8 +110,10 @@ function CyberCounter({
 
 export default function About() {
   const ref = useRef(null);
+  const statsRef = useRef(null);
   const sectionRef = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const inView = useInView(ref, { once: true, amount: 0.25, margin: "-50px 0px" });
+  const statsInView = useInView(statsRef, { once: true, amount: 0.45, margin: "0px 0px -20% 0px" });
   const [reducedMotion, setReducedMotion] = useState(false);
   const { t } = useLocale();
 
@@ -163,8 +165,8 @@ export default function About() {
                 className="object-cover scale-110"
               />
             </motion.div>
-            <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
-            <div className="absolute inset-0 bg-neon-red/[0.03] mix-blend-overlay" />
+            <div className="about-image-overlay absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
+            <div className="about-image-tint absolute inset-0 bg-neon-red/[0.03] mix-blend-overlay" />
 
             {/* TRON corner brackets */}
             <div className="absolute left-3 top-3 h-8 w-8 border-l border-t border-neon-red/25" />
@@ -197,21 +199,21 @@ export default function About() {
               {t("about.text2")}
             </p>
 
-            {/* Stats with animated cyberpunk counters */}
-            <div className="mt-4 grid grid-cols-3 gap-6">
+            {/* Stats with animated cyberpunk counters — trigger when 45% visible */}
+            <div ref={statsRef} className="mt-4 grid grid-cols-3 gap-6">
               {stats.map((stat, i) => (
                 <motion.div
                   key={stat.label}
                   initial={{ opacity: 0, y: 15 }}
                   animate={inView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.5, delay: 0.5 + i * 0.15 }}
-                  className="tron-edge relative p-3"
+                  className="tron-edge relative p-3 select-none"
                 >
                   <CyberCounter
                     target={stat.target}
                     suffix={stat.suffix}
-                    inView={inView}
-                    delay={0.6 + i * 0.2}
+                    inView={statsInView}
+                    delay={0.3 + i * 0.15}
                     reducedMotion={reducedMotion}
                   />
                   <span className="mt-1 block font-mono text-[8px] uppercase tracking-[0.3em] text-muted-foreground">

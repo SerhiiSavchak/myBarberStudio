@@ -1,11 +1,11 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { useState } from "react";
+import { motion } from "framer-motion";
 import SectionHeading from "./SectionHeading";
 import { useLocale } from "@/lib/locale-context";
-
-const BOOKING_URL = "https://mybarber.com.ua/";
+import { BOOKING_URL, SECTION_IDS } from "@/constants/routes";
+import { useSectionInView } from "@/hooks/use-section-in-view";
 
 const CONTACT_INFO = {
   address: "Львів, вул. Мирослава Скорика, 21",
@@ -106,7 +106,7 @@ function InfoBlock({
       transition={{ duration: 0.6, delay }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="group relative overflow-hidden border border-neon-red/10 bg-card p-5 transition-all duration-500 hover:border-neon-red/25 hover:bg-muted"
+      className="contacts-info-block group relative overflow-hidden border border-neon-red/10 bg-card p-5 transition-all duration-500 hover:border-neon-red/25 hover:bg-muted"
     >
       <span className="mb-3 block font-mono text-[7px] uppercase tracking-[0.6em] text-neon-cyan/30">
         {label}
@@ -127,18 +127,17 @@ function InfoBlock({
 }
 
 export default function Contacts() {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const { ref, inView } = useSectionInView();
   const { t } = useLocale();
 
   return (
     <section
-      id="contacts"
-      className="relative overflow-hidden px-6 py-24 md:py-32 lg:px-8"
+      id={SECTION_IDS.contacts}
+      className="contacts-section relative overflow-hidden px-6 py-24 md:py-32 lg:px-8"
       style={{ background: "linear-gradient(180deg, hsl(var(--background)) 0%, hsl(0 0% 2%) 100%)" }}
     >
       <div className="absolute left-0 right-0 top-0 glitch-divider" />
-      <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse at center, transparent 40%, hsl(0 0% 0% / 0.6) 100%)" }} />
+      <div className="contacts-bg-radial pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse at center, transparent 40%, hsl(0 0% 0% / 0.6) 100%)" }} />
       <div className="pointer-events-none absolute inset-0 cyber-grid opacity-40" />
 
       <div className="pointer-events-none absolute left-1/4 top-1/3 h-64 w-64 rounded-full" style={{ background: "radial-gradient(circle, hsl(var(--neon-red) / 0.04) 0%, transparent 70%)" }} />
@@ -210,7 +209,7 @@ export default function Contacts() {
               initial={{ opacity: 0, x: -30 }}
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="relative border border-neon-red/10 bg-card p-5"
+              className="contacts-info-block relative border border-neon-red/10 bg-card p-5"
             >
               <span className="mb-4 block font-mono text-[7px] uppercase tracking-[0.6em] text-neon-cyan/30">Network Links</span>
               <div className="flex items-center gap-3">
@@ -239,7 +238,7 @@ export default function Contacts() {
             transition={{ duration: 0.8, delay: 0.3 }}
             className="relative flex flex-col"
           >
-            <div className="relative flex-1 overflow-hidden border border-neon-red/15 bg-card">
+            <div className="contacts-map-block relative flex-1 overflow-hidden border border-neon-red/15 bg-card">
               <div className="flex items-center justify-between border-b border-neon-red/10 px-4 py-2">
                 <div className="flex items-center gap-2">
                   <span className="h-1.5 w-1.5 animate-pulse-red bg-neon-red/60" style={{ boxShadow: "0 0 4px hsl(var(--neon-red) / 0.3)" }} />
@@ -293,7 +292,7 @@ export default function Contacts() {
               href={BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="neon-btn inline-flex items-center gap-3 px-10 py-4 font-mono text-xs uppercase tracking-[0.35em] neon-flicker"
+              className="neon-btn inline-flex items-center gap-3 px-10 py-4 font-body text-sm font-medium uppercase tracking-[0.2em] neon-flicker"
             >
               <span className="h-1.5 w-1.5 animate-pulse-red bg-neon-red/60" style={{ boxShadow: "0 0 6px hsl(var(--neon-red) / 0.4)" }} />
               {t("contacts.bookNow")}

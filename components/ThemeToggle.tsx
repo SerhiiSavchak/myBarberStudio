@@ -13,8 +13,9 @@ export default function ThemeToggle({ variant = "desktop" }: ThemeToggleProps) {
   if (variant === "mobile") {
     return (
       <button
+        type="button"
         onClick={toggleTheme}
-        className="theme-toggle-mobile flex items-center gap-2 rounded border border-neon-red/20 bg-card/80 px-4 py-2.5 font-mono text-[10px] uppercase tracking-[0.25em] text-foreground transition-all duration-300 hover:border-neon-red/40 hover:bg-neon-red/5"
+        className="theme-toggle-mobile flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 rounded border border-neon-red/20 bg-card/80 px-5 py-3 font-body text-[11px] font-medium uppercase tracking-[0.2em] text-foreground transition-all duration-300 hover:border-neon-red/40 hover:bg-neon-red/5 active:border-neon-red/50 cursor-pointer select-none touch-manipulation"
         aria-label={theme === "dark" ? "Увімкнути світлу тему" : "Увімкнути темну тему"}
       >
         <span className={cn("transition-colors duration-300", theme === "dark" ? "text-muted-foreground" : "text-neon-red")}>
@@ -38,8 +39,9 @@ export default function ThemeToggle({ variant = "desktop" }: ThemeToggleProps) {
 
   return (
     <button
+      type="button"
       onClick={toggleTheme}
-      className="theme-toggle flex items-center gap-1.5 rounded border border-neon-red/15 bg-background/60 px-2.5 py-1.5 transition-all duration-300 hover:border-neon-red/30 hover:bg-background/80"
+      className="theme-toggle flex items-center gap-1.5 rounded border border-neon-red/15 bg-background/60 px-2.5 py-1.5 transition-all duration-300 hover:border-neon-red/30 hover:bg-background/80 cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-red/50"
       aria-label={theme === "dark" ? "Увімкнути світлу тему" : "Увімкнути темну тему"}
     >
       <span

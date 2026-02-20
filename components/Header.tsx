@@ -1,26 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/lib/locale-context";
 import { LOCALES } from "@/lib/i18n";
+import { BOOKING_URL, NAV_LINKS } from "@/constants/routes";
+import { useLockBodyScroll, setPendingScrollTo } from "@/hooks/use-lock-body-scroll";
 import ThemeToggle from "./ThemeToggle";
 
-const NAV_LINKS = [
-  { key: "nav.services" as const, href: "#services" },
-  { key: "nav.team" as const, href: "#masters" },
-  { key: "nav.gallery" as const, href: "#gallery" },
-  { key: "nav.reviews" as const, href: "#reviews" },
-  { key: "nav.contacts" as const, href: "#contacts" },
-];
-
-const BOOKING_URL = "https://mybarber.com.ua/";
+const MENU_ANIM_DURATION = 250;
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isAnimatingOut, setIsAnimatingOut] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const menuOverlayRef = useRef<HTMLDivElement>(null);
   const { locale, setLocale, t } = useLocale();
+
+  useEffect(() => {
+    const el = menuOverlayRef.current;
+    if (!el || !(mobileOpen || isAnimatingOut)) return;
+    const prevent = (e: TouchEvent) => e.preventDefault();
+    el.addEventListener("touchmove", prevent, { passive: false });
+    return () => el.removeEventListener("touchmove", prevent);
+  }, [mobileOpen, isAnimatingOut]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -28,32 +33,23 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    if (mobileOpen) {
-      const scrollY = window.scrollY;
-      document.body.style.position = "fixed";
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.left = "0";
-      document.body.style.right = "0";
-      document.body.style.overflow = "hidden";
-    } else {
-      const top = document.body.style.top;
-      const scrollY = top ? Math.abs(parseInt(top, 10)) : 0;
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.left = "";
-      document.body.style.right = "";
-      document.body.style.overflow = "";
-      if (scrollY > 0) window.scrollTo(0, scrollY);
-    }
-    return () => {
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.left = "";
-      document.body.style.right = "";
-      document.body.style.overflow = "";
-    };
-  }, [mobileOpen]);
+  useLockBodyScroll(mobileOpen || isAnimatingOut);
+
+  const closeMenu = useCallback(() => {
+    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+    setIsAnimatingOut(true);
+    closeTimeoutRef.current = setTimeout(() => {
+      setMobileOpen(false);
+      setIsAnimatingOut(false);
+      closeTimeoutRef.current = null;
+    }, 450);
+  }, []);
+
+  useEffect(() => () => { if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current); }, []);
+  const handleNavClick = useCallback((href: string) => {
+    setPendingScrollTo(href);
+    closeMenu();
+  }, [closeMenu]);
 
   const currentLocale = LOCALES.find((l) => l.code === locale)!;
 
@@ -77,7 +73,7 @@ export default function Header() {
 
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
         {/* Logo */}
-        <a href="#" className="group flex items-center gap-3">
+        <a href="/" className="group flex items-center gap-3 cursor-pointer select-none" onClick={(e) => { if (window.location.pathname === "/") { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); } }}>
           <svg viewBox="0 0 24 24" className="h-7 w-7" aria-hidden="true">
             <path
               d="M12 2L22 20H2Z"
@@ -99,7 +95,7 @@ export default function Header() {
             <li key={link.href}>
               <a
                 href={link.href}
-                className="group relative font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground transition-colors duration-300 hover:text-foreground"
+                className="group relative font-body text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-300 hover:text-foreground cursor-pointer"
               >
                 {t(link.key)}
                 {/* Scanning underline */}
@@ -121,8 +117,9 @@ export default function Header() {
           {/* Language Switcher */}
           <div className="relative">
             <button
+              type="button"
               onClick={() => setLangOpen(!langOpen)}
-              className="flex items-center gap-1.5 border border-neon-red/15 bg-background/50 px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground transition-all duration-300 hover:border-neon-red/30 hover:text-foreground"
+              className="flex items-center gap-1.5 border border-neon-red/15 bg-background/50 px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground transition-all duration-300 hover:border-neon-red/30 hover:text-foreground cursor-pointer select-none"
             >
               {currentLocale.short}
               <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" className={cn("h-2.5 w-2.5 transition-transform duration-200", langOpen && "rotate-180")}>
@@ -134,6 +131,7 @@ export default function Header() {
                 {LOCALES.map((l) => (
                   <button
                     key={l.code}
+                    type="button"
                     onClick={() => { setLocale(l.code); setLangOpen(false); }}
                     className={cn(
                       "px-4 py-2 text-left font-mono text-[9px] uppercase tracking-[0.3em] transition-colors duration-200 hover:bg-neon-red/10 hover:text-neon-red",
@@ -158,7 +156,7 @@ export default function Header() {
             href={BOOKING_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="neon-btn neon-flicker inline-flex items-center gap-2 px-6 py-2.5 font-mono text-[10px] uppercase tracking-[0.25em]"
+            className="neon-btn neon-flicker inline-flex items-center gap-2 px-6 py-2.5 font-body text-[11px] font-medium uppercase tracking-[0.2em] cursor-pointer select-none"
           >
             {t("nav.book")}
           </a>
@@ -166,9 +164,16 @@ export default function Header() {
 
         {/* Mobile Hamburger */}
         <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-1.5 lg:hidden"
+          type="button"
+          onClick={() => {
+            if (mobileOpen) {
+              setPendingScrollTo(null);
+              closeMenu();
+            } else setMobileOpen(true);
+          }}
+          className="relative z-[60] flex h-10 w-10 min-w-[44px] min-h-[44px] flex-col items-center justify-center gap-1.5 lg:hidden cursor-pointer select-none touch-manipulation"
           aria-label={mobileOpen ? "Закрити меню" : "Відкрити меню"}
+          aria-expanded={mobileOpen}
         >
           <span className={cn("block h-px w-6 bg-neon-red transition-all duration-300", mobileOpen && "translate-y-[7px] rotate-45")} />
           <span className={cn("block h-px w-6 bg-neon-red transition-all duration-300", mobileOpen && "opacity-0")} />
@@ -176,19 +181,25 @@ export default function Header() {
         </button>
       </nav>
 
-      {/* Mobile Menu — fixed, stable, scroll locked */}
+      {/* Mobile Menu — overflow lock only (no position:fixed = no scroll jump on iOS) */}
       <div
+        ref={menuOverlayRef}
         className={cn(
-          "fixed inset-0 z-40 flex flex-col bg-background/98 backdrop-blur-2xl transition-opacity duration-300 lg:hidden",
+          "fixed inset-0 z-40 flex flex-col lg:hidden",
           "min-h-[100dvh] min-h-[100svh]",
-          mobileOpen ? "opacity-100 pointer-events-auto visible" : "opacity-0 pointer-events-none invisible"
+          "transition-[opacity,visibility] duration-300 ease-out",
+          (mobileOpen || isAnimatingOut) ? "opacity-100 pointer-events-auto visible" : "opacity-0 pointer-events-none invisible"
         )}
-        style={{ top: 0, left: 0, right: 0, bottom: 0 }}
+        style={{ top: 0, left: 0, right: 0, bottom: 0, touchAction: "none" }}
+        aria-hidden={!mobileOpen && !isAnimatingOut}
       >
+        {/* Solid background — no transparency, appears immediately */}
+        <div className="absolute inset-0 bg-background" />
+
         {/* Scanning horizontal line */}
-        {mobileOpen && (
+        {(mobileOpen || isAnimatingOut) && (
           <div
-            className="absolute left-0 right-0 top-0 h-px"
+            className="pointer-events-none absolute left-0 right-0 top-0 h-px"
             style={{
               background: "linear-gradient(90deg, transparent, hsl(var(--neon-red) / 0.4), transparent)",
               animation: "scanline-pass 3s linear infinite",
@@ -197,45 +208,51 @@ export default function Header() {
         )}
 
         {/* Cyber grid background */}
-        <div className="absolute inset-0 cyber-grid opacity-20" />
+        <div className="pointer-events-none absolute inset-0 cyber-grid opacity-20" />
 
         {/* Corner brackets */}
-        <div className="absolute left-6 top-20 h-10 w-10 border-l border-t border-neon-red/20" />
-        <div className="absolute right-6 bottom-20 h-10 w-10 border-r border-b border-neon-red/20" />
+        <div className="pointer-events-none absolute left-6 top-20 h-10 w-10 border-l border-t border-neon-red/20" />
+        <div className="pointer-events-none absolute right-6 bottom-20 h-10 w-10 border-r border-b border-neon-red/20" />
 
         {/* District tag */}
-        <span className="absolute top-20 right-6 font-mono text-[7px] uppercase tracking-[0.5em] text-neon-red/20">
+        <span className="pointer-events-none absolute top-20 right-6 font-mono text-[7px] uppercase tracking-[0.5em] text-neon-red/20">
           LVIV // 07
         </span>
 
-        {/* Nav links */}
-        <div className="flex flex-1 flex-col items-center justify-center gap-6">
-          {NAV_LINKS.map((link, i) => (
-            <a
+        {/* Nav links — interactive, above overlays */}
+        <div className="relative z-10 flex flex-1 flex-col items-center justify-center gap-6">
+          {NAV_LINKS.map((link, i) => {
+            const isVisible = mobileOpen && !isAnimatingOut;
+            const closeDelay = (NAV_LINKS.length - 1 - i) * 45;
+            const openDelay = i * 50;
+            const delay = isAnimatingOut ? closeDelay : (mobileOpen ? openDelay : 0);
+            return (
+            <button
               key={link.href}
-              href={link.href}
-              onClick={() => setMobileOpen(false)}
-              className="group relative flex items-center gap-4"
+              type="button"
+              onClick={() => handleNavClick(link.href)}
+              className="group relative flex w-full max-w-[200px] items-center justify-center gap-4 cursor-pointer select-none touch-manipulation min-h-[44px] bg-transparent border-0 text-left"
               style={{
-                transitionDelay: mobileOpen ? `${i * 60}ms` : "0ms",
-                opacity: mobileOpen ? 1 : 0,
-                transform: mobileOpen ? "translateY(0)" : "translateY(12px)",
-                transition: `opacity 0.4s ease ${i * 60}ms, transform 0.4s ease ${i * 60}ms`,
+                transitionDelay: `${delay}ms`,
+                opacity: isVisible ? 1 : 0,
+                transform: isVisible ? "translateY(0)" : "translateY(12px)",
+                transition: `opacity 0.25s ease-out ${delay}ms, transform 0.25s ease-out ${delay}ms`,
               }}
             >
               {/* Animated indicator dot */}
               <span className="h-1 w-1 bg-neon-red/30 transition-all duration-300 group-hover:bg-neon-red group-hover:shadow-[0_0_8px_hsl(var(--neon-red)/0.5)]" />
               {/* Glowing separator line */}
               <span className="h-px w-6 bg-neon-red/10 transition-all duration-300 group-hover:w-10 group-hover:bg-neon-red/40" />
-              <span className="font-heading text-xl font-light uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-300 group-hover:text-foreground">
+              <span className="font-body text-xl font-light uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-300 group-hover:text-foreground">
                 {t(link.key)}
               </span>
               {/* Futuristic label */}
               <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-neon-red/15 transition-colors duration-300 group-hover:text-neon-red/40">
                 {`0${i + 1}`}
               </span>
-            </a>
-          ))}
+            </button>
+          );
+          })}
 
           {/* Glowing separator */}
           <div
@@ -243,17 +260,19 @@ export default function Header() {
             style={{ background: "linear-gradient(90deg, transparent, hsl(var(--neon-red) / 0.2), transparent)" }}
           />
 
-          {/* Mobile language + theme */}
-          <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6">
-            <div className="flex items-center gap-3">
+          {/* Mobile language + theme — larger touch targets, pointer-events-auto */}
+          <div className="relative z-10 flex flex-col items-center gap-4 sm:flex-row sm:gap-6">
+            <div className="flex items-center gap-2 rounded border border-neon-red/15 bg-card/50 p-1">
               {LOCALES.map((l) => (
                 <button
                   key={l.code}
+                  type="button"
                   onClick={() => setLocale(l.code)}
                   className={cn(
-                    "font-mono text-[10px] uppercase tracking-[0.3em] transition-colors duration-200",
-                    locale === l.code ? "text-neon-red font-medium" : "text-muted-foreground hover:text-foreground"
+                    "min-h-[44px] min-w-[44px] px-4 font-mono text-[11px] uppercase tracking-[0.3em] transition-all duration-200 rounded cursor-pointer select-none touch-manipulation",
+                    locale === l.code ? "text-neon-red font-medium bg-neon-red/10" : "text-muted-foreground hover:text-foreground hover:bg-neon-red/5"
                   )}
+                  aria-label={`Мова: ${l.label}`}
                 >
                   {l.short}
                 </button>
@@ -267,14 +286,14 @@ export default function Header() {
             href={BOOKING_URL}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => setMobileOpen(false)}
-            className="neon-btn mt-2 inline-flex items-center gap-2 px-8 py-3 font-mono text-sm uppercase tracking-[0.2em]"
+            onClick={() => { setPendingScrollTo(null); closeMenu(); }}
+            className="neon-btn mt-2 inline-flex items-center gap-2 px-8 py-3 font-body text-sm font-medium uppercase tracking-[0.2em] cursor-pointer select-none"
           >
             {t("nav.book")}
           </a>
         </div>
 
-        <span className="absolute bottom-8 left-1/2 -translate-x-1/2 font-mono text-[8px] uppercase tracking-[0.5em] text-muted-foreground/20">
+        <span className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 font-mono text-[8px] uppercase tracking-[0.5em] text-muted-foreground/20">
           {"M&Y Barber Studio // Night Session"}
         </span>
       </div>

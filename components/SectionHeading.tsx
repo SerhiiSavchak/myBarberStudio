@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import { useSectionInView } from "@/hooks/use-section-in-view";
 
 interface SectionHeadingProps {
   tag: string;
@@ -11,8 +11,7 @@ interface SectionHeadingProps {
 }
 
 export default function SectionHeading({ tag, title, description, id }: SectionHeadingProps) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const { ref, inView } = useSectionInView();
 
   return (
     <div ref={ref} id={id} className="mb-16 flex flex-col items-start">
@@ -49,7 +48,7 @@ export default function SectionHeading({ tag, title, description, id }: SectionH
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, delay: 0.15 }}
-          className="font-heading text-[clamp(1.75rem,4vw,3.5rem)] font-bold uppercase leading-[1.15] tracking-tight text-foreground"
+          className="font-display text-[clamp(2rem,5vw,4rem)] font-bold uppercase leading-[1.2] tracking-[0.03em] text-foreground"
           style={{ textWrap: "balance" }}
         >
           {title}
@@ -68,7 +67,7 @@ export default function SectionHeading({ tag, title, description, id }: SectionH
           initial={{ opacity: 0, y: 10 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground"
+          className="mt-4 max-w-lg font-body text-[clamp(0.9375rem,1.5vw,1rem)] leading-[1.65] text-muted-foreground"
         >
           {description}
         </motion.p>

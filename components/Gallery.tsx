@@ -2,9 +2,12 @@
 
 import { useRef, useState, useCallback, useEffect } from "react";
 import Image from "next/image";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import SectionHeading from "./SectionHeading";
 import { useLocale } from "@/lib/locale-context";
+import { useLockBodyScroll, setPendingScrollTo } from "@/hooks/use-lock-body-scroll";
+import { useSectionInView } from "@/hooks/use-section-in-view";
+import { SECTION_IDS } from "@/constants/routes";
 
 const GALLERY_IMAGES = [
   { src: "/gallery/gallery-1.jpg", alt: "Fade haircut", tag: "IMG-001" },
@@ -23,26 +26,35 @@ function GalleryModal({
   image: (typeof GALLERY_IMAGES)[0] | null;
   onClose: () => void;
 }) {
+  const overlayRef = useRef<HTMLDivElement>(null);
+  useLockBodyScroll(!!image);
+
   useEffect(() => {
     if (!image) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
-    document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", onKey);
-    };
+    return () => window.removeEventListener("keydown", onKey);
   }, [image, onClose]);
+
+  useEffect(() => {
+    const el = overlayRef.current;
+    if (!el || !image) return;
+    const prevent = (e: TouchEvent) => e.preventDefault();
+    el.addEventListener("touchmove", prevent, { passive: false });
+    return () => el.removeEventListener("touchmove", prevent);
+  }, [image]);
 
   return (
     <AnimatePresence>
       {image && (
         <motion.div
+          ref={overlayRef}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
           className="fixed inset-0 z-[100] flex items-center justify-center bg-background/90 backdrop-blur-xl"
+          style={{ touchAction: "none" }}
           onClick={onClose}
         >
           {/* Cyberpunk grid backdrop */}
@@ -93,9 +105,10 @@ function GalleryModal({
 
           {/* Close button */}
           <button
+            type="button"
             onClick={onClose}
-            className="absolute right-6 top-6 z-[101] flex h-10 w-10 items-center justify-center border border-neon-red/20 bg-background/50 text-foreground transition-all duration-300 hover:border-neon-red/50 hover:text-neon-red backdrop-blur-sm"
-            aria-label="Close"
+            className="absolute right-6 top-6 z-[101] flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center border border-neon-red/20 bg-background/50 text-foreground transition-all duration-300 hover:border-neon-red/50 hover:text-neon-red backdrop-blur-sm cursor-pointer select-none"
+            aria-label="Закрити"
           >
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4">
               <path d="M4 4l8 8M12 4l-8 8" />
@@ -110,43 +123,57 @@ function GalleryModal({
 function BeforeAfterSlider() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState(50);
+  const [isDragging, setIsDragging] = useState(false);
   const dragging = useRef(false);
   const { t } = useLocale();
+  // No scroll lock: preventDefault on touch + pointer capture already prevent scroll during drag
 
   const updatePos = useCallback((clientX: number) => {
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
     const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
-    // Clamp between 5% and 95% to prevent extreme positions
     const pct = Math.max(5, Math.min((x / rect.width) * 100, 95));
     setPos(pct);
+  }, []);
+
+  const handleDown = useCallback((clientX: number) => {
+    dragging.current = true;
+    setIsDragging(true);
+    updatePos(clientX);
+  }, [updatePos]);
+
+  const handleUp = useCallback(() => {
+    dragging.current = false;
+    setIsDragging(false);
   }, []);
 
   useEffect(() => {
     const onMove = (e: MouseEvent | TouchEvent) => {
       if (!dragging.current) return;
+      if ("touches" in e) e.preventDefault();
       const x = "touches" in e ? e.touches[0].clientX : e.clientX;
       updatePos(x);
     };
-    const onUp = () => { dragging.current = false; };
     window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-    window.addEventListener("touchmove", onMove);
-    window.addEventListener("touchend", onUp);
+    window.addEventListener("mouseup", handleUp);
+    window.addEventListener("touchmove", onMove, { passive: false });
+    window.addEventListener("touchend", handleUp);
     return () => {
       window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("mouseup", handleUp);
       window.removeEventListener("touchmove", onMove);
-      window.removeEventListener("touchend", onUp);
+      window.removeEventListener("touchend", handleUp);
     };
-  }, [updatePos]);
+  }, [updatePos, handleUp]);
 
   return (
     <div
       ref={containerRef}
-      className="tron-edge relative aspect-[16/10] cursor-ew-resize overflow-hidden bg-card select-none"
-      onMouseDown={(e) => { dragging.current = true; updatePos(e.clientX); }}
-      onTouchStart={(e) => { dragging.current = true; updatePos(e.touches[0].clientX); }}
+      className="tron-edge relative aspect-[16/10] cursor-ew-resize overflow-hidden bg-card select-none touch-manipulation"
+      onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); handleDown(e.clientX); }}
+      onPointerMove={(e) => { if (dragging.current) { e.preventDefault(); updatePos(e.clientX); } }}
+      onPointerUp={handleUp}
+      onPointerCancel={handleUp}
       role="slider"
       aria-label="Before/After comparison"
       aria-valuenow={Math.round(pos)}
@@ -194,13 +221,12 @@ function BeforeAfterSlider() {
 }
 
 export default function Gallery() {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const { ref, inView } = useSectionInView();
   const [selectedImage, setSelectedImage] = useState<(typeof GALLERY_IMAGES)[0] | null>(null);
   const { t } = useLocale();
 
   return (
-    <section id="gallery" className="relative px-6 py-24 md:py-32 lg:px-8">
+    <section id={SECTION_IDS.gallery} className="relative px-6 py-24 md:py-32 lg:px-8">
       <div className="absolute top-0 left-0 right-0 glitch-divider" />
       <div className="mx-auto max-w-7xl pt-6">
         <SectionHeading
@@ -217,7 +243,7 @@ export default function Gallery() {
               animate={inView ? { opacity: 1, scale: 1 } : {}}
               transition={{ duration: 0.6, delay: i * 0.1 }}
               onClick={() => setSelectedImage(img)}
-              className="tron-edge holo-shimmer group relative aspect-square cursor-pointer overflow-hidden bg-card"
+              className="tron-edge holo-shimmer group relative aspect-square cursor-pointer overflow-hidden bg-card select-none"
             >
               <Image
                 src={img.src}
@@ -268,7 +294,7 @@ export default function Gallery() {
       </div>
 
       {/* Lightbox Modal */}
-      <GalleryModal image={selectedImage} onClose={() => setSelectedImage(null)} />
+      <GalleryModal image={selectedImage} onClose={() => { setPendingScrollTo(null); setSelectedImage(null); }} />
     </section>
   );
 }

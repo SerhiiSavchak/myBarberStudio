@@ -9,6 +9,7 @@
     --section-padding-y-md: 8rem;
     --section-padding-x: 1.5rem;
     --section-padding-x-lg: 2rem;
+    --section-gap: 1rem;
     --background: 0 0% 4%;
     --foreground: 0 0% 90%;
     --neon-red: 0 90% 50%;
@@ -24,16 +25,16 @@
   }
 
   .light {
-    --background: 0 0% 97%;
-    --foreground: 0 0% 10%;
-    --neon-red: 210 90% 50%;
-    --neon-cyan: 185 85% 40%;
-    --muted: 0 0% 93%;
-    --muted-foreground: 0 0% 45%;
+    --background: 0 0% 98%;
+    --foreground: 0 0% 12%;
+    --neon-red: 350 85% 45%;
+    --neon-cyan: 185 85% 38%;
+    --muted: 0 0% 95%;
+    --muted-foreground: 0 0% 40%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
-    --border: 0 0% 85%;
-    --accent: 210 90% 50%;
+    --card-foreground: 0 0% 12%;
+    --border: 0 0% 88%;
+    --accent: 350 85% 45%;
     --accent-foreground: 0 0% 100%;
     --radius: 0px;
   }
@@ -49,8 +50,26 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+    font-family: var(--font-body), system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Typography: display headings — tech letter-spacing */
+  h1, h2 {
+    font-family: var(--font-display), system-ui, sans-serif;
+    letter-spacing: 0.02em;
+    line-height: 1.15;
+  }
+
+  /* Body text — comfortable reading */
+  p {
+    line-height: 1.6;
+  }
+
+  /* Small text — body font + increased letter-spacing */
+  .text-small-tracking {
+    letter-spacing: 0.08em;
   }
 
   ::-webkit-scrollbar {
@@ -124,7 +143,7 @@
     box-shadow: 0 0 5px hsl(var(--neon-cyan) / 0.3), 0 0 20px hsl(var(--neon-cyan) / 0.1);
   }
 
-  /* Industrial label style */
+  /* Industrial label style — mono для tech-меток */
   .industrial-label {
     @apply font-mono text-[9px] uppercase tracking-[0.35em] text-muted-foreground;
   }
@@ -275,14 +294,61 @@
 
 /* Hero: improved contrast for gray text on video */
 .hero-subtitle {
-  text-shadow: 0 1px 2px hsl(var(--background) / 0.8), 0 0 20px hsl(var(--background) / 0.5);
+  text-shadow: 0 1px 3px hsl(var(--background) / 0.9), 0 0 24px hsl(var(--background) / 0.6), 0 2px 4px rgba(0,0,0,0.5);
 }
 .hero-subtitle-line {
-  text-shadow: 0 1px 3px hsl(var(--background) / 0.6), 0 0 15px hsl(var(--background) / 0.4);
+  text-shadow: 0 1px 4px hsl(var(--background) / 0.8), 0 0 20px hsl(var(--background) / 0.5), 0 2px 6px rgba(0,0,0,0.4);
+}
+/* Hero "Наші послуги" and similar CTAs — readable on dark video */
+.hero-cta-secondary {
+  color: hsl(0 0% 75%);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5);
+}
+.hero-cta-secondary:hover {
+  color: hsl(var(--neon-red));
 }
 .light .hero-subtitle,
 .light .hero-subtitle-line {
-  text-shadow: 0 1px 2px hsl(var(--background) / 0.9);
+  text-shadow: 0 1px 2px hsl(var(--background) / 0.95);
+}
+.light .hero-cta-secondary {
+  color: hsl(var(--muted-foreground));
+  text-shadow: none;
+}
+
+/* Hero/About: light theme — minimal overlay, no white veil, text readable via contrast */
+.light .hero-video-overlay {
+  background: linear-gradient(to top, hsl(0 0% 0% / 0.25) 0%, transparent 60%) !important;
+}
+.light .hero-video-tint {
+  opacity: 0.3;
+}
+.light .about-image-overlay {
+  background: linear-gradient(to top, hsl(var(--background) / 0.3) 0%, transparent 50%) !important;
+}
+.light .about-image-tint {
+  opacity: 0.5;
+}
+
+/* Contacts: light theme — white background, premium blocks */
+.light .contacts-section {
+  background: hsl(var(--background)) !important;
+}
+.light .contacts-bg-radial {
+  background: radial-gradient(ellipse at center, transparent 50%, hsl(var(--muted) / 0.3) 100%) !important;
+}
+.light .contacts-info-block {
+  border-color: hsl(var(--border));
+  background: hsl(var(--card));
+  box-shadow: 0 1px 3px hsl(var(--border) / 0.5);
+}
+.light .contacts-info-block:hover {
+  border-color: hsl(var(--neon-red) / 0.3);
+  box-shadow: 0 2px 8px hsl(var(--neon-red) / 0.08);
+}
+.light .contacts-map-block {
+  border-color: hsl(var(--border));
+  box-shadow: 0 1px 3px hsl(var(--border) / 0.5);
 }
 
 /* Glitch section divider */
@@ -321,4 +387,37 @@
 ::selection {
   background: hsl(var(--neon-red) / 0.3);
   color: hsl(var(--foreground));
+}
+
+/* Focus visible for accessibility */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid hsl(var(--neon-red) / 0.6);
+  outline-offset: 2px;
+}
+
+/* Masters: light theme — stronger overlay for readable text on any image */
+.light .masters-card-overlay {
+  background: linear-gradient(to top, hsl(0 0% 100% / 0.95) 0%, hsl(0 0% 100% / 0.7) 35%, transparent 70%) !important;
+}
+/* Masters: light theme — names in red for contrast and brand */
+.light .masters-name {
+  color: hsl(var(--neon-red));
+}
+/* Masters: light theme — title and description readable on light overlay */
+.light .masters-title {
+  color: hsl(220 15% 18%);
+}
+.light .master-description-flash {
+  color: hsl(220 12% 22%);
+}
+
+/* Masters: flash animation for expand text — cyberpunk neon */
+.master-description-flash {
+  text-shadow: 0 0 8px hsl(var(--neon-red) / 0.15), 0 0 20px hsl(var(--neon-red) / 0.08);
+}
+@media (prefers-reduced-motion: reduce) {
+  .master-description-flash {
+    text-shadow: none;
+  }
 }
