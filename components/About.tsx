@@ -114,7 +114,7 @@ export default function About() {
   const statsRef = useRef(null);
   const sectionRef = useRef(null);
   const inView = useInView(ref, { once: true, amount: 0.25, margin: "-50px 0px" });
-  const statsInView = useInView(statsRef, { once: true, amount: 0.45, margin: "0px 0px -20% 0px" });
+  const statsInView = useInView(statsRef, { once: true, amount: 0.15, margin: "80px 0px 0px 0px" });
   const [reducedMotion, setReducedMotion] = useState(false);
   const { t } = useLocale();
 

@@ -248,6 +248,16 @@ const dict = {
     en: "Price depends on the specialist category",
     ru: "Цена зависит от категории специалиста",
   },
+  "pricing.noteOffHours": {
+    uk: "* Надання послуг в неробочі години рахуються по подвійному тарифу",
+    en: "* Services provided outside working hours are charged at double rate",
+    ru: "* Оказание услуг в нерабочее время оплачивается по двойному тарифу",
+  },
+  "pricing.noteSpa": {
+    uk: "** СПА процедура для обличчя включає в себе очищення шкіри за допомогою гель-мила та скрабу, нанесення патчів та зволоження шкіри кремом. Кожне нанесення компонентів супроводжується масажем обличчя.",
+    en: "** Face SPA procedure includes skin cleansing with gel soap and scrub, patch application and skin moisturizing with cream. Each application of components is accompanied by facial massage.",
+    ru: "** СПА процедура для лица включает очищение кожи с помощью гель-мыла и скраба, нанесение патчей и увлажнение кожи кремом. Каждое нанесение компонентов сопровождается массажем лица.",
+  },
   "pricing.book": { uk: "Записатись", en: "Book Now", ru: "Записаться" },
   "pricing.cat.haircuts": { uk: "Чоловічі стрижки", en: "Men's Haircuts", ru: "Мужские стрижки" },
   "pricing.cat.beard": { uk: "Борода", en: "Beard", ru: "Борода" },

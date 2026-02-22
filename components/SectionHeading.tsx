@@ -42,7 +42,7 @@ export default function SectionHeading({ tag, title, description, id }: SectionH
         />
       </motion.div>
 
-      {/* Title — clamp, balance, no overflow */}
+      {/* Title — clamp, balance, glitch effect */}
       <div className="relative overflow-visible">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
@@ -51,7 +51,9 @@ export default function SectionHeading({ tag, title, description, id }: SectionH
           className="font-display text-[clamp(2rem,5vw,4rem)] font-bold uppercase leading-[1.2] tracking-[0.03em] text-foreground"
           style={{ textWrap: "balance" }}
         >
-          {title}
+          <span className="glitch-heading" data-text={title}>
+            {title}
+          </span>
         </motion.h2>
         <motion.div
           className="absolute left-0 right-0 h-[2px] bg-neon-red/30"
