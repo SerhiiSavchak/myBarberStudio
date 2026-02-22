@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import SectionHeading from "./SectionHeading";
-import ServiceCard from "./ServiceCard";
+import CategoryCard from "./CategoryCard";
+import PricingModal from "./PricingModal";
 import { useLocale } from "@/lib/locale-context";
 import { useSectionInView } from "@/hooks/use-section-in-view";
 import { SECTION_IDS } from "@/constants/routes";
@@ -13,17 +15,18 @@ interface ServiceItem {
   price: string;
 }
 
-interface ServiceCategory {
+interface Category {
+  id: string;
   labelKey: TranslationKey;
-  items: ServiceItem[];
+  descKey: TranslationKey;
+  items: { name: { uk: string; en: string; ru: string }; price: string }[];
 }
 
-const PRICING_DATA: {
-  labelKey: TranslationKey;
-  items: { name: { uk: string; en: string; ru: string }; price: string }[];
-}[] = [
+const PRICING_DATA: Category[] = [
   {
+    id: "SVC-001",
     labelKey: "pricing.cat.haircuts",
+    descKey: "services.haircuts.desc",
     items: [
       { name: { uk: "Стрижка", en: "Haircut", ru: "Стрижка" }, price: "500-1000 грн" },
       { name: { uk: "Стрижка на подовжене волосся", en: "Long hair cut", ru: "Стрижка на удлинённые волосы" }, price: "600-1100 грн" },
@@ -35,35 +38,45 @@ const PRICING_DATA: {
     ],
   },
   {
+    id: "SVC-002",
     labelKey: "pricing.cat.beard",
+    descKey: "services.beard.desc",
     items: [
       { name: { uk: "Стрижка бороди", en: "Beard trim", ru: "Стрижка бороды" }, price: "400-800 грн" },
       { name: { uk: "Королівське гоління", en: "Royal shave", ru: "Королевское бритьё" }, price: "525-850 грн" },
     ],
   },
   {
+    id: "SVC-003",
     labelKey: "pricing.cat.toning",
+    descKey: "services.toning.desc",
     items: [
       { name: { uk: "Тонування волосся", en: "Hair toning", ru: "Тонирование волос" }, price: "500-700 грн" },
       { name: { uk: "Тонування бороди", en: "Beard toning", ru: "Тонирование бороды" }, price: "450-650 грн" },
     ],
   },
   {
+    id: "SVC-004",
     labelKey: "pricing.cat.combo",
+    descKey: "services.combo.desc",
     items: [
       { name: { uk: "Стрижка + корекція бороди", en: "Haircut + beard trim", ru: "Стрижка + коррекция бороды" }, price: "1000-1800 грн" },
       { name: { uk: "Тато + син", en: "Father + son", ru: "Отец + сын" }, price: "1100-2000 грн" },
     ],
   },
   {
+    id: "SVC-005",
     labelKey: "pricing.cat.tattoo",
+    descKey: "services.tattoo.desc",
     items: [
       { name: { uk: "Консультація", en: "Consultation", ru: "Консультация" }, price: "0 грн" },
       { name: { uk: "Виконання роботи", en: "Tattoo work", ru: "Выполнение работы" }, price: "від 1000 грн" },
     ],
   },
   {
+    id: "SVC-006",
     labelKey: "pricing.cat.care",
+    descKey: "services.care.desc",
     items: [
       { name: { uk: "СПА процедура для обличчя", en: "Face SPA", ru: "СПА процедура для лица" }, price: "300 грн" },
       { name: { uk: "СПА процедура DEPOT", en: "DEPOT SPA", ru: "СПА процедура DEPOT" }, price: "400 грн" },
@@ -76,16 +89,21 @@ const PRICING_DATA: {
 export default function Services() {
   const { ref, inView } = useSectionInView();
   const { t, locale } = useLocale();
+  const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
 
-  const categories: ServiceCategory[] = PRICING_DATA.map((cat) => ({
-    labelKey: cat.labelKey,
+  const categories = PRICING_DATA.map((cat) => ({
+    ...cat,
+    title: t(cat.labelKey),
+    description: t(cat.descKey),
     items: cat.items.map((item) => ({
       name: item.name[locale],
       price: item.price,
     })),
   }));
 
-  let globalIndex = 0;
+  const activeCategory = activeCategoryId
+    ? categories.find((c) => c.id === activeCategoryId)
+    : null;
 
   return (
     <section id={SECTION_IDS.services} className="relative px-6 py-24 md:py-32 lg:px-8">
@@ -97,44 +115,17 @@ export default function Services() {
           description={t("pricing.description")}
         />
 
-        <div ref={ref} className="flex flex-col gap-16">
-          {categories.map((cat) => (
-            <div key={cat.labelKey}>
-              {/* Category label */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={inView ? { opacity: 1, x: 0 } : {}}
-                transition={{ duration: 0.5 }}
-                className="mb-6 flex items-center gap-3"
-              >
-                <span
-                  className="block h-px w-8"
-                  style={{
-                    background:
-                      "linear-gradient(90deg, hsl(var(--neon-red) / 0.5), transparent)",
-                  }}
-                />
-                <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-neon-red/60">
-                  {t(cat.labelKey)}
-                </span>
-              </motion.div>
-
-              {/* Cards grid */}
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {cat.items.map((item) => {
-                  const idx = globalIndex++;
-                  return (
-                    <ServiceCard
-                      key={`${cat.labelKey}-${item.name}`}
-                      name={item.name}
-                      price={item.price}
-                      index={idx}
-                      inView={inView}
-                    />
-                  );
-                })}
-              </div>
-            </div>
+        <div ref={ref} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {categories.map((cat, i) => (
+            <CategoryCard
+              key={cat.id}
+              id={cat.id}
+              name={cat.title}
+              description={cat.description}
+              index={i}
+              inView={inView}
+              onClick={() => setActiveCategoryId(cat.id)}
+            />
           ))}
         </div>
 
@@ -148,6 +139,14 @@ export default function Services() {
           {t("pricing.note")}
         </motion.p>
       </div>
+
+      {/* Modal with price list */}
+      <PricingModal
+        isOpen={!!activeCategory}
+        onClose={() => setActiveCategoryId(null)}
+        title={activeCategory?.title ?? ""}
+        items={activeCategory?.items ?? []}
+      />
     </section>
   );
 }

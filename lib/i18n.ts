@@ -75,11 +75,23 @@ const dict = {
     en: "Modeling, correction and beard care. Hot towel included.",
     ru: "Моделирование, коррекция и уход за бородой. Горячее полотенце включено.",
   },
+  "services.toning.name": { uk: "Тонування", en: "Toning", ru: "Тонирование" },
+  "services.toning.desc": {
+    uk: "Тонування та фарбування волосся та бороди.",
+    en: "Hair and beard toning and coloring.",
+    ru: "Тонирование и окрашивание волос и бороды.",
+  },
   "services.combo.name": { uk: "Стрижка + борода", en: "Haircut + Beard", ru: "Стрижка + борода" },
   "services.combo.desc": {
     uk: "Повний комплекс: стрижка та оформлення бороди в одному сеансі.",
     en: "Full complex: haircut and beard styling in one session.",
     ru: "Полный комплекс: стрижка и оформление бороды в одном сеансе.",
+  },
+  "services.care.name": { uk: "Догляд", en: "Care", ru: "Уход" },
+  "services.care.desc": {
+    uk: "СПА процедури, депіляція та догляд за обличчям.",
+    en: "SPA procedures, depilation and face care.",
+    ru: "СПА процедуры, депиляция и уход за лицом.",
   },
   "services.face.name": { uk: "Догляд за обличчям", en: "Face Care", ru: "Уход за лицом" },
   "services.face.desc": {
@@ -179,6 +191,36 @@ const dict = {
     uk: "Реальні слова від наших постійних клієнтів.",
     en: "Real words from our regular clients.",
     ru: "Реальные слова от наших постоянных клиентов.",
+  },
+  "reviews.items.0.name": { uk: "Олександр М.", en: "Oleksandr M.", ru: "Александр М." },
+  "reviews.items.0.text": {
+    uk: "Найкращий барбершоп у Львові. Атмосфера неймовірна, стрижка бездоганна. Відчуваєш себе як у кіно.",
+    en: "The best barbershop in Lviv. Incredible atmosphere, flawless haircut. You feel like you're in a movie.",
+    ru: "Лучший барбершоп во Львове. Атмосфера невероятная, стрижка безупречная. Чувствуешь себя как в кино.",
+  },
+  "reviews.items.1.name": { uk: "Тарас К.", en: "Taras K.", ru: "Тарас К." },
+  "reviews.items.1.text": {
+    uk: "Мирослав — справжній майстер. Фейд вийшов ідеальний. Вже записався на наступний раз.",
+    en: "Myroslav is a true master. The fade came out perfect. Already booked for next time.",
+    ru: "Мирослав — настоящий мастер. Фейд получился идеальным. Уже записался на следующий раз.",
+  },
+  "reviews.items.2.name": { uk: "Роман Д.", en: "Roman D.", ru: "Роман Д." },
+  "reviews.items.2.text": {
+    uk: "Комплекс стрижка + борода — це інший рівень. Гарячий рушник, масаж, ідеальна борода. Варте кожної гривні.",
+    en: "Haircut + beard combo is another level. Hot towel, massage, perfect beard. Worth every hryvnia.",
+    ru: "Комплекс стрижка + борода — это другой уровень. Горячее полотенце, массаж, идеальная борода. Стоит каждой гривны.",
+  },
+  "reviews.items.3.name": { uk: "Іван П.", en: "Ivan P.", ru: "Иван П." },
+  "reviews.items.3.text": {
+    uk: "Чиста атмосфера, крута музика, майстри своєї справи. Тут інша енергетика. Рекомендую всім.",
+    en: "Clean atmosphere, great music, masters of their craft. Different energy here. Recommend to everyone.",
+    ru: "Чистая атмосфера, крутая музыка, мастера своего дела. Здесь другая энергетика. Рекомендую всем.",
+  },
+  "reviews.items.4.name": { uk: "Максим С.", en: "Maksym S.", ru: "Максим С." },
+  "reviews.items.4.text": {
+    uk: "Олег зрозумів що я хочу ще до того, як я пояснив. Ось це справжній професіоналізм. Обов'язково повернусь.",
+    en: "Oleh understood what I wanted before I even explained. That's true professionalism. Will definitely come back.",
+    ru: "Олег понял, что я хочу, ещё до того, как я объяснил. Вот это настоящий профессионализм. Обязательно вернусь.",
   },
 
   // Contacts

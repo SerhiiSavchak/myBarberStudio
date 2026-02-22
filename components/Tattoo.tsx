@@ -142,34 +142,15 @@ export default function Tattoo() {
               }}
             />
 
-            {/* CTAs */}
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <a
-                href={BOOKING_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="neon-btn inline-flex items-center justify-center gap-2 px-8 py-3 font-body text-[11px] font-medium uppercase tracking-[0.2em] cursor-pointer select-none"
-              >
-                {t("tattoo.bookConsult")}
-              </a>
-              <a
-                href={BOOKING_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 font-body text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-300 hover:text-neon-red cursor-pointer"
-              >
-                {t("tattoo.portfolio")}
-                <svg
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  className="h-3.5 w-3.5"
-                >
-                  <path d="M3 8h10m0 0l-3-3m3 3l-3 3" />
-                </svg>
-              </a>
-            </div>
+            {/* CTA */}
+            <a
+              href={BOOKING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="neon-btn inline-flex w-fit items-center justify-center gap-2 px-8 py-3 font-body text-[11px] font-medium uppercase tracking-[0.2em] cursor-pointer select-none"
+            >
+              {t("tattoo.bookConsult")}
+            </a>
           </motion.div>
         </div>
       </div>
