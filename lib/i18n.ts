@@ -9,6 +9,7 @@ export const LOCALES: { code: Locale; label: string; short: string }[] = [
 const dict = {
   // Header
   "nav.services": { uk: "Послуги", en: "Services", ru: "Услуги" },
+  "nav.tattoo": { uk: "Тату", en: "Tattoo", ru: "Тату" },
   "nav.team": { uk: "Команда", en: "Team", ru: "Команда" },
   "nav.gallery": { uk: "Галерея", en: "Gallery", ru: "Галерея" },
   "nav.reviews": { uk: "Відгуки", en: "Reviews", ru: "Отзывы" },
