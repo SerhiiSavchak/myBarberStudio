@@ -2,7 +2,8 @@
 
 import { useRef, useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { motion, useInView, useTransform } from "framer-motion";
+import { useScrollSuppressed } from "@/hooks/use-scroll-suppressed";
 import SectionHeading from "./SectionHeading";
 import { useLocale } from "@/lib/locale-context";
 
@@ -125,7 +126,7 @@ export default function About() {
     return () => mq.removeEventListener("change", handler);
   }, []);
 
-  const { scrollYProgress } = useScroll({
+  const { scrollYProgress } = useScrollSuppressed({
     target: sectionRef,
     offset: ["start end", "end start"],
   });

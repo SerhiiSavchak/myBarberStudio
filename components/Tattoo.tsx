@@ -2,7 +2,8 @@
 
 import { useRef } from "react";
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useTransform } from "framer-motion";
+import { useScrollSuppressed } from "@/hooks/use-scroll-suppressed";
 import SectionHeading from "./SectionHeading";
 import { useLocale } from "@/lib/locale-context";
 import { useSectionInView } from "@/hooks/use-section-in-view";
@@ -20,7 +21,7 @@ export default function Tattoo() {
   const imageRef = useRef<HTMLDivElement>(null);
   const { t } = useLocale();
 
-  const { scrollYProgress } = useScroll({
+  const { scrollYProgress } = useScrollSuppressed({
     target: imageRef,
     offset: ["start end", "end start"],
   });
