@@ -192,6 +192,42 @@ const dict = {
   "contacts.route": { uk: "Прокласти маршрут", en: "Get Directions", ru: "Проложить маршрут" },
   "contacts.bookNow": { uk: "Записатись зараз", en: "Book Now", ru: "Записаться сейчас" },
 
+  // Services & Prices (detailed)
+  "pricing.tag": { uk: "Послуги та ціни", en: "Services & Prices", ru: "Услуги и цены" },
+  "pricing.title": { uk: "Послуги та ціни", en: "Services & Prices", ru: "Услуги и цены" },
+  "pricing.description": {
+    uk: "Повний перелік послуг та актуальні ціни.",
+    en: "Full list of services and current prices.",
+    ru: "Полный перечень услуг и актуальные цены.",
+  },
+  "pricing.note": {
+    uk: "Ціна залежить від категорії спеціаліста",
+    en: "Price depends on the specialist category",
+    ru: "Цена зависит от категории специалиста",
+  },
+  "pricing.book": { uk: "Записатись", en: "Book Now", ru: "Записаться" },
+  "pricing.cat.haircuts": { uk: "Чоловічі стрижки", en: "Men's Haircuts", ru: "Мужские стрижки" },
+  "pricing.cat.beard": { uk: "Борода", en: "Beard", ru: "Борода" },
+  "pricing.cat.toning": { uk: "Тонування / фарбування", en: "Toning / Coloring", ru: "Тонирование / окрашивание" },
+  "pricing.cat.combo": { uk: "Комбо", en: "Combo", ru: "Комбо" },
+  "pricing.cat.tattoo": { uk: "Тату", en: "Tattoo", ru: "Тату" },
+  "pricing.cat.care": { uk: "Догляд", en: "Care", ru: "Уход" },
+
+  // Tattoo section
+  "tattoo.tag": { uk: "Тату", en: "Tattoo", ru: "Тату" },
+  "tattoo.title": { uk: "Тату", en: "Tattoo", ru: "Тату" },
+  "tattoo.intro": {
+    uk: "Авторські татуювання від нашого майстра Сергія. Кожна робота — унікальна. Стерильність та безпека на найвищому рівні.",
+    en: "Custom tattoos by our master Serhii. Every work is unique. Sterility and safety at the highest level.",
+    ru: "Авторские татуировки от нашего мастера Сергея. Каждая работа уникальна. Стерильность и безопасность на высшем уровне.",
+  },
+  "tattoo.point1": { uk: "стерильність та безпека", en: "sterility and safety", ru: "стерильность и безопасность" },
+  "tattoo.point2": { uk: "індивідуальний ескіз", en: "individual sketch", ru: "индивидуальный эскиз" },
+  "tattoo.point3": { uk: "консультація майстра", en: "master consultation", ru: "консультация мастера" },
+  "tattoo.point4": { uk: "рекомендації по догляду", en: "aftercare recommendations", ru: "рекомендации по уходу" },
+  "tattoo.bookConsult": { uk: "Записатись на консультацію", en: "Book Consultation", ru: "Записаться на консультацию" },
+  "tattoo.portfolio": { uk: "Переглянути портфоліо", en: "View Portfolio", ru: "Просмотреть портфолио" },
+
   // Footer
   "footer.address": { uk: "вул. Мирослава Скорика, 21", en: "Myroslava Skoryka St, 21", ru: "ул. Мирослава Скорика, 21" },
 } as const;

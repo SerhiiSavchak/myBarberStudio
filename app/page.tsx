@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Services from "@/components/Services";
+import Tattoo from "@/components/Tattoo";
 import BookingFlow from "@/components/BookingFlow";
 import Masters from "@/components/Masters";
 import Gallery from "@/components/Gallery";
@@ -17,6 +18,7 @@ export default function Home() {
         <Hero />
         <About />
         <Services />
+        <Tattoo />
         <BookingFlow />
         <Masters />
         <Gallery />
