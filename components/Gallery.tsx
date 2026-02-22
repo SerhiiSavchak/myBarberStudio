@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import SectionHeading from "./SectionHeading";
 import { useLocale } from "@/lib/locale-context";
+import type { TranslationKey } from "@/lib/i18n";
 import { useLockBodyScroll, setPendingScrollTo } from "@/hooks/use-lock-body-scroll";
 import { useSectionInView } from "@/hooks/use-section-in-view";
 import { SECTION_IDS } from "@/constants/routes";
@@ -120,27 +121,49 @@ function GalleryModal({
   );
 }
 
-function BeforeAfterSlider() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState(50);
+const BEFORE_AFTER_CASES = [
+  { before: "/gallery/gallery-3.jpg", after: "/gallery/gallery-1.jpg", tag: "CASE-01" },
+  { before: "/gallery/gallery-2.jpg", after: "/gallery/gallery-4.jpg", tag: "CASE-02" },
+  { before: "/gallery/gallery-5.jpg", after: "/gallery/gallery-6.jpg", tag: "CASE-03" },
+];
+
+function BeforeAfterSlide({
+  before,
+  after,
+  pos,
+  onPosChange,
+  containerRef,
+  t,
+}: {
+  before: string;
+  after: string;
+  pos: number;
+  onPosChange: (pct: number) => void;
+  containerRef: React.RefObject<HTMLDivElement | null>;
+  t: (key: TranslationKey) => string;
+}) {
   const [isDragging, setIsDragging] = useState(false);
   const dragging = useRef(false);
-  const { t } = useLocale();
-  // No scroll lock: preventDefault on touch + pointer capture already prevent scroll during drag
 
-  const updatePos = useCallback((clientX: number) => {
-    const rect = containerRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
-    const pct = Math.max(5, Math.min((x / rect.width) * 100, 95));
-    setPos(pct);
-  }, []);
+  const updatePos = useCallback(
+    (clientX: number) => {
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+      const pct = Math.max(5, Math.min((x / rect.width) * 100, 95));
+      onPosChange(pct);
+    },
+    [onPosChange, containerRef]
+  );
 
-  const handleDown = useCallback((clientX: number) => {
-    dragging.current = true;
-    setIsDragging(true);
-    updatePos(clientX);
-  }, [updatePos]);
+  const handleDown = useCallback(
+    (clientX: number) => {
+      dragging.current = true;
+      setIsDragging(true);
+      updatePos(clientX);
+    },
+    [updatePos]
+  );
 
   const handleUp = useCallback(() => {
     dragging.current = false;
@@ -170,8 +193,16 @@ function BeforeAfterSlider() {
     <div
       ref={containerRef}
       className="tron-edge relative aspect-[16/10] cursor-ew-resize overflow-hidden bg-card select-none touch-manipulation"
-      onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); handleDown(e.clientX); }}
-      onPointerMove={(e) => { if (dragging.current) { e.preventDefault(); updatePos(e.clientX); } }}
+      onPointerDown={(e) => {
+        e.currentTarget.setPointerCapture(e.pointerId);
+        handleDown(e.clientX);
+      }}
+      onPointerMove={(e) => {
+        if (dragging.current) {
+          e.preventDefault();
+          updatePos(e.clientX);
+        }
+      }}
       onPointerUp={handleUp}
       onPointerCancel={handleUp}
       role="slider"
@@ -179,19 +210,16 @@ function BeforeAfterSlider() {
       aria-valuenow={Math.round(pos)}
       tabIndex={0}
     >
-      {/* "After" image — full background, no scaling */}
-      <Image src="/gallery/gallery-1.jpg" alt="After" fill sizes="(max-width: 640px) 100vw, 50vw" className="object-cover" />
-      {/* "Before" image — clipped via overflow, pinned to container width */}
+      <Image src={after} alt="After" fill sizes="(max-width: 640px) 100vw, 50vw" className="object-cover" />
       <div className="absolute inset-0 overflow-hidden" style={{ width: `${pos}%` }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/gallery/gallery-3.jpg"
+          src={before}
           alt="Before"
           className="absolute inset-0 h-full object-cover"
           style={{ width: `${containerRef.current?.offsetWidth || 800}px`, maxWidth: "none" }}
         />
       </div>
-      {/* Neon red divider line */}
       <div
         className="absolute top-0 bottom-0 z-10 w-[2px]"
         style={{
@@ -209,13 +237,126 @@ function BeforeAfterSlider() {
           </svg>
         </div>
       </div>
-      {/* Labels */}
       <span className="absolute left-4 bottom-4 z-10 border border-neon-red/20 bg-background/60 px-3 py-1 font-mono text-[9px] uppercase tracking-[0.4em] text-neon-red/60 backdrop-blur-sm">
         {t("gallery.before")}
       </span>
       <span className="absolute right-4 bottom-4 z-10 border border-neon-red/20 bg-background/60 px-3 py-1 font-mono text-[9px] uppercase tracking-[0.4em] text-neon-red/60 backdrop-blur-sm">
         {t("gallery.after")}
       </span>
+    </div>
+  );
+}
+
+function BeforeAfterSlider() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [pos, setPos] = useState(50);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const swipeStart = useRef<{ x: number } | null>(null);
+  const { t } = useLocale();
+
+  const goTo = useCallback((dir: -1 | 1) => {
+    setActiveIndex((i) => Math.max(0, Math.min(BEFORE_AFTER_CASES.length - 1, i + dir)));
+    setPos(50);
+  }, []);
+
+  const handleSwipeStart = useCallback((e: React.PointerEvent) => {
+    const rect = (e.target as HTMLElement).closest(".overflow-hidden")?.getBoundingClientRect();
+    if (!rect) return;
+    const edgeZone = rect.width * 0.2;
+    const x = e.clientX - rect.left;
+    if (x < edgeZone || x > rect.width - edgeZone) {
+      swipeStart.current = { x: e.clientX };
+    }
+  }, []);
+
+  const handleSwipeEnd = useCallback(
+    (e: React.PointerEvent) => {
+      if (!swipeStart.current) return;
+      const dx = e.clientX - swipeStart.current.x;
+      const threshold = 40;
+      if (dx < -threshold) goTo(1);
+      else if (dx > threshold) goTo(-1);
+      swipeStart.current = null;
+    },
+    [goTo]
+  );
+
+  return (
+    <div className="relative">
+      <div
+        className="overflow-hidden touch-pan-y"
+        onPointerDown={handleSwipeStart}
+        onPointerUp={handleSwipeEnd}
+        onPointerCancel={handleSwipeEnd}
+        onPointerLeave={handleSwipeEnd}
+      >
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={activeIndex}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
+            className="relative"
+          >
+            <BeforeAfterSlide
+              before={BEFORE_AFTER_CASES[activeIndex].before}
+              after={BEFORE_AFTER_CASES[activeIndex].after}
+              pos={pos}
+              onPosChange={setPos}
+              containerRef={containerRef}
+              t={t}
+            />
+            <span className="absolute right-4 top-4 z-10 font-mono text-[7px] uppercase tracking-[0.4em] text-neon-red/40">
+              {BEFORE_AFTER_CASES[activeIndex].tag}
+            </span>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Carousel controls */}
+      <div className="mt-4 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          {BEFORE_AFTER_CASES.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => {
+                setActiveIndex(i);
+                setPos(50);
+              }}
+              aria-label={`Case ${i + 1}`}
+              className={`h-1.5 transition-all duration-300 ${
+                i === activeIndex ? "w-8 bg-neon-red/80" : "w-1.5 bg-neon-red/25 hover:bg-neon-red/40"
+              }`}
+            />
+          ))}
+        </div>
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => goTo(-1)}
+            disabled={activeIndex === 0}
+            aria-label="Previous"
+            className="flex h-9 w-9 items-center justify-center border border-neon-red/25 bg-background/60 text-neon-red/70 transition-colors hover:border-neon-red/50 hover:text-neon-red disabled:opacity-30 disabled:pointer-events-none"
+          >
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4">
+              <path d="M10 12L6 8l4-4" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            onClick={() => goTo(1)}
+            disabled={activeIndex === BEFORE_AFTER_CASES.length - 1}
+            aria-label="Next"
+            className="flex h-9 w-9 items-center justify-center border border-neon-red/25 bg-background/60 text-neon-red/70 transition-colors hover:border-neon-red/50 hover:text-neon-red disabled:opacity-30 disabled:pointer-events-none"
+          >
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4">
+              <path d="M6 4l4 4-4 4" />
+            </svg>
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

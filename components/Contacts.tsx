@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import SectionHeading from "./SectionHeading";
 import { useLocale } from "@/lib/locale-context";
@@ -13,6 +13,8 @@ const CONTACT_INFO = {
   email: "mybarbershop36@gmail.com",
   hours: "Пн-Нд: 10:00-20:00",
   mapsUrl: "https://maps.google.com/?q=Львів+вул+Мирослава+Скорика+21",
+  mapsEmbedUrl:
+    "https://maps.google.com/maps?q=Львів+вул.+Мирослава+Скорика+21&z=17&output=embed",
 };
 
 const SOCIALS = [
@@ -123,6 +125,52 @@ function InfoBlock({
       )}
       <CornerBrackets />
     </motion.div>
+  );
+}
+
+function LazyMap() {
+  const [shouldLoad, setShouldLoad] = useState(false);
+  const mapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = mapRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) setShouldLoad(true);
+      },
+      { rootMargin: "100px", threshold: 0.1 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <div ref={mapRef} className="relative aspect-square w-full md:aspect-[4/3] lg:aspect-auto lg:h-full lg:min-h-[420px]">
+      {shouldLoad ? (
+        <iframe
+          title="M&Y Barber Studio Location"
+          src={CONTACT_INFO.mapsEmbedUrl}
+          className="absolute inset-0 h-full w-full"
+          style={{ border: 0, filter: "invert(0.9) hue-rotate(180deg) saturate(0.3) brightness(0.6) contrast(1.3)" }}
+          allowFullScreen
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+        />
+      ) : (
+        <div className="absolute inset-0 flex items-center justify-center bg-muted/30">
+          <span className="font-mono text-[7px] uppercase tracking-[0.5em] text-muted-foreground/50">
+            Loading map...
+          </span>
+        </div>
+      )}
+      <div className="pointer-events-none absolute inset-0 z-[2] mix-blend-multiply" style={{ background: "linear-gradient(180deg, hsl(0 0% 2% / 0.3) 0%, hsl(0 0% 2% / 0.15) 50%, hsl(0 0% 2% / 0.4) 100%)" }} />
+      <div className="pointer-events-none absolute inset-0 z-[3]" style={{ backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 3px, hsl(0 0% 0% / 0.04) 3px, hsl(0 0% 0% / 0.04) 6px)" }} />
+      <div className="pointer-events-none absolute inset-0 z-[3] opacity-20" style={{ backgroundImage: "linear-gradient(hsl(var(--neon-red) / 0.08) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--neon-red) / 0.08) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+      <div className="pointer-events-none absolute inset-0 z-[4]"><RadarOverlay /></div>
+      <div className="pointer-events-none absolute inset-0 z-[5]"><LocationMarker /></div>
+      <div className="pointer-events-none absolute inset-0 z-[6]"><CornerBrackets /></div>
+    </div>
   );
 }
 
@@ -244,26 +292,10 @@ export default function Contacts() {
                   <span className="h-1.5 w-1.5 animate-pulse-red bg-neon-red/60" style={{ boxShadow: "0 0 4px hsl(var(--neon-red) / 0.3)" }} />
                   <span className="font-mono text-[7px] uppercase tracking-[0.5em] text-neon-red/40">Location Terminal</span>
                 </div>
-                <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-muted-foreground/30">49.8397N // 24.0232E</span>
+                <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-muted-foreground/30">49.8376N // 24.0305E</span>
               </div>
 
-              <div className="relative aspect-square w-full md:aspect-[4/3] lg:aspect-auto lg:h-full lg:min-h-[420px]">
-                <iframe
-                  title="M&Y Barber Studio Location"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2573.4!2d24.0232!3d49.8397!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z0JvRjNCy0ZbQsg!5e0!3m2!1suk!2sua!4v1"
-                  className="absolute inset-0 h-full w-full"
-                  style={{ border: 0, filter: "invert(0.9) hue-rotate(180deg) saturate(0.3) brightness(0.6) contrast(1.3)" }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
-                <div className="pointer-events-none absolute inset-0 z-[2] mix-blend-multiply" style={{ background: "linear-gradient(180deg, hsl(0 0% 2% / 0.3) 0%, hsl(0 0% 2% / 0.15) 50%, hsl(0 0% 2% / 0.4) 100%)" }} />
-                <div className="pointer-events-none absolute inset-0 z-[3]" style={{ backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 3px, hsl(0 0% 0% / 0.04) 3px, hsl(0 0% 0% / 0.04) 6px)" }} />
-                <div className="pointer-events-none absolute inset-0 z-[3] opacity-20" style={{ backgroundImage: "linear-gradient(hsl(var(--neon-red) / 0.08) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--neon-red) / 0.08) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
-                <div className="pointer-events-none absolute inset-0 z-[4]"><RadarOverlay /></div>
-                <div className="pointer-events-none absolute inset-0 z-[5]"><LocationMarker /></div>
-                <div className="pointer-events-none absolute inset-0 z-[6]"><CornerBrackets /></div>
-              </div>
+              <LazyMap />
 
               <div className="flex items-center justify-between border-t border-neon-red/10 px-4 py-2">
                 <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-muted-foreground/25">Signal Locked</span>

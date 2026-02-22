@@ -307,21 +307,44 @@
 .hero-cta-secondary:hover {
   color: hsl(var(--neon-red));
 }
+/* Light theme: hero text — readable on video, subtle shadow, no heavy glow */
 .light .hero-subtitle,
 .light .hero-subtitle-line {
-  text-shadow: 0 1px 2px hsl(var(--background) / 0.95);
+  text-shadow: 0 1px 2px hsl(0 0% 100% / 0.9), 0 2px 8px hsl(0 0% 0% / 0.08);
+}
+.light .hero-content-block h1,
+.light .hero-content-block .font-display {
+  text-shadow: 0 1px 3px hsl(0 0% 100% / 0.9), 0 2px 6px hsl(0 0% 0% / 0.08);
 }
 .light .hero-cta-secondary {
-  color: hsl(var(--muted-foreground));
-  text-shadow: none;
+  color: hsl(220 15% 25%);
+  text-shadow: 0 1px 2px hsl(0 0% 100% / 0.9);
+}
+/* Light theme: district tag, bottom markers — subtle contrast */
+.light .hero-tag {
+  color: hsl(var(--neon-red) / 0.7);
+}
+.light .hero-markers {
+  color: hsl(var(--neon-red) / 0.35);
 }
 
-/* Hero/About: light theme — minimal overlay, no white veil, text readable via contrast */
+/* Hero: light theme — cinematic video treatment, no white washout */
 .light .hero-video-overlay {
-  background: linear-gradient(to top, hsl(0 0% 0% / 0.25) 0%, transparent 60%) !important;
+  background: linear-gradient(to top, hsl(0 0% 0% / 0.5) 0%, hsl(0 0% 0% / 0.25) 40%, transparent 75%) !important;
 }
 .light .hero-video-tint {
-  opacity: 0.3;
+  opacity: 0.15;
+}
+/* Cinematic dark overlay for light theme: darken video, preserve highlights, reduce glare */
+.hero-video-light-cinematic {
+  display: none;
+  z-index: 1;
+}
+.light .hero-video-light-cinematic {
+  display: block;
+  background:
+    radial-gradient(ellipse 85% 75% at 50% 45%, transparent 0%, hsl(0 0% 0% / 0.12) 55%, hsl(0 0% 0% / 0.38) 100%),
+    linear-gradient(to bottom, hsl(0 0% 0% / 0.18) 0%, transparent 40%, hsl(0 0% 0% / 0.12) 100%);
 }
 .light .about-image-overlay {
   background: linear-gradient(to top, hsl(var(--background) / 0.3) 0%, transparent 50%) !important;
@@ -349,6 +372,66 @@
 .light .contacts-map-block {
   border-color: hsl(var(--border));
   box-shadow: 0 1px 3px hsl(var(--border) / 0.5);
+}
+
+/* Hero → white section transition: film frame + blur edge + soft shadow */
+.hero-to-section-transition {
+  height: 120px;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 45%, black 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 45%, black 100%);
+}
+.hero-to-section-transition::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    hsl(var(--background) / 0.4) 30%,
+    hsl(var(--background) / 0.85) 70%,
+    hsl(var(--background)) 100%
+  );
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+}
+.hero-to-section-transition::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    hsl(var(--neon-red) / 0.15) 20%,
+    hsl(var(--neon-red) / 0.25) 50%,
+    hsl(var(--neon-red) / 0.15) 80%,
+    transparent 100%
+  );
+  box-shadow: 0 0 20px hsl(var(--neon-red) / 0.08), 0 4px 30px hsl(var(--background) / 0.5);
+}
+/* Light theme: refined transition — atmospheric fade, soft shadow, no white washout */
+.light .hero-to-section-transition::before {
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    hsl(0 0% 98% / 0.3) 25%,
+    hsl(0 0% 96% / 0.7) 60%,
+    hsl(var(--background)) 100%
+  );
+  box-shadow: 0 -8px 32px hsl(0 0% 0% / 0.06);
+}
+.light .hero-to-section-transition::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    hsl(var(--neon-red) / 0.08) 20%,
+    hsl(var(--neon-red) / 0.12) 50%,
+    hsl(var(--neon-red) / 0.08) 80%,
+    transparent 100%
+  );
+  box-shadow: 0 2px 24px hsl(0 0% 0% / 0.06), 0 1px 3px hsl(0 0% 0% / 0.04);
 }
 
 /* Glitch section divider */

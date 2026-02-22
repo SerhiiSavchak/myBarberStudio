@@ -134,7 +134,7 @@ export default function About() {
 
   const stats = [
     { target: 5, suffix: "+", label: t("about.stat.years") },
-    { target: 4, suffix: "", label: t("about.stat.experts") },
+    { target: 5, suffix: "K+", label: t("about.stat.haircuts") },
     { target: 1, suffix: "K+", label: t("about.stat.clients") },
   ];
 

@@ -28,7 +28,17 @@ export default function Hero() {
     const play = () => { video.play().catch(() => {}); };
     if (video.readyState >= 3) play();
     else video.addEventListener("canplay", play, { once: true });
-    return () => { video.removeEventListener("canplay", play); };
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") {
+        video.currentTime = 0;
+        play();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      video.removeEventListener("canplay", play);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, []);
 
   return (
@@ -56,6 +66,8 @@ export default function Hero() {
           style={{ opacity: overlayOpacity }}
         />
         <div className="hero-video-tint absolute inset-0 bg-neon-red/[0.03] mix-blend-overlay" />
+        {/* Light theme only: cinematic darkening — dark overlay + vignette, no white washout */}
+        <div className="hero-video-light-cinematic pointer-events-none absolute inset-0 z-[1]" aria-hidden />
       </motion.div>
 
       {/* Decorative: cyber grid overlay */}
@@ -70,7 +82,7 @@ export default function Hero() {
         className="relative z-30 mx-auto w-full max-w-7xl px-6 lg:px-8"
         style={{ y: contentY }}
       >
-        <div className="max-w-3xl w-full min-w-0 overflow-hidden">
+        <div className="hero-content-block relative max-w-3xl w-full min-w-0">
           {/* District tag */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -85,7 +97,7 @@ export default function Hero() {
                 boxShadow: "0 0 6px hsl(var(--neon-red) / 0.3)",
               }}
             />
-            <span className="font-mono text-[8px] uppercase tracking-[0.5em] text-neon-red/50">
+            <span className="hero-tag font-mono text-[8px] uppercase tracking-[0.5em] text-neon-red/50">
               {t("hero.tag")}
             </span>
           </motion.div>
@@ -182,24 +194,24 @@ export default function Hero() {
           transition={{ duration: 1, delay: 1.5 }}
           className="mt-16 flex items-center justify-between md:mt-24"
         >
-          <span className="font-mono text-[7px] uppercase tracking-[0.5em] text-neon-red/15">
+          <span className="hero-markers font-mono text-[7px] uppercase tracking-[0.5em] text-neon-red/15">
             SYSTEM ONLINE
           </span>
           <div
             className="hidden h-px flex-1 mx-4 md:block"
             style={{ background: "linear-gradient(90deg, hsl(var(--neon-red) / 0.1), transparent, hsl(var(--neon-red) / 0.1))" }}
           />
-          <span className="font-mono text-[7px] uppercase tracking-[0.5em] text-neon-red/15">
+          <span className="hero-markers font-mono text-[7px] uppercase tracking-[0.5em] text-neon-red/15">
             EST. LVIV
           </span>
         </motion.div>
       </motion.div>
 
-      {/* Bottom gradient fade — pointer-events-none so buttons stay clickable */}
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 z-10 h-40 bg-gradient-to-t from-background to-transparent" />
-
-      {/* Glitch divider at bottom */}
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 z-20 glitch-divider" />
+      {/* Hero-to-section transition: film frame + soft blur edge + subtle shadow */}
+      <div
+        className="hero-to-section-transition pointer-events-none absolute bottom-0 left-0 right-0 z-10"
+        aria-hidden
+      />
     </section>
   );
 }

@@ -53,6 +53,7 @@ const dict = {
   "about.stat.years": { uk: "Років досвіду", en: "Years Experience", ru: "Лет опыта" },
   "about.stat.experts": { uk: "Експерти", en: "Experts", ru: "Эксперты" },
   "about.stat.clients": { uk: "Клієнтів", en: "Clients", ru: "Клиентов" },
+  "about.stat.haircuts": { uk: "Виконаних стрижок", en: "Haircuts Done", ru: "Выполненных стрижек" },
 
   // Services
   "services.tag": { uk: "Послуги", en: "Services", ru: "Услуги" },
