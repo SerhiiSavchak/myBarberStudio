@@ -251,7 +251,6 @@ function BeforeAfterSlider() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [pos, setPos] = useState(50);
   const containerRef = useRef<HTMLDivElement>(null);
-  const swipeStart = useRef<{ x: number } | null>(null);
   const { t } = useLocale();
 
   const goTo = useCallback((dir: -1 | 1) => {
@@ -259,37 +258,22 @@ function BeforeAfterSlider() {
     setPos(50);
   }, []);
 
-  const handleSwipeStart = useCallback((e: React.PointerEvent) => {
-    const rect = (e.target as HTMLElement).closest(".overflow-hidden")?.getBoundingClientRect();
-    if (!rect) return;
-    const edgeZone = rect.width * 0.2;
-    const x = e.clientX - rect.left;
-    if (x < edgeZone || x > rect.width - edgeZone) {
-      swipeStart.current = { x: e.clientX };
-    }
-  }, []);
-
-  const handleSwipeEnd = useCallback(
-    (e: React.PointerEvent) => {
-      if (!swipeStart.current) return;
-      const dx = e.clientX - swipeStart.current.x;
-      const threshold = 40;
-      if (dx < -threshold) goTo(1);
-      else if (dx > threshold) goTo(-1);
-      swipeStart.current = null;
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        goTo(-1);
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        goTo(1);
+      }
     },
     [goTo]
   );
 
   return (
-    <div className="relative">
-      <div
-        className="overflow-hidden touch-pan-y"
-        onPointerDown={handleSwipeStart}
-        onPointerUp={handleSwipeEnd}
-        onPointerCancel={handleSwipeEnd}
-        onPointerLeave={handleSwipeEnd}
-      >
+    <div className="relative" tabIndex={0} onKeyDown={handleKeyDown} role="region" aria-label="Before / After gallery">
+      <div className="overflow-hidden">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={activeIndex}
