@@ -40,6 +40,7 @@
   }
 
   html {
+    position: relative;
     scroll-behavior: smooth;
   }
 
@@ -48,6 +49,7 @@
   }
 
   body {
+    position: relative;
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     font-family: var(--font-body), system-ui, sans-serif;

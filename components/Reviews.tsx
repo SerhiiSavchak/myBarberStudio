@@ -5,39 +5,15 @@ import SectionHeading from "./SectionHeading";
 import { useLocale } from "@/lib/locale-context";
 import { useSectionInView } from "@/hooks/use-section-in-view";
 import { SECTION_IDS } from "@/constants/routes";
+import type { TranslationKey } from "@/lib/i18n";
 
-const REVIEWS = [
-  {
-    name: "Олександр М.",
-    text: "Найкращий барбершоп у Львові. Атмосфера неймовірна, стрижка бездоганна. Відчуваєш себе як у кіно.",
-    rating: 5,
-    tag: "RVW-001",
-  },
-  {
-    name: "Тарас К.",
-    text: "Мирослав — справжній майстер. Фейд вийшов ідеальний. Вже записався на наступний раз.",
-    rating: 5,
-    tag: "RVW-002",
-  },
-  {
-    name: "Роман Д.",
-    text: "Комплекс стрижка + борода — це інший рівень. Гарячий рушник, масаж, ідеальна борода. Варте кожної гривні.",
-    rating: 5,
-    tag: "RVW-003",
-  },
-  {
-    name: "Іван П.",
-    text: "Чиста атмосфера, крута музика, майстри своєї справи. Тут інша енергетика. Рекомендую всім.",
-    rating: 5,
-    tag: "RVW-004",
-  },
-  {
-    name: "Максим С.",
-    text: "Олег зрозумів що я хочу ще до того, як я пояснив. Ось це справжній професіоналізм. Обов'язково повернусь.",
-    rating: 5,
-    tag: "RVW-005",
-  },
-];
+const REVIEW_KEYS = [
+  { nameKey: "reviews.items.0.name" as TranslationKey, textKey: "reviews.items.0.text" as TranslationKey, tag: "RVW-001" },
+  { nameKey: "reviews.items.1.name" as TranslationKey, textKey: "reviews.items.1.text" as TranslationKey, tag: "RVW-002" },
+  { nameKey: "reviews.items.2.name" as TranslationKey, textKey: "reviews.items.2.text" as TranslationKey, tag: "RVW-003" },
+  { nameKey: "reviews.items.3.name" as TranslationKey, textKey: "reviews.items.3.text" as TranslationKey, tag: "RVW-004" },
+  { nameKey: "reviews.items.4.name" as TranslationKey, textKey: "reviews.items.4.text" as TranslationKey, tag: "RVW-005" },
+] as const;
 
 export default function Reviews() {
   const { ref, inView } = useSectionInView();
@@ -54,9 +30,9 @@ export default function Reviews() {
         />
 
         <div ref={ref} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {REVIEWS.map((review, i) => (
+          {REVIEW_KEYS.map((review, i) => (
             <motion.div
-              key={review.name}
+              key={review.tag}
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: i * 0.1 }}
@@ -92,7 +68,7 @@ export default function Reviews() {
 
               {/* Review text */}
               <p className="mb-6 flex-1 text-sm leading-relaxed text-muted-foreground">
-                {review.text}
+                {t(review.textKey)}
               </p>
 
               {/* Divider */}
@@ -107,15 +83,15 @@ export default function Reviews() {
                   className="flex h-9 w-9 items-center justify-center border border-neon-red/20 bg-muted font-body text-[11px] font-medium uppercase text-neon-red/50"
                   style={{ boxShadow: "0 0 6px hsl(var(--neon-red) / 0.1)" }}
                 >
-                  {review.name.charAt(0)}
+                  {t(review.nameKey).charAt(0)}
                 </div>
                 <div>
                   <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/60">
-                    {review.name}
+                    {t(review.nameKey)}
                   </span>
                   {/* Rating dots */}
                   <div className="mt-1 flex gap-1">
-                    {Array.from({ length: review.rating }).map((_, s) => (
+                    {Array.from({ length: 5 }).map((_, s) => (
                       <span
                         key={s}
                         className="h-1.5 w-1.5 bg-neon-red/50"

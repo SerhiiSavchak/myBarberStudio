@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useTransform } from "framer-motion";
+import { useScrollSuppressed } from "@/hooks/use-scroll-suppressed";
 import { useLocale } from "@/lib/locale-context";
 import { BOOKING_URL, SECTION_IDS } from "@/constants/routes";
 
@@ -13,7 +14,7 @@ export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const { t } = useLocale();
 
-  const { scrollYProgress } = useScroll({
+  const { scrollYProgress } = useScrollSuppressed({
     target: sectionRef,
     offset: ["start start", "end start"],
   });

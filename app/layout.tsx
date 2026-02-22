@@ -103,8 +103,8 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="uk" className={`dark ${exo2.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
-      <body className="font-body antialiased overflow-x-hidden">
+    <html lang="uk" className={`relative dark ${exo2.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
+      <body className="relative font-body antialiased overflow-x-hidden">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

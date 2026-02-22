@@ -1,125 +1,152 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import SectionHeading from "./SectionHeading";
+import CategoryCard from "./CategoryCard";
+import PricingModal from "./PricingModal";
 import { useLocale } from "@/lib/locale-context";
 import { useSectionInView } from "@/hooks/use-section-in-view";
 import { SECTION_IDS } from "@/constants/routes";
+import type { TranslationKey } from "@/lib/i18n";
+
+interface ServiceItem {
+  name: string;
+  price: string;
+}
+
+interface Category {
+  id: string;
+  labelKey: TranslationKey;
+  descKey: TranslationKey;
+  items: { name: { uk: string; en: string; ru: string }; price: string }[];
+}
+
+const PRICING_DATA: Category[] = [
+  {
+    id: "SVC-001",
+    labelKey: "pricing.cat.haircuts",
+    descKey: "services.haircuts.desc",
+    items: [
+      { name: { uk: "Стрижка", en: "Haircut", ru: "Стрижка" }, price: "500-1000 грн" },
+      { name: { uk: "Стрижка на подовжене волосся", en: "Long hair cut", ru: "Стрижка на удлинённые волосы" }, price: "600-1100 грн" },
+      { name: { uk: "Стрижка двома насадками", en: "Two-guard cut", ru: "Стрижка двумя насадками" }, price: "350-800 грн" },
+      { name: { uk: "Укладка волосся", en: "Hair styling", ru: "Укладка волос" }, price: "250-350 грн" },
+      { name: { uk: "Моделювання", en: "Modeling", ru: "Моделирование" }, price: "300-600 грн" },
+      { name: { uk: "Хеір тату", en: "Hair tattoo", ru: "Хеір тату" }, price: "200 грн" },
+      { name: { uk: "Дитяча стрижка", en: "Kids haircut", ru: "Детская стрижка" }, price: "500-1000 грн" },
+    ],
+  },
+  {
+    id: "SVC-002",
+    labelKey: "pricing.cat.beard",
+    descKey: "services.beard.desc",
+    items: [
+      { name: { uk: "Стрижка бороди", en: "Beard trim", ru: "Стрижка бороды" }, price: "400-800 грн" },
+      { name: { uk: "Королівське гоління", en: "Royal shave", ru: "Королевское бритьё" }, price: "525-850 грн" },
+    ],
+  },
+  {
+    id: "SVC-003",
+    labelKey: "pricing.cat.toning",
+    descKey: "services.toning.desc",
+    items: [
+      { name: { uk: "Тонування волосся", en: "Hair toning", ru: "Тонирование волос" }, price: "500-700 грн" },
+      { name: { uk: "Тонування бороди", en: "Beard toning", ru: "Тонирование бороды" }, price: "450-650 грн" },
+    ],
+  },
+  {
+    id: "SVC-004",
+    labelKey: "pricing.cat.combo",
+    descKey: "services.combo.desc",
+    items: [
+      { name: { uk: "Стрижка + корекція бороди", en: "Haircut + beard trim", ru: "Стрижка + коррекция бороды" }, price: "1000-1800 грн" },
+      { name: { uk: "Тато + син", en: "Father + son", ru: "Отец + сын" }, price: "1100-2000 грн" },
+    ],
+  },
+  {
+    id: "SVC-005",
+    labelKey: "pricing.cat.tattoo",
+    descKey: "services.tattoo.desc",
+    items: [
+      { name: { uk: "Консультація", en: "Consultation", ru: "Консультация" }, price: "0 грн" },
+      { name: { uk: "Виконання роботи", en: "Tattoo work", ru: "Выполнение работы" }, price: "від 1000 грн" },
+    ],
+  },
+  {
+    id: "SVC-006",
+    labelKey: "pricing.cat.care",
+    descKey: "services.care.desc",
+    items: [
+      { name: { uk: "СПА процедура для обличчя", en: "Face SPA", ru: "СПА процедура для лица" }, price: "300 грн" },
+      { name: { uk: "СПА процедура DEPOT", en: "DEPOT SPA", ru: "СПА процедура DEPOT" }, price: "400 грн" },
+      { name: { uk: "Патчі під очі", en: "Under-eye patches", ru: "Патчи под глаза" }, price: "100-200 грн" },
+      { name: { uk: "Воскова депіляція", en: "Wax depilation", ru: "Восковая депиляция" }, price: "200-300 грн" },
+    ],
+  },
+];
 
 export default function Services() {
   const { ref, inView } = useSectionInView();
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
+  const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
 
-  const SERVICES = [
-    {
-      name: t("services.haircuts.name"),
-      price: t("services.price.haircuts"),
-      description: t("services.haircuts.desc"),
-      id: "SVC-001",
-      est: "45 min",
-    },
-    {
-      name: t("services.beard.name"),
-      price: t("services.price.beard"),
-      description: t("services.beard.desc"),
-      id: "SVC-002",
-      est: "30 min",
-    },
-    {
-      name: t("services.combo.name"),
-      price: t("services.price.combo"),
-      description: t("services.combo.desc"),
-      id: "SVC-003",
-      est: "75 min",
-    },
-    {
-      name: t("services.face.name"),
-      price: t("services.price.face"),
-      description: t("services.face.desc"),
-      id: "SVC-004",
-      est: "40 min",
-    },
-    {
-      name: t("services.tattoo.name"),
-      price: t("services.price.tattoo"),
-      description: t("services.tattoo.desc"),
-      id: "SVC-005",
-      est: "120+ min",
-    },
-  ];
+  const categories = PRICING_DATA.map((cat) => ({
+    ...cat,
+    title: t(cat.labelKey),
+    description: t(cat.descKey),
+    items: cat.items.map((item) => ({
+      name: item.name[locale],
+      price: item.price,
+    })),
+  }));
+
+  const activeCategory = activeCategoryId
+    ? categories.find((c) => c.id === activeCategoryId)
+    : null;
 
   return (
     <section id={SECTION_IDS.services} className="relative px-6 py-24 md:py-32 lg:px-8">
       <div className="absolute top-0 left-0 right-0 glitch-divider" />
       <div className="mx-auto max-w-7xl pt-6">
         <SectionHeading
-          tag={t("services.tag")}
-          title={t("services.title")}
-          description={t("services.description")}
+          tag={t("pricing.tag")}
+          title={t("pricing.title")}
+          description={t("pricing.description")}
         />
 
         <div ref={ref} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {SERVICES.map((service, i) => (
-            <motion.div
-              key={service.id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              className="tron-edge holo-shimmer group relative cursor-default bg-card p-8 transition-all duration-500 hover:bg-muted select-none"
-            >
-              {/* Red edge glow on hover */}
-              <div
-                className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none"
-                style={{ boxShadow: "inset 0 0 20px hsl(var(--neon-red) / 0.05), 0 0 15px hsl(var(--neon-red) / 0.05)" }}
-              />
-
-              {/* Top micro labels */}
-              <div className="mb-5 flex items-center justify-between">
-                <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-neon-red/30">
-                  SERVICE PROTOCOL
-                </span>
-                <span className="font-mono text-[7px] uppercase tracking-[0.3em] text-muted-foreground/30">
-                  {service.id}
-                </span>
-              </div>
-
-              {/* Corner bracket animations */}
-              <div className="absolute left-0 top-0 h-5 w-5 border-l border-t border-neon-red/0 transition-all duration-500 group-hover:border-neon-red/40 group-hover:h-6 group-hover:w-6" />
-              <div className="absolute right-0 top-0 h-5 w-5 border-r border-t border-neon-red/0 transition-all duration-500 group-hover:border-neon-red/40 group-hover:h-6 group-hover:w-6" />
-              <div className="absolute bottom-0 left-0 h-5 w-5 border-l border-b border-neon-red/0 transition-all duration-500 group-hover:border-neon-red/40 group-hover:h-6 group-hover:w-6" />
-              <div className="absolute right-0 bottom-0 h-5 w-5 border-r border-b border-neon-red/0 transition-all duration-500 group-hover:border-neon-red/40 group-hover:h-6 group-hover:w-6" />
-
-              <h3 className="mb-2 font-body text-lg font-semibold uppercase tracking-wide text-foreground">
-                {service.name}
-              </h3>
-
-              <p className="mb-5 font-body text-[clamp(0.8125rem,1.2vw,0.875rem)] leading-[1.6] text-muted-foreground">
-                {service.description}
-              </p>
-
-              <div className="flex items-center justify-between">
-                <span
-                  className="font-display text-sm font-semibold tracking-wide text-neon-red/70"
-                  style={{ textShadow: "0 0 8px hsl(var(--neon-red) / 0.3)" }}
-                >
-                  {service.price}
-                </span>
-                <span className="font-mono text-[7px] uppercase tracking-[0.3em] text-neon-cyan/30">
-                  EST. {service.est}
-                </span>
-              </div>
-
-              <div
-                className="absolute bottom-0 left-0 h-px w-0 transition-all duration-700 group-hover:w-full"
-                style={{
-                  background: "linear-gradient(90deg, hsl(var(--neon-red) / 0.5), transparent)",
-                  boxShadow: "0 0 8px hsl(var(--neon-red) / 0.2)",
-                }}
-              />
-            </motion.div>
+          {categories.map((cat, i) => (
+            <CategoryCard
+              key={cat.id}
+              id={cat.id}
+              name={cat.title}
+              description={cat.description}
+              index={i}
+              inView={inView}
+              onClick={() => setActiveCategoryId(cat.id)}
+            />
           ))}
         </div>
+
+        {/* Note */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mt-12 text-center font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/60"
+        >
+          {t("pricing.note")}
+        </motion.p>
       </div>
+
+      {/* Modal with price list */}
+      <PricingModal
+        isOpen={!!activeCategory}
+        onClose={() => setActiveCategoryId(null)}
+        title={activeCategory?.title ?? ""}
+        items={activeCategory?.items ?? []}
+      />
     </section>
   );
 }

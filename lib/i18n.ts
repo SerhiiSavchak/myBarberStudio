@@ -75,11 +75,23 @@ const dict = {
     en: "Modeling, correction and beard care. Hot towel included.",
     ru: "Моделирование, коррекция и уход за бородой. Горячее полотенце включено.",
   },
+  "services.toning.name": { uk: "Тонування", en: "Toning", ru: "Тонирование" },
+  "services.toning.desc": {
+    uk: "Тонування та фарбування волосся та бороди.",
+    en: "Hair and beard toning and coloring.",
+    ru: "Тонирование и окрашивание волос и бороды.",
+  },
   "services.combo.name": { uk: "Стрижка + борода", en: "Haircut + Beard", ru: "Стрижка + борода" },
   "services.combo.desc": {
     uk: "Повний комплекс: стрижка та оформлення бороди в одному сеансі.",
     en: "Full complex: haircut and beard styling in one session.",
     ru: "Полный комплекс: стрижка и оформление бороды в одном сеансе.",
+  },
+  "services.care.name": { uk: "Догляд", en: "Care", ru: "Уход" },
+  "services.care.desc": {
+    uk: "СПА процедури, депіляція та догляд за обличчям.",
+    en: "SPA procedures, depilation and face care.",
+    ru: "СПА процедуры, депиляция и уход за лицом.",
   },
   "services.face.name": { uk: "Догляд за обличчям", en: "Face Care", ru: "Уход за лицом" },
   "services.face.desc": {
@@ -180,6 +192,36 @@ const dict = {
     en: "Real words from our regular clients.",
     ru: "Реальные слова от наших постоянных клиентов.",
   },
+  "reviews.items.0.name": { uk: "Олександр М.", en: "Oleksandr M.", ru: "Александр М." },
+  "reviews.items.0.text": {
+    uk: "Найкращий барбершоп у Львові. Атмосфера неймовірна, стрижка бездоганна. Відчуваєш себе як у кіно.",
+    en: "The best barbershop in Lviv. Incredible atmosphere, flawless haircut. You feel like you're in a movie.",
+    ru: "Лучший барбершоп во Львове. Атмосфера невероятная, стрижка безупречная. Чувствуешь себя как в кино.",
+  },
+  "reviews.items.1.name": { uk: "Тарас К.", en: "Taras K.", ru: "Тарас К." },
+  "reviews.items.1.text": {
+    uk: "Мирослав — справжній майстер. Фейд вийшов ідеальний. Вже записався на наступний раз.",
+    en: "Myroslav is a true master. The fade came out perfect. Already booked for next time.",
+    ru: "Мирослав — настоящий мастер. Фейд получился идеальным. Уже записался на следующий раз.",
+  },
+  "reviews.items.2.name": { uk: "Роман Д.", en: "Roman D.", ru: "Роман Д." },
+  "reviews.items.2.text": {
+    uk: "Комплекс стрижка + борода — це інший рівень. Гарячий рушник, масаж, ідеальна борода. Варте кожної гривні.",
+    en: "Haircut + beard combo is another level. Hot towel, massage, perfect beard. Worth every hryvnia.",
+    ru: "Комплекс стрижка + борода — это другой уровень. Горячее полотенце, массаж, идеальная борода. Стоит каждой гривны.",
+  },
+  "reviews.items.3.name": { uk: "Іван П.", en: "Ivan P.", ru: "Иван П." },
+  "reviews.items.3.text": {
+    uk: "Чиста атмосфера, крута музика, майстри своєї справи. Тут інша енергетика. Рекомендую всім.",
+    en: "Clean atmosphere, great music, masters of their craft. Different energy here. Recommend to everyone.",
+    ru: "Чистая атмосфера, крутая музыка, мастера своего дела. Здесь другая энергетика. Рекомендую всем.",
+  },
+  "reviews.items.4.name": { uk: "Максим С.", en: "Maksym S.", ru: "Максим С." },
+  "reviews.items.4.text": {
+    uk: "Олег зрозумів що я хочу ще до того, як я пояснив. Ось це справжній професіоналізм. Обов'язково повернусь.",
+    en: "Oleh understood what I wanted before I even explained. That's true professionalism. Will definitely come back.",
+    ru: "Олег понял, что я хочу, ещё до того, как я объяснил. Вот это настоящий профессионализм. Обязательно вернусь.",
+  },
 
   // Contacts
   "contacts.tag": { uk: "Контакти", en: "Contacts", ru: "Контакты" },
@@ -191,6 +233,42 @@ const dict = {
   },
   "contacts.route": { uk: "Прокласти маршрут", en: "Get Directions", ru: "Проложить маршрут" },
   "contacts.bookNow": { uk: "Записатись зараз", en: "Book Now", ru: "Записаться сейчас" },
+
+  // Services & Prices (detailed)
+  "pricing.tag": { uk: "Послуги та ціни", en: "Services & Prices", ru: "Услуги и цены" },
+  "pricing.title": { uk: "Послуги та ціни", en: "Services & Prices", ru: "Услуги и цены" },
+  "pricing.description": {
+    uk: "Повний перелік послуг та актуальні ціни.",
+    en: "Full list of services and current prices.",
+    ru: "Полный перечень услуг и актуальные цены.",
+  },
+  "pricing.note": {
+    uk: "Ціна залежить від категорії спеціаліста",
+    en: "Price depends on the specialist category",
+    ru: "Цена зависит от категории специалиста",
+  },
+  "pricing.book": { uk: "Записатись", en: "Book Now", ru: "Записаться" },
+  "pricing.cat.haircuts": { uk: "Чоловічі стрижки", en: "Men's Haircuts", ru: "Мужские стрижки" },
+  "pricing.cat.beard": { uk: "Борода", en: "Beard", ru: "Борода" },
+  "pricing.cat.toning": { uk: "Тонування / фарбування", en: "Toning / Coloring", ru: "Тонирование / окрашивание" },
+  "pricing.cat.combo": { uk: "Комбо", en: "Combo", ru: "Комбо" },
+  "pricing.cat.tattoo": { uk: "Тату", en: "Tattoo", ru: "Тату" },
+  "pricing.cat.care": { uk: "Догляд", en: "Care", ru: "Уход" },
+
+  // Tattoo section
+  "tattoo.tag": { uk: "Тату", en: "Tattoo", ru: "Тату" },
+  "tattoo.title": { uk: "Тату", en: "Tattoo", ru: "Тату" },
+  "tattoo.intro": {
+    uk: "Авторські татуювання від нашого майстра Сергія. Кожна робота — унікальна. Стерильність та безпека на найвищому рівні.",
+    en: "Custom tattoos by our master Serhii. Every work is unique. Sterility and safety at the highest level.",
+    ru: "Авторские татуировки от нашего мастера Сергея. Каждая работа уникальна. Стерильность и безопасность на высшем уровне.",
+  },
+  "tattoo.point1": { uk: "стерильність та безпека", en: "sterility and safety", ru: "стерильность и безопасность" },
+  "tattoo.point2": { uk: "індивідуальний ескіз", en: "individual sketch", ru: "индивидуальный эскиз" },
+  "tattoo.point3": { uk: "консультація майстра", en: "master consultation", ru: "консультация мастера" },
+  "tattoo.point4": { uk: "рекомендації по догляду", en: "aftercare recommendations", ru: "рекомендации по уходу" },
+  "tattoo.bookConsult": { uk: "Записатись на консультацію", en: "Book Consultation", ru: "Записаться на консультацию" },
+  "tattoo.portfolio": { uk: "Переглянути портфоліо", en: "View Portfolio", ru: "Просмотреть портфолио" },
 
   // Footer
   "footer.address": { uk: "вул. Мирослава Скорика, 21", en: "Myroslava Skoryka St, 21", ru: "ул. Мирослава Скорика, 21" },
