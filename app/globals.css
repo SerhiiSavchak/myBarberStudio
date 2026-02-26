@@ -89,6 +89,15 @@
 }
 
 @layer utilities {
+  /* Micro-feedback on tap (mobile) — 80–120ms, confirmation only */
+  .tap-feedback {
+    animation: tap-feedback-pulse 0.12s ease-out;
+  }
+  @keyframes tap-feedback-pulse {
+    0% { opacity: 0.9; }
+    100% { opacity: 1; }
+  }
+
   /* Film grain overlay */
   .grain {
     position: relative;
@@ -385,25 +394,39 @@
 .hero-cta-secondary:hover {
   color: hsl(var(--neon-red));
 }
-/* Light theme: hero text — readable on video, subtle shadow, no heavy glow */
+/* Light theme: hero text — readable in daylight, no white shadow */
 .light .hero-subtitle,
 .light .hero-subtitle-line {
-  text-shadow: 0 1px 2px hsl(0 0% 100% / 0.9), 0 2px 8px hsl(0 0% 0% / 0.08);
+  text-shadow: none;
 }
 .light .hero-content-block h1,
 .light .hero-content-block .font-display {
-  text-shadow: 0 1px 3px hsl(0 0% 100% / 0.9), 0 2px 6px hsl(0 0% 0% / 0.08);
+  text-shadow: none;
+}
+.light .hero-content-block .hero-entrance-line1 {
+  color: hsl(0 0% 8%);
+}
+.light .hero-content-block .hero-subtitle-line {
+  color: hsl(0 0% 100%);
+}
+.light .hero-subtitle {
+  color: hsl(0 0% 14%);
 }
 .light .hero-cta-secondary {
-  color: hsl(220 15% 25%);
-  text-shadow: 0 1px 2px hsl(0 0% 100% / 0.9);
+  color: hsl(0 0% 12%);
+  text-shadow: none;
 }
-/* Light theme: district tag, bottom markers — subtle contrast */
+/* Light theme: district tag, bottom markers — readable contrast */
 .light .hero-tag {
-  color: hsl(var(--neon-red) / 0.7);
+  color: hsl(var(--neon-red) / 0.85);
 }
 .light .hero-markers {
-  color: hsl(var(--neon-red) / 0.35);
+  color: hsl(var(--neon-red) / 0.55);
+}
+
+/* Desktop header: light theme — nav text contrast */
+.light .header-nav-link {
+  color: hsl(0 0% 15%);
 }
 
 /* Hero: light theme — cinematic video treatment, no white washout */

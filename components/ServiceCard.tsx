@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { BOOKING_URL } from "@/constants/routes";
 import { useLocale } from "@/lib/locale-context";
+import { useScrollSafeTap } from "@/hooks/use-scroll-safe-tap";
 
 interface ServiceCardProps {
   name: string;
@@ -13,13 +14,16 @@ interface ServiceCardProps {
 
 export default function ServiceCard({ name, price, index, inView }: ServiceCardProps) {
   const { t } = useLocale();
+  const { ref, tapHandlers } = useScrollSafeTap();
 
   return (
     <motion.div
+      ref={ref}
       initial={{ opacity: 0, y: 24 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5, delay: index * 0.06 }}
-      className="tron-edge group relative flex flex-col bg-card p-6 transition-all duration-500 hover:bg-muted select-none"
+      className="tron-edge group relative flex flex-col bg-card p-6 transition-all duration-500 hover:bg-muted select-none touch-manipulation"
+      {...tapHandlers}
     >
       {/* Hover glow */}
       <div

@@ -38,77 +38,35 @@ export default function Reviews() {
               transition={{ duration: 0.6, delay: i * 0.1 }}
               className="tron-edge holo-shimmer group relative flex flex-col bg-card p-8 transition-all duration-500 hover:bg-muted"
             >
-              {/* Red edge glow on hover */}
               <div
                 className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none"
                 style={{ boxShadow: "inset 0 0 25px hsl(var(--neon-red) / 0.04), 0 0 15px hsl(var(--neon-red) / 0.04)" }}
               />
-
-              {/* Top header bar */}
               <div className="mb-5 flex items-center justify-between">
-                <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-neon-red/25">
-                  CLIENT LOG
-                </span>
-                <span className="font-mono text-[7px] uppercase tracking-[0.3em] text-muted-foreground/25">
-                  {review.tag}
-                </span>
+                <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-neon-red/25">CLIENT LOG</span>
+                <span className="font-mono text-[7px] uppercase tracking-[0.3em] text-muted-foreground/25">{review.tag}</span>
               </div>
-
-              {/* Corner brackets */}
               <div className="absolute left-0 top-0 h-5 w-5 border-l border-t border-neon-red/0 transition-all duration-500 group-hover:border-neon-red/30 group-hover:h-6 group-hover:w-6" />
               <div className="absolute right-0 bottom-0 h-5 w-5 border-r border-b border-neon-red/0 transition-all duration-500 group-hover:border-neon-red/30 group-hover:h-6 group-hover:w-6" />
-
-              {/* Quote mark */}
-              <span
-                className="mb-3 block font-display text-4xl leading-none text-neon-red/10"
-                style={{ textShadow: "0 0 20px hsl(var(--neon-red) / 0.08)" }}
-              >
-                {"\u201C"}
-              </span>
-
-              {/* Review text */}
-              <p className="mb-6 flex-1 text-sm leading-relaxed text-muted-foreground">
-                {t(review.textKey)}
-              </p>
-
-              {/* Divider */}
-              <div
-                className="mb-4 h-px w-full"
-                style={{ background: "linear-gradient(90deg, hsl(var(--neon-red) / 0.15), transparent)" }}
-              />
-
-              {/* Author */}
+              <span className="mb-3 block font-display text-4xl leading-none text-neon-red/10" style={{ textShadow: "0 0 20px hsl(var(--neon-red) / 0.08)" }}>{"\u201C"}</span>
+              <p className="mb-6 flex-1 text-sm leading-relaxed text-muted-foreground">{t(review.textKey)}</p>
+              <div className="mb-4 h-px w-full" style={{ background: "linear-gradient(90deg, hsl(var(--neon-red) / 0.15), transparent)" }} />
               <div className="flex items-center gap-3">
-                <div
-                  className="flex h-9 w-9 items-center justify-center border border-neon-red/20 bg-muted font-body text-[11px] font-medium uppercase text-neon-red/50"
-                  style={{ boxShadow: "0 0 6px hsl(var(--neon-red) / 0.1)" }}
-                >
+                <div className="flex h-9 w-9 items-center justify-center border border-neon-red/20 bg-muted font-body text-[11px] font-medium uppercase text-neon-red/50" style={{ boxShadow: "0 0 6px hsl(var(--neon-red) / 0.1)" }}>
                   {t(review.nameKey).charAt(0)}
                 </div>
                 <div>
-                  <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/60">
-                    {t(review.nameKey)}
-                  </span>
-                  {/* Rating dots */}
+                  <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/60">{t(review.nameKey)}</span>
                   <div className="mt-1 flex gap-1">
                     {Array.from({ length: 5 }).map((_, s) => (
-                      <span
-                        key={s}
-                        className="h-1.5 w-1.5 bg-neon-red/50"
-                        style={{ boxShadow: "0 0 4px hsl(var(--neon-red) / 0.3)" }}
-                      />
+                      <span key={s} className="h-1.5 w-1.5 bg-neon-red/50" style={{ boxShadow: "0 0 4px hsl(var(--neon-red) / 0.3)" }} />
                     ))}
                   </div>
                 </div>
               </div>
-
-              {/* Bottom neon line */}
               <div
                 className="absolute bottom-0 left-0 h-px w-0 transition-all duration-700 group-hover:w-full"
-                style={{
-                  background: "linear-gradient(90deg, hsl(var(--neon-red) / 0.5), transparent)",
-                  boxShadow: "0 0 8px hsl(var(--neon-red) / 0.2)",
-                }}
+                style={{ background: "linear-gradient(90deg, hsl(var(--neon-red) / 0.5), transparent)", boxShadow: "0 0 8px hsl(var(--neon-red) / 0.2)" }}
               />
             </motion.div>
           ))}

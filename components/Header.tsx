@@ -95,7 +95,7 @@ export default function Header() {
             <li key={link.href}>
               <a
                 href={link.href}
-                className="group relative font-body text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-300 hover:text-foreground cursor-pointer"
+                className="header-nav-link group relative font-body text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-300 hover:text-foreground cursor-pointer"
               >
                 {t(link.key)}
                 {/* Scanning underline */}
@@ -231,7 +231,7 @@ export default function Header() {
               key={link.href}
               type="button"
               onClick={() => handleNavClick(link.href)}
-              className="group relative flex w-full max-w-[200px] items-center justify-center gap-4 cursor-pointer select-none touch-manipulation min-h-[44px] bg-transparent border-0 text-left"
+              className="group relative flex w-full max-w-[200px] items-center justify-center gap-4 cursor-pointer select-none touch-manipulation min-h-[44px] bg-transparent border-0 text-left active:opacity-80"
               style={{
                 transitionDelay: `${delay}ms`,
                 opacity: isVisible ? 1 : 0,
@@ -239,15 +239,15 @@ export default function Header() {
                 transition: `opacity 0.25s ease-out ${delay}ms, transform 0.25s ease-out ${delay}ms`,
               }}
             >
-              {/* Animated indicator dot */}
-              <span className="h-1 w-1 bg-neon-red/30 transition-all duration-300 group-hover:bg-neon-red group-hover:shadow-[0_0_8px_hsl(var(--neon-red)/0.5)]" />
-              {/* Glowing separator line */}
-              <span className="h-px w-6 bg-neon-red/10 transition-all duration-300 group-hover:w-10 group-hover:bg-neon-red/40" />
-              <span className="font-body text-xl font-light uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-300 group-hover:text-foreground">
+              {/* Animated indicator dot — active for mobile press feedback */}
+              <span className="h-1 w-1 bg-neon-red/30 transition-all duration-300 group-hover:bg-neon-red group-hover:shadow-[0_0_8px_hsl(var(--neon-red)/0.5)] group-active:bg-neon-red group-active:shadow-[0_0_8px_hsl(var(--neon-red)/0.5)]" />
+              {/* Glowing separator line — active for mobile press feedback */}
+              <span className="h-px w-6 bg-neon-red/10 transition-all duration-300 group-hover:w-10 group-hover:bg-neon-red/40 group-active:w-10 group-active:bg-neon-red/40" />
+              <span className="font-body text-xl font-light uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-300 group-hover:text-foreground group-active:text-foreground">
                 {t(link.key)}
               </span>
-              {/* Futuristic label */}
-              <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-neon-red/15 transition-colors duration-300 group-hover:text-neon-red/40">
+              {/* Futuristic label — active for mobile press feedback */}
+              <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-neon-red/15 transition-colors duration-300 group-hover:text-neon-red/40 group-active:text-neon-red/40">
                 {`0${i + 1}`}
               </span>
             </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useScrollSafeTap } from "@/hooks/use-scroll-safe-tap";
 
 interface CategoryCardProps {
   name: string;
@@ -19,14 +20,18 @@ export default function CategoryCard({
   inView,
   onClick,
 }: CategoryCardProps) {
+  const { ref, tapHandlers } = useScrollSafeTap();
+
   return (
     <motion.button
+      ref={ref}
       type="button"
       initial={{ opacity: 0, y: 30 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, delay: index * 0.1 }}
       onClick={onClick}
-      className="tron-edge holo-shimmer group relative w-full bg-card p-8 text-left transition-all duration-500 hover:bg-muted cursor-pointer select-none"
+      className="tron-edge holo-shimmer group relative w-full bg-card p-8 text-left transition-all duration-500 hover:bg-muted cursor-pointer select-none touch-manipulation"
+      {...tapHandlers}
     >
       {/* Red edge glow on hover */}
       <div
@@ -47,7 +52,7 @@ export default function CategoryCard({
         </span>
       </div>
 
-      {/* Corner bracket animations */}
+      {/* Corner brackets on hover */}
       <div className="absolute left-0 top-0 h-5 w-5 border-l border-t border-neon-red/0 transition-all duration-500 group-hover:border-neon-red/40 group-hover:h-6 group-hover:w-6" />
       <div className="absolute right-0 top-0 h-5 w-5 border-r border-t border-neon-red/0 transition-all duration-500 group-hover:border-neon-red/40 group-hover:h-6 group-hover:w-6" />
       <div className="absolute bottom-0 left-0 h-5 w-5 border-l border-b border-neon-red/0 transition-all duration-500 group-hover:border-neon-red/40 group-hover:h-6 group-hover:w-6" />

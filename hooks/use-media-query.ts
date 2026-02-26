@@ -31,3 +31,21 @@ export function useIsMobile() {
 
   return isMobile;
 }
+
+/**
+ * Returns true when the device has no hover capability (touch primary).
+ * Use for mobile-specific interaction alternatives (tap vs hover).
+ */
+export function useHoverNone() {
+  const [hoverNone, setHoverNone] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(hover: none)");
+    const handler = () => setHoverNone(mq.matches);
+    handler();
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  return hoverNone;
+}

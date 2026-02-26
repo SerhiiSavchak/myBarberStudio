@@ -4,6 +4,7 @@ import { useRef, useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import SectionHeading from "./SectionHeading";
+import { useScrollSafeTap } from "@/hooks/use-scroll-safe-tap";
 import { useLocale } from "@/lib/locale-context";
 import type { TranslationKey } from "@/lib/i18n";
 import { useLockBodyScroll, setPendingScrollTo } from "@/hooks/use-lock-body-scroll";
@@ -345,6 +346,61 @@ function BeforeAfterSlider() {
   );
 }
 
+function GalleryItem({
+  img,
+  index,
+  inView,
+  onSelect,
+}: {
+  img: (typeof GALLERY_IMAGES)[0];
+  index: number;
+  inView: boolean;
+  onSelect: () => void;
+}) {
+  const { ref, tapHandlers } = useScrollSafeTap();
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={inView ? { opacity: 1, scale: 1 } : {}}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      onClick={onSelect}
+      className="tron-edge holo-shimmer group relative aspect-square cursor-pointer overflow-hidden bg-card select-none touch-manipulation"
+      {...tapHandlers}
+    >
+      <Image
+        src={img.src}
+        alt={img.alt}
+        fill
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+      />
+      <div className="absolute inset-0 bg-background/0 transition-colors duration-500 group-hover:bg-background/40" />
+      <div className="absolute inset-0 bg-neon-red/0 transition-all duration-500 group-hover:bg-neon-red/[0.04] mix-blend-overlay" />
+
+      <div className="absolute inset-x-0 bottom-0 translate-y-full p-4 transition-transform duration-500 group-hover:translate-y-0">
+        <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-foreground/70">
+          {img.alt}
+        </span>
+      </div>
+
+      <span className="absolute top-3 right-3 font-mono text-[7px] uppercase tracking-[0.3em] text-neon-red/0 transition-all duration-500 group-hover:text-neon-red/30">
+        {img.tag}
+      </span>
+
+      <div className="absolute right-3 top-3 flex h-12 w-12 items-center justify-center rounded border border-neon-red/25 bg-background/70 text-foreground opacity-0 shadow-lg backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 group-hover:scale-105 group-hover:border-neon-red/50">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5 text-neon-red">
+          <path d="M10 2h4v4M6 14H2v-4M14 2L9 7M2 14l5-5" />
+        </svg>
+      </div>
+
+      <div className="absolute left-0 top-0 h-6 w-6 border-l border-t border-neon-red/0 transition-all duration-500 group-hover:border-neon-red/30" />
+      <div className="absolute bottom-0 right-0 h-6 w-6 border-b border-r border-neon-red/0 transition-all duration-500 group-hover:border-neon-red/30" />
+    </motion.div>
+  );
+}
+
 export default function Gallery() {
   const { ref, inView } = useSectionInView();
   const [selectedImage, setSelectedImage] = useState<(typeof GALLERY_IMAGES)[0] | null>(null);
@@ -362,44 +418,13 @@ export default function Gallery() {
 
         <div ref={ref} className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">
           {GALLERY_IMAGES.map((img, i) => (
-            <motion.div
+            <GalleryItem
               key={img.src}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={inView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              onClick={() => setSelectedImage(img)}
-              className="tron-edge holo-shimmer group relative aspect-square cursor-pointer overflow-hidden bg-card select-none"
-            >
-              <Image
-                src={img.src}
-                alt={img.alt}
-                fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
-              />
-              <div className="absolute inset-0 bg-background/0 transition-colors duration-500 group-hover:bg-background/40" />
-              <div className="absolute inset-0 bg-neon-red/0 transition-all duration-500 group-hover:bg-neon-red/[0.04] mix-blend-overlay" />
-
-              <div className="absolute inset-x-0 bottom-0 translate-y-full p-4 transition-transform duration-500 group-hover:translate-y-0">
-                <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-foreground/70">
-                  {img.alt}
-                </span>
-              </div>
-
-              <span className="absolute top-3 right-3 font-mono text-[7px] uppercase tracking-[0.3em] text-neon-red/0 transition-all duration-500 group-hover:text-neon-red/30">
-                {img.tag}
-              </span>
-
-              {/* Expand icon — top right, larger, subtle hover animation */}
-              <div className="absolute right-3 top-3 flex h-12 w-12 items-center justify-center rounded border border-neon-red/25 bg-background/70 text-foreground opacity-0 shadow-lg backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 group-hover:scale-105 group-hover:border-neon-red/50">
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5 text-neon-red">
-                  <path d="M10 2h4v4M6 14H2v-4M14 2L9 7M2 14l5-5" />
-                </svg>
-              </div>
-
-              <div className="absolute left-0 top-0 h-6 w-6 border-l border-t border-neon-red/0 transition-all duration-500 group-hover:border-neon-red/30" />
-              <div className="absolute bottom-0 right-0 h-6 w-6 border-b border-r border-neon-red/0 transition-all duration-500 group-hover:border-neon-red/30" />
-            </motion.div>
+              img={img}
+              index={i}
+              inView={inView}
+              onSelect={() => setSelectedImage(img)}
+            />
           ))}
         </div>
 
