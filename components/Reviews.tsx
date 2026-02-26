@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 import SectionHeading from "./SectionHeading";
 import { useLocale } from "@/lib/locale-context";
 import { useSectionInView } from "@/hooks/use-section-in-view";
@@ -31,12 +31,13 @@ export default function Reviews() {
 
         <div ref={ref} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {REVIEW_KEYS.map((review, i) => (
-            <motion.div
+            <div
               key={review.tag}
-              initial={{ opacity: 0, y: 30 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              className="tron-edge holo-shimmer group relative flex flex-col bg-card p-8 transition-all duration-500 hover:bg-muted"
+              className={cn(
+                "tron-edge holo-shimmer group relative flex flex-col bg-card p-8 transition-all duration-500 hover:bg-muted scroll-reveal",
+                inView && "in-view"
+              )}
+              style={{ transitionDelay: inView ? `${i * 0.1}s` : "0s" }}
             >
               <div
                 className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none"
@@ -68,7 +69,7 @@ export default function Reviews() {
                 className="absolute bottom-0 left-0 h-px w-0 transition-all duration-700 group-hover:w-full"
                 style={{ background: "linear-gradient(90deg, hsl(var(--neon-red) / 0.5), transparent)", boxShadow: "0 0 8px hsl(var(--neon-red) / 0.2)" }}
               />
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

@@ -61,7 +61,7 @@ export default function Hero() {
           muted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
           poster={POSTER_SRC}
           className="absolute inset-0 h-full w-full object-cover scale-110"
         >

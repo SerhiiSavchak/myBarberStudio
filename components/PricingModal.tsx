@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLockBodyScroll } from "@/hooks/use-lock-body-scroll";
 import { BOOKING_URL } from "@/constants/routes";
@@ -25,8 +25,13 @@ export default function PricingModal({
   items,
 }: PricingModalProps) {
   const { t } = useLocale();
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useLockBodyScroll(isOpen);
+
+  useEffect(() => {
+    if (isOpen) closeButtonRef.current?.focus();
+  }, [isOpen]);
 
   const handleEscape = useCallback(
     (e: KeyboardEvent) => {
@@ -61,6 +66,7 @@ export default function PricingModal({
             onClick={onClose}
             onTouchMove={(e) => e.preventDefault()}
             style={{ touchAction: "none" }}
+            aria-hidden="true"
           />
 
           {/* Modal panel — bottom sheet on mobile, centered on desktop */}
@@ -89,6 +95,7 @@ export default function PricingModal({
                 {title}
               </h2>
               <button
+                ref={closeButtonRef}
                 type="button"
                 onClick={onClose}
                 className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-red/50"

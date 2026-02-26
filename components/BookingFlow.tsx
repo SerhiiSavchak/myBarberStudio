@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 import SectionHeading from "./SectionHeading";
 import { useLocale } from "@/lib/locale-context";
 import { BOOKING_URL } from "@/constants/routes";
@@ -27,64 +27,64 @@ export default function BookingFlow() {
         />
 
         <div ref={ref} className="relative">
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={inView ? { scaleX: 1 } : {}}
-            transition={{ duration: 1.2, delay: 0.3 }}
-            className="absolute top-12 left-0 right-0 hidden h-px origin-left md:block"
+          <div
+            className={cn(
+              "absolute top-12 left-0 right-0 hidden h-px origin-left md:block scroll-reveal-scale-x",
+              inView && "in-view"
+            )}
             style={{
               background: "linear-gradient(90deg, hsl(var(--neon-red) / 0.3), hsl(var(--neon-red) / 0.1), hsl(var(--neon-red) / 0.3))",
               boxShadow: "0 0 6px hsl(var(--neon-red) / 0.15)",
+              transitionDelay: inView ? "0.3s" : "0s",
             }}
           />
 
           <div className="grid gap-12 md:grid-cols-3 md:gap-8">
             {STEPS.map((step, i) => (
-              <motion.div
+              <div
                 key={step.number}
-                initial={{ opacity: 0, y: 40 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.7, delay: 0.2 + i * 0.2 }}
-                className="relative"
+                className={cn(
+                  "relative scroll-reveal",
+                  inView && "in-view"
+                )}
+                style={{ transitionDelay: inView ? `${0.2 + i * 0.2}s` : "0s" }}
               >
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={inView ? { scale: 1 } : {}}
-                  transition={{ duration: 0.3, delay: 0.5 + i * 0.2 }}
-                  className="absolute -top-1 left-0 hidden h-3 w-3 md:block"
+                <div
+                  className={cn(
+                    "absolute -top-1 left-0 hidden h-3 w-3 md:block scroll-reveal-scale",
+                    inView && "in-view"
+                  )}
                   style={{
                     background: "hsl(var(--neon-red) / 0.5)",
                     boxShadow: "0 0 10px hsl(var(--neon-red) / 0.4), 0 0 30px hsl(var(--neon-red) / 0.15)",
+                    transitionDelay: inView ? `${0.5 + i * 0.2}s` : "0s",
                   }}
                 />
-
                 <span
                   className="mb-4 block font-display text-5xl font-bold text-neon-red/25 md:text-6xl"
                   style={{ textShadow: "0 0 40px hsl(var(--neon-red) / 0.2), 0 0 80px hsl(var(--neon-red) / 0.1)" }}
                 >
                   {step.number}
                 </span>
-
                 <span className="mb-2 block font-mono text-[7px] uppercase tracking-[0.5em] text-neon-cyan/25">
                   {step.tag}
                 </span>
-
                 <h3 className="mb-3 font-body text-xl font-semibold uppercase tracking-wide text-foreground">
                   {step.title}
                 </h3>
-
                 <p className="text-sm leading-relaxed text-muted-foreground">
                   {step.description}
                 </p>
-              </motion.div>
+              </div>
             ))}
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.9 }}
-            className="mt-16"
+          <div
+            className={cn(
+              "mt-16 scroll-reveal",
+              inView && "in-view"
+            )}
+            style={{ transitionDelay: inView ? "0.9s" : "0s" }}
           >
             <a
               href={BOOKING_URL}
@@ -97,7 +97,7 @@ export default function BookingFlow() {
                 <path d="M3 8h10m0 0l-3-3m3 3l-3 3" />
               </svg>
             </a>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

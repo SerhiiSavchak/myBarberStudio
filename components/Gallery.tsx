@@ -3,6 +3,7 @@
 import { useRef, useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 import SectionHeading from "./SectionHeading";
 import { useScrollSafeTap } from "@/hooks/use-scroll-safe-tap";
 import { useLocale } from "@/lib/locale-context";
@@ -360,13 +361,14 @@ function GalleryItem({
   const { ref, tapHandlers } = useScrollSafeTap();
 
   return (
-    <motion.div
+    <div
       ref={ref}
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={inView ? { opacity: 1, scale: 1 } : {}}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
       onClick={onSelect}
-      className="tron-edge holo-shimmer group relative aspect-square cursor-pointer overflow-hidden bg-card select-none touch-manipulation"
+      className={cn(
+        "tron-edge holo-shimmer group relative aspect-square cursor-pointer overflow-hidden bg-card select-none touch-manipulation scroll-reveal-scale",
+        inView && "in-view"
+      )}
+      style={{ transitionDelay: inView ? `${index * 0.1}s` : "0s" }}
       {...tapHandlers}
     >
       <Image
@@ -397,7 +399,7 @@ function GalleryItem({
 
       <div className="absolute left-0 top-0 h-6 w-6 border-l border-t border-neon-red/0 transition-all duration-500 group-hover:border-neon-red/30" />
       <div className="absolute bottom-0 right-0 h-6 w-6 border-b border-r border-neon-red/0 transition-all duration-500 group-hover:border-neon-red/30" />
-    </motion.div>
+    </div>
   );
 }
 

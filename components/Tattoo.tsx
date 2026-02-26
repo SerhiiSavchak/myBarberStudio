@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { motion, useTransform } from "framer-motion";
+import { cn } from "@/lib/utils";
 import { useScrollSuppressed } from "@/hooks/use-scroll-suppressed";
 import SectionHeading from "./SectionHeading";
 import { useLocale } from "@/lib/locale-context";
@@ -95,11 +96,12 @@ export default function Tattoo() {
           </div>
 
           {/* Content */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="flex flex-col gap-6"
+          <div
+            className={cn(
+              "flex flex-col gap-6 scroll-reveal",
+              inView && "in-view"
+            )}
+            style={{ transitionDelay: inView ? "0.2s" : "0s" }}
           >
             {/* Intro text */}
             <p className="text-base leading-relaxed text-muted-foreground">
@@ -109,12 +111,13 @@ export default function Tattoo() {
             {/* Bullet points */}
             <ul className="flex flex-col gap-3">
               {BULLET_KEYS.map((key, i) => (
-                <motion.li
+                <li
                   key={key}
-                  initial={{ opacity: 0, x: -16 }}
-                  animate={inView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.4, delay: 0.3 + i * 0.1 }}
-                  className="flex items-center gap-3"
+                  className={cn(
+                    "flex items-center gap-3 scroll-reveal-x",
+                    inView && "in-view"
+                  )}
+                  style={{ transitionDelay: inView ? `${0.3 + i * 0.1}s` : "0s" }}
                 >
                   <span
                     className="h-1 w-1 flex-shrink-0 bg-neon-red/50"
@@ -125,17 +128,18 @@ export default function Tattoo() {
                   <span className="font-body text-sm text-foreground/80">
                     {t(key)}
                   </span>
-                </motion.li>
+                </li>
               ))}
             </ul>
 
             {/* Neon divider */}
-            <motion.div
-              initial={{ scaleX: 0 }}
-              animate={inView ? { scaleX: 1 } : {}}
-              transition={{ duration: 1, delay: 0.6 }}
-              className="h-px w-32 origin-left"
+            <div
+              className={cn(
+                "h-px w-32 origin-left scroll-reveal-scale-x",
+                inView && "in-view"
+              )}
               style={{
+                transitionDelay: inView ? "0.6s" : "0s",
                 background:
                   "linear-gradient(90deg, hsl(var(--neon-red) / 0.4), transparent)",
                 boxShadow: "0 0 8px hsl(var(--neon-red) / 0.2)",
@@ -151,7 +155,7 @@ export default function Tattoo() {
             >
               {t("tattoo.bookConsult")}
             </a>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

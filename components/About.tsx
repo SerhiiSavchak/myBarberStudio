@@ -2,10 +2,13 @@
 
 import { useRef, useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { motion, useInView, useTransform } from "framer-motion";
+import { motion, useTransform } from "framer-motion";
 import { useScrollSuppressed } from "@/hooks/use-scroll-suppressed";
 import SectionHeading from "./SectionHeading";
 import { useLocale } from "@/lib/locale-context";
+import { useSectionInView } from "@/hooks/use-section-in-view";
+import { useInView } from "@/hooks/use-in-view";
+import { cn } from "@/lib/utils";
 
 const scrambleChars = "0123456789#$%&@!";
 
@@ -110,11 +113,13 @@ function CyberCounter({
 }
 
 export default function About() {
-  const ref = useRef(null);
-  const statsRef = useRef(null);
+  const { ref, inView } = useSectionInView();
+  const { ref: statsRef, inView: statsInView } = useInView({
+    once: true,
+    amount: 0.15,
+    margin: "80px 0px 0px 0px",
+  });
   const sectionRef = useRef(null);
-  const inView = useInView(ref, { once: true, amount: 0.25, margin: "-50px 0px" });
-  const statsInView = useInView(statsRef, { once: true, amount: 0.15, margin: "80px 0px 0px 0px" });
   const [reducedMotion, setReducedMotion] = useState(false);
   const { t } = useLocale();
 
@@ -151,11 +156,13 @@ export default function About() {
 
         <div ref={ref} className="grid items-center gap-12 md:grid-cols-2 md:gap-16">
           {/* Image with parallax + TRON frame */}
-          <motion.div
-            initial={{ opacity: 0, clipPath: "inset(0 100% 0 0)" }}
-            animate={inView ? { opacity: 1, clipPath: "inset(0 0% 0 0)" } : {}}
-            transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
+          <div
             className="relative aspect-[4/5] overflow-hidden"
+            style={{
+              clipPath: inView ? "inset(0 0% 0 0)" : "inset(0 100% 0 0)",
+              opacity: inView ? 1 : 0,
+              transition: "clip-path 1s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 1s cubic-bezier(0.25, 0.1, 0.25, 1)",
+            }}
           >
             <motion.div className="absolute inset-0" style={{ y: imageY }}>
               <Image
@@ -184,14 +191,15 @@ export default function About() {
             <span className="absolute bottom-6 left-6 font-mono text-[8px] uppercase tracking-[0.4em] text-neon-red/25">
               INTERIOR // LVIV-07
             </span>
-          </motion.div>
+          </div>
 
           {/* Text */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="flex flex-col gap-6"
+          <div
+            className={cn(
+              "flex flex-col gap-6 scroll-reveal",
+              inView && "in-view"
+            )}
+            style={{ transitionDelay: inView ? "0.3s" : "0s" }}
           >
             <p className="text-base leading-relaxed text-muted-foreground">
               {t("about.text1")}
@@ -203,12 +211,13 @@ export default function About() {
             {/* Stats with animated cyberpunk counters — trigger when 45% visible */}
             <div ref={statsRef} className="mt-4 grid grid-cols-3 gap-6">
               {stats.map((stat, i) => (
-                <motion.div
+                <div
                   key={stat.label}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={inView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.5, delay: 0.5 + i * 0.15 }}
-                  className="tron-edge relative p-3 select-none"
+                  className={cn(
+                    "tron-edge relative p-3 select-none scroll-reveal",
+                    statsInView && "in-view"
+                  )}
+                  style={{ transitionDelay: statsInView ? `${0.3 + i * 0.15}s` : "0s" }}
                 >
                   <CyberCounter
                     target={stat.target}
@@ -225,21 +234,22 @@ export default function About() {
                     className="absolute bottom-0 left-0 h-px w-full"
                     style={{ background: "linear-gradient(90deg, hsl(var(--neon-red) / 0.3), transparent)" }}
                   />
-                </motion.div>
+                </div>
               ))}
             </div>
 
-            <motion.div
-              initial={{ scaleX: 0 }}
-              animate={inView ? { scaleX: 1 } : {}}
-              transition={{ duration: 1, delay: 0.8 }}
-              className="mt-2 h-px w-32 origin-left"
+            <div
+              className={cn(
+                "mt-2 h-px w-32 origin-left scroll-reveal-scale-x",
+                inView && "in-view"
+              )}
               style={{
                 background: "linear-gradient(90deg, hsl(var(--neon-red) / 0.4), transparent)",
                 boxShadow: "0 0 8px hsl(var(--neon-red) / 0.2)",
+                transitionDelay: inView ? "0.8s" : "0s",
               }}
             />
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

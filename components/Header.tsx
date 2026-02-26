@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
-import { cn } from "@/lib/utils";
+import { cn, throttle } from "@/lib/utils";
 import { useLocale } from "@/lib/locale-context";
 import { LOCALES } from "@/lib/i18n";
 import { BOOKING_URL, NAV_LINKS } from "@/constants/routes";
@@ -28,7 +28,9 @@ export default function Header() {
   }, [mobileOpen, isAnimatingOut]);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const update = () => setScrolled(window.scrollY > 40);
+    const onScroll = throttle(update, 100);
+    update();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);

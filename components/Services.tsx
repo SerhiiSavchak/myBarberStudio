@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 import SectionHeading from "./SectionHeading";
 import CategoryCard from "./CategoryCard";
 import PricingModal from "./PricingModal";
@@ -130,11 +130,12 @@ export default function Services() {
         </div>
 
         {/* Notes */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-12 flex flex-col items-center gap-3 text-center"
+        <div
+          className={cn(
+            "mt-12 flex flex-col items-center gap-3 text-center scroll-reveal",
+            inView && "in-view"
+          )}
+          style={{ transitionDelay: inView ? "0.4s" : "0s" }}
         >
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/60">
             {t("pricing.note")}
@@ -145,7 +146,7 @@ export default function Services() {
           <p className="max-w-2xl font-mono text-[10px] uppercase tracking-[0.3em] leading-relaxed text-muted-foreground/60">
             {t("pricing.noteSpa")}
           </p>
-        </motion.div>
+        </div>
       </div>
 
       {/* Modal with price list */}

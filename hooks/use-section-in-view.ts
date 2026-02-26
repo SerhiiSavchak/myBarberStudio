@@ -1,9 +1,8 @@
 "use client";
 
-import { useRef } from "react";
-import { useInView } from "framer-motion";
+import { useInView } from "./use-in-view";
 
-/** Shared options for section reveal animations — single observer pattern via framer-motion */
+/** Shared options for section reveal animations — single observer pattern */
 const SECTION_IN_VIEW_OPTIONS = {
   once: true,
   amount: 0.25,
@@ -11,7 +10,5 @@ const SECTION_IN_VIEW_OPTIONS = {
 } as const;
 
 export function useSectionInView() {
-  const ref = useRef(null);
-  const inView = useInView(ref, SECTION_IN_VIEW_OPTIONS);
-  return { ref, inView };
+  return useInView(SECTION_IN_VIEW_OPTIONS);
 }

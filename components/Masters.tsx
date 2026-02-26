@@ -1,13 +1,15 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import SectionHeading from "./SectionHeading";
 import { useLocale } from "@/lib/locale-context";
 import { useIsMobile } from "@/hooks/use-media-query";
 import { useScrollSafeTap } from "@/hooks/use-scroll-safe-tap";
 import { SECTION_IDS } from "@/constants/routes";
+import { useSectionInView } from "@/hooks/use-section-in-view";
+import { cn } from "@/lib/utils";
 
 /** Minimal dark blur placeholder — prevents flash when image loads (matches card bg) */
 const MASTER_IMAGE_BLUR =
@@ -35,17 +37,17 @@ function MasterCard({
   const { ref, tapHandlers } = useScrollSafeTap();
 
   return (
-    <motion.div
+    <div
       ref={ref}
-      initial={{ opacity: 0, y: 30 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay: index * 0.12 }}
       onClick={onToggle}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       data-active={isOpen ? "true" : undefined}
-      className="group relative cursor-pointer overflow-hidden bg-card transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] md:min-h-[520px] select-none touch-manipulation"
-      style={{ flex: isOpen ? 3 : 1 }}
+      className={cn(
+        "group relative cursor-pointer overflow-hidden bg-card transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] md:min-h-[520px] select-none touch-manipulation scroll-reveal",
+        inView && "in-view"
+      )}
+      style={{ flex: isOpen ? 3 : 1, transitionDelay: inView ? `${index * 0.12}s` : "0s" }}
       {...tapHandlers}
     >
       <div className="masters-image-wrap relative isolate h-64 overflow-hidden bg-card md:absolute md:inset-0 md:h-auto">
@@ -93,13 +95,12 @@ function MasterCard({
         </AnimatePresence>
       </div>
       <div className="absolute bottom-0 left-0 h-px w-0 transition-all duration-700 group-hover:w-full group-data-[active=true]:w-full" style={{ background: "linear-gradient(90deg, hsl(var(--neon-red) / 0.6), transparent)", boxShadow: "0 0 8px hsl(var(--neon-red) / 0.3)" }} />
-    </motion.div>
+    </div>
   );
 }
 
 export default function Masters() {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.25, margin: "-50px 0px" });
+  const { ref, inView } = useSectionInView();
   const [expanded, setExpanded] = useState<number | null>(null);
   const [hoveredDesktop, setHoveredDesktop] = useState<number | null>(null);
   const isMobile = useIsMobile();

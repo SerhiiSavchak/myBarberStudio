@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 import SectionHeading from "./SectionHeading";
 import { useLocale } from "@/lib/locale-context";
 import { BOOKING_URL, SECTION_IDS } from "@/constants/routes";
@@ -102,29 +102,27 @@ function InfoBlock({
   const [hovered, setHovered] = useState(false);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -30 }}
-      animate={inView ? { opacity: 1, x: 0 } : {}}
-      transition={{ duration: 0.6, delay }}
+    <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="contacts-info-block group relative overflow-hidden border border-neon-red/10 bg-card p-5 transition-all duration-500 hover:border-neon-red/25 hover:bg-muted"
+      className={cn(
+        "contacts-info-block group relative overflow-hidden border border-neon-red/10 bg-card p-5 transition-all duration-500 hover:border-neon-red/25 hover:bg-muted scroll-reveal-x",
+        inView && "in-view"
+      )}
+      style={{ transitionDelay: inView ? `${delay}s` : "0s" }}
     >
       <span className="mb-3 block font-mono text-[7px] uppercase tracking-[0.6em] text-neon-cyan/30">
         {label}
       </span>
       {children}
       {hovered && (
-        <motion.div
-          className="absolute left-0 top-0 h-full w-8"
+        <div
+          className="contacts-info-shimmer absolute left-0 top-0 h-full w-8"
           style={{ background: "linear-gradient(90deg, transparent, hsl(var(--neon-red) / 0.08), transparent)" }}
-          initial={{ x: "-100%" }}
-          animate={{ x: "calc(100% + 400px)" }}
-          transition={{ duration: 0.6 }}
         />
       )}
       <CornerBrackets />
-    </motion.div>
+    </div>
   );
 }
 
@@ -209,17 +207,18 @@ export default function Contacts() {
           description={t("contacts.description")}
         />
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="mb-10 flex items-center gap-3"
+        <div
+          className={cn(
+            "mb-10 flex items-center gap-3 scroll-reveal",
+            inView && "in-view"
+          )}
+          style={{ transitionDelay: inView ? "0.2s" : "0s" }}
         >
           <span className="h-px w-6 bg-neon-cyan/20" />
           <span className="font-mono text-[7px] uppercase tracking-[0.7em] text-neon-cyan/25">
             District 07 // Access Point // Barber Hub
           </span>
-        </motion.div>
+        </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
           {/* LEFT COLUMN */}
@@ -264,11 +263,12 @@ export default function Contacts() {
               </div>
             </InfoBlock>
 
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={inView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="contacts-info-block relative border border-neon-red/10 bg-card p-5"
+            <div
+              className={cn(
+                "contacts-info-block relative border border-neon-red/10 bg-card p-5 scroll-reveal-x",
+                inView && "in-view"
+              )}
+              style={{ transitionDelay: inView ? "0.4s" : "0s" }}
             >
               <span className="mb-4 block font-mono text-[7px] uppercase tracking-[0.6em] text-neon-cyan/30">Network Links</span>
               <div className="flex items-center gap-3">
@@ -287,15 +287,16 @@ export default function Contacts() {
                 ))}
               </div>
               <CornerBrackets />
-            </motion.div>
+            </div>
           </div>
 
           {/* RIGHT COLUMN — Map */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="relative flex flex-col"
+          <div
+            className={cn(
+              "relative flex flex-col scroll-reveal",
+              inView && "in-view"
+            )}
+            style={{ transitionDelay: inView ? "0.3s" : "0s" }}
           >
             <div className="contacts-map-block relative flex-1 overflow-hidden border border-neon-red/15 bg-card">
               <div className="flex items-center justify-between border-b border-neon-red/10 px-4 py-2">
@@ -316,15 +317,16 @@ export default function Contacts() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.6 }}
-          className="mt-12 flex flex-col items-center"
+        <div
+          className={cn(
+            "mt-12 flex flex-col items-center scroll-reveal",
+            inView && "in-view"
+          )}
+          style={{ transitionDelay: inView ? "0.6s" : "0s" }}
         >
           <div className="mb-8 h-px w-full max-w-md" style={{ background: "linear-gradient(90deg, transparent, hsl(var(--neon-red) / 0.2), transparent)" }} />
           <div className="relative px-8 py-6 text-center">
@@ -343,7 +345,7 @@ export default function Contacts() {
             <p className="mt-3 font-mono text-[7px] uppercase tracking-[0.5em] text-muted-foreground/30">Booking System // Online</p>
             <CornerBrackets />
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
