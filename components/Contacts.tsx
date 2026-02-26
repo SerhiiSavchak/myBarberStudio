@@ -130,6 +130,7 @@ function InfoBlock({
 
 function LazyMap() {
   const [shouldLoad, setShouldLoad] = useState(false);
+  const [mapReady, setMapReady] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -147,7 +148,15 @@ function LazyMap() {
 
   return (
     <div ref={mapRef} className="relative aspect-square w-full md:aspect-[4/3] lg:aspect-auto lg:h-full lg:min-h-[420px]">
-      {shouldLoad ? (
+      {/* Skeleton before load — same size, no layout shift */}
+      {!shouldLoad && (
+        <div
+          className="map-skeleton absolute inset-0"
+          aria-hidden
+        />
+      )}
+      {/* iframe when in view */}
+      {shouldLoad && (
         <iframe
           title="M&Y Barber Studio Location"
           src={CONTACT_INFO.mapsEmbedUrl}
@@ -156,13 +165,15 @@ function LazyMap() {
           allowFullScreen
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
+          onLoad={() => setMapReady(true)}
         />
-      ) : (
-        <div className="absolute inset-0 flex items-center justify-center bg-muted/30">
-          <span className="font-mono text-[7px] uppercase tracking-[0.5em] text-muted-foreground/50">
-            Loading map...
-          </span>
-        </div>
+      )}
+      {/* Skeleton overlay while map loads — removed instantly on load */}
+      {shouldLoad && !mapReady && (
+        <div
+          className="map-skeleton pointer-events-none absolute inset-0 z-[1]"
+          aria-hidden
+        />
       )}
       <div className="pointer-events-none absolute inset-0 z-[2] mix-blend-multiply" style={{ background: "linear-gradient(180deg, hsl(0 0% 2% / 0.3) 0%, hsl(0 0% 2% / 0.15) 50%, hsl(0 0% 2% / 0.4) 100%)" }} />
       <div className="pointer-events-none absolute inset-0 z-[3]" style={{ backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 3px, hsl(0 0% 0% / 0.04) 3px, hsl(0 0% 0% / 0.04) 6px)" }} />

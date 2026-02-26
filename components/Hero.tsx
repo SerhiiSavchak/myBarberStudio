@@ -103,8 +103,8 @@ export default function Hero() {
             </span>
           </div>
 
-          {/* Title */}
-          <div className="mb-2 overflow-hidden">
+          {/* Title — overflow-visible on mobile so entrance animation isn't clipped */}
+          <div className="mb-2 overflow-visible md:overflow-hidden">
             <h1
               className="hero-entrance-line1 font-display text-[clamp(1.9rem,min(6.5vw,5rem),7rem)] font-bold uppercase leading-[1.2] tracking-[0.02em] text-foreground break-words"
               style={{ textWrap: "balance", overflowWrap: "anywhere" }}
@@ -112,7 +112,7 @@ export default function Hero() {
               {t("hero.line1")}
             </h1>
           </div>
-          <div className="mb-2 overflow-hidden">
+          <div className="mb-2 overflow-visible md:overflow-hidden">
             <h1
               className="hero-entrance-line2 font-display text-[clamp(1.9rem,min(6.5vw,5rem),7rem)] font-bold uppercase leading-[1.2] tracking-[0.02em] text-foreground/60 hero-subtitle-line break-words"
               style={{ overflowWrap: "anywhere" }}
@@ -120,7 +120,7 @@ export default function Hero() {
               {t("hero.line2")}
             </h1>
           </div>
-          <div className="mb-6 md:mb-8 overflow-hidden">
+          <div className="mb-6 md:mb-8 overflow-visible md:overflow-hidden">
             <h1
               className="hero-entrance-line3 neon-glow-red font-display text-[clamp(1.9rem,min(6.5vw,5rem),7rem)] font-bold uppercase leading-[1.2] tracking-[0.02em] text-neon-red break-words"
               style={{ overflowWrap: "anywhere" }}
@@ -147,7 +147,7 @@ export default function Hero() {
           </p>
 
           {/* CTAs */}
-          <div className="hero-entrance-ctas flex flex-col gap-4 sm:flex-row sm:items-center">
+          <div className="hero-entrance-ctas flex flex-col gap-4 sm:flex-row sm:items-center md:gap-6">
             <a
               href={BOOKING_URL}
               target="_blank"

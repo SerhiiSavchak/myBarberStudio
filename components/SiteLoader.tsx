@@ -1,35 +1,50 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const BOOT_DURATION = 2800;
+/** Minimum loader display time — avoids flash, feels intentional */
+const MIN_DURATION_MS = 800;
+/** Exit fade duration */
+const EXIT_DURATION = 0.4;
 
+/**
+ * Readiness detection:
+ * - document.readyState === "complete" — DOM + all subresources (images, fonts, scripts) loaded
+ * - window "load" event — fires when readyState becomes "complete"
+ * Loader hides as soon as page is ready, but never before MIN_DURATION_MS.
+ */
 export default function SiteLoader() {
   const [visible, setVisible] = useState(true);
   const [phase, setPhase] = useState(0);
+  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useEffect(() => {
-    const timers = [
-      setTimeout(() => setPhase(1), 300),
-      setTimeout(() => setPhase(2), 900),
-      setTimeout(() => setPhase(3), 1600),
-      setTimeout(() => setPhase(4), 2200),
+    const start = performance.now();
+
+    // Phases — full sequence ~700ms
+    timersRef.current = [
+      setTimeout(() => setPhase(1), 100),
+      setTimeout(() => setPhase(2), 250),
+      setTimeout(() => setPhase(3), 450),
+      setTimeout(() => setPhase(4), 600),
     ];
 
-    const start = performance.now();
-    const hide = () => {
+    const scheduleHide = () => {
       const elapsed = performance.now() - start;
-      const remaining = Math.max(0, BOOT_DURATION - elapsed);
-      timers.push(setTimeout(() => setVisible(false), remaining));
+      const remaining = Math.max(0, MIN_DURATION_MS - elapsed);
+      timersRef.current.push(setTimeout(() => setVisible(false), remaining));
     };
 
-    if (document.readyState === "complete") hide();
-    else window.addEventListener("load", hide);
+    if (document.readyState === "complete") {
+      scheduleHide();
+    } else {
+      window.addEventListener("load", scheduleHide);
+    }
 
     return () => {
-      window.removeEventListener("load", hide);
-      timers.forEach(clearTimeout);
+      window.removeEventListener("load", scheduleHide);
+      timersRef.current.forEach(clearTimeout);
     };
   }, []);
 
@@ -39,7 +54,7 @@ export default function SiteLoader() {
         <motion.div
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.5, ease: "easeInOut" }}
+          transition={{ duration: EXIT_DURATION, ease: "easeOut" }}
           className="fixed inset-0 z-[9999] flex items-center justify-center bg-background cyber-grid"
         >
           {/* Faint red grid bg */}
@@ -73,7 +88,7 @@ export default function SiteLoader() {
                   strokeLinejoin="round"
                   initial={{ pathLength: 0, opacity: 0 }}
                   animate={{ pathLength: phase >= 1 ? 1 : 0, opacity: phase >= 1 ? 1 : 0 }}
-                  transition={{ duration: 1.2, ease: "easeInOut" }}
+                  transition={{ duration: 0.45, ease: "easeOut" }}
                   style={{
                     filter: "drop-shadow(0 0 8px hsl(var(--neon-red) / 0.5))",
                   }}
@@ -85,7 +100,7 @@ export default function SiteLoader() {
                 className="absolute inset-0 flex items-center justify-center"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: phase >= 2 ? [0, 0.4, 0.15, 0.3, 0.1] : 0 }}
-                transition={{ duration: 2, ease: "easeInOut" }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
               >
                 <div
                   className="h-16 w-16"
@@ -112,7 +127,7 @@ export default function SiteLoader() {
               className="font-mono text-[9px] uppercase tracking-[0.6em] text-foreground/40"
               initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: phase >= 2 ? 1 : 0, y: phase >= 2 ? 0 : 5 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.25 }}
             >
               Barber Studio
             </motion.span>
@@ -133,7 +148,7 @@ export default function SiteLoader() {
                   className="h-full bg-neon-red/60"
                   initial={{ width: "0%" }}
                   animate={{ width: phase >= 3 ? "100%" : "0%" }}
-                  transition={{ duration: 1, ease: "easeInOut" }}
+                  transition={{ duration: 0.35, ease: "easeOut" }}
                   style={{ boxShadow: "0 0 8px hsl(var(--neon-red) / 0.4)" }}
                 />
               </div>
@@ -148,7 +163,7 @@ export default function SiteLoader() {
             }}
             initial={{ top: "20%" }}
             animate={{ top: phase >= 2 ? "80%" : "20%" }}
-            transition={{ duration: 1.2, delay: 0.3, ease: "easeInOut" }}
+            transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
           />
 
           {/* Secondary cyan scanline */}
@@ -159,7 +174,7 @@ export default function SiteLoader() {
             }}
             initial={{ top: "70%" }}
             animate={{ top: phase >= 3 ? "30%" : "70%" }}
-            transition={{ duration: 0.8, delay: 0.1, ease: "easeInOut" }}
+            transition={{ duration: 0.35, delay: 0.05, ease: "easeOut" }}
           />
 
           {/* Glitch flash */}
