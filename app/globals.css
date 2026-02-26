@@ -601,6 +601,11 @@ button:focus-visible {
   outline-offset: 2px;
 }
 
+/* Masters: image container — containment prevents layout reflow during hydration/image load */
+.masters-image-wrap {
+  contain: layout style paint;
+}
+
 /* Masters: light theme — stronger overlay for readable text on any image */
 .light .masters-card-overlay {
   background: linear-gradient(to top, hsl(0 0% 100% / 0.95) 0%, hsl(0 0% 100% / 0.7) 35%, transparent 70%) !important;

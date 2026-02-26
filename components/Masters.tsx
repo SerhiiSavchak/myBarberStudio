@@ -8,6 +8,10 @@ import { useLocale } from "@/lib/locale-context";
 import { useIsMobile } from "@/hooks/use-media-query";
 import { SECTION_IDS } from "@/constants/routes";
 
+/** Minimal dark blur placeholder — prevents flash when image loads (matches card bg) */
+const MASTER_IMAGE_BLUR =
+  "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8AkwA/2Q==";
+
 export default function Masters() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.25, margin: "-50px 0px" });
@@ -78,17 +82,23 @@ export default function Masters() {
                 className="group relative cursor-pointer overflow-hidden bg-card transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] md:min-h-[520px] select-none"
                 style={{ flex: isOpen ? 3 : 1 }}
               >
-                {/* Image */}
-                <div className="relative h-64 overflow-hidden md:absolute md:inset-0 md:h-auto">
+                {/* Image — isolate + bg-card prevents repaint flash; blur placeholder avoids image-load glare */}
+                <div className="masters-image-wrap relative isolate h-64 overflow-hidden bg-card md:absolute md:inset-0 md:h-auto">
                   <Image
                     src={master.image}
                     alt={`${master.name} - ${master.title}`}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
+                    placeholder="blur"
+                    blurDataURL={MASTER_IMAGE_BLUR}
                     className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                   />
                   <div className="masters-card-overlay absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent md:from-card md:via-card/30 md:to-card/10" />
-                  <div className="absolute inset-0 bg-neon-red/0 transition-all duration-500 group-hover:bg-neon-red/[0.04] mix-blend-overlay" />
+                  {/* Blend only on hover — avoids composite flash when image loads */}
+                  <div
+                    className="absolute inset-0 bg-neon-red/[0.04] opacity-0 mix-blend-overlay transition-opacity duration-500 group-hover:opacity-100"
+                    aria-hidden
+                  />
                 </div>
 
                 {/* TRON edge frame */}
