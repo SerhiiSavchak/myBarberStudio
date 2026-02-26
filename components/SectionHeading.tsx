@@ -30,28 +30,17 @@ export default function SectionHeading({ tag, title, description, id }: SectionH
         <span className={cn("h-1 w-1 bg-neon-red/40", inView && "animate-pulse-red")} />
       </div>
 
-      <div className="relative overflow-visible">
-        <h2
-          className={cn(
-            "font-display text-[clamp(2rem,5vw,4rem)] font-bold uppercase leading-[1.2] tracking-[0.03em] text-foreground scroll-reveal",
-            inViewClass
-          )}
-          style={{ textWrap: "balance", transitionDelay: inView ? "0.15s" : "0s" }}
-        >
-          <span className="glitch-heading" data-text={title}>
-            {title}
-          </span>
-        </h2>
-        <div
-          className="absolute left-0 right-0 h-[2px] bg-neon-red/30 transition-all duration-[0.6s]"
-          style={{
-            boxShadow: "0 0 10px hsl(var(--neon-red) / 0.3)",
-            top: inView ? "100%" : "0",
-            opacity: inView ? 1 : 0,
-            transitionDelay: inView ? "0.3s" : "0s",
-          }}
-        />
-      </div>
+      <h2
+        className={cn(
+          "font-display text-[clamp(2rem,5vw,4rem)] font-bold uppercase leading-[1.2] tracking-[0.03em] text-foreground scroll-reveal",
+          inViewClass
+        )}
+        style={{ textWrap: "balance", transitionDelay: inView ? "0.15s" : "0s" }}
+      >
+        <span className="glitch-heading" data-text={title}>
+          {title}
+        </span>
+      </h2>
 
       {description && (
         <p
