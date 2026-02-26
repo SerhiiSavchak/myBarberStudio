@@ -19,8 +19,9 @@ export default function Hero() {
     offset: ["start start", "end start"],
   });
 
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
-  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
+  /* Parallax: video 50%, content 30% — background moves slower on scroll */
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
   const overlayOpacity = useTransform(scrollYProgress, [0, 0.5], [0.55, 0.95]);
 
   useEffect(() => {
@@ -48,8 +49,12 @@ export default function Hero() {
       id="hero"
       className="grain vignette scanlines relative flex min-h-[100dvh] min-h-[100svh] items-end overflow-hidden pb-28 pt-6 md:items-center md:pb-0 md:pt-0"
     >
-      {/* Video Background with parallax */}
-      <motion.div className="absolute inset-0 z-0" style={{ y: bgY }}>
+      {/* Video Background — CSS fade in, then parallax on scroll */}
+      <motion.div
+        data-hero-video
+        className="hero-entrance-video absolute inset-0 z-0"
+        style={{ y: bgY }}
+      >
         <video
           ref={videoRef}
           autoPlay
@@ -85,12 +90,7 @@ export default function Hero() {
       >
         <div className="hero-content-block relative max-w-3xl w-full min-w-0">
           {/* District tag */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="mb-6 md:mb-8 flex items-center gap-3"
-          >
+          <div className="hero-entrance-tag mb-6 md:mb-8 flex items-center gap-3">
             <span
               className="block h-px w-12"
               style={{
@@ -101,73 +101,53 @@ export default function Hero() {
             <span className="hero-tag font-mono text-[8px] uppercase tracking-[0.5em] text-neon-red/50">
               {t("hero.tag")}
             </span>
-          </motion.div>
+          </div>
 
-          {/* Title — smaller on mobile, fits 390/430px */}
+          {/* Title */}
           <div className="mb-2 overflow-hidden">
-            <motion.h1
-              initial={{ y: "110%" }}
-              animate={{ y: 0 }}
-              transition={{ duration: 1, delay: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-              className="font-display text-[clamp(1.9rem,min(6.5vw,5rem),7rem)] font-bold uppercase leading-[1.2] tracking-[0.02em] text-foreground break-words"
+            <h1
+              className="hero-entrance-line1 font-display text-[clamp(1.9rem,min(6.5vw,5rem),7rem)] font-bold uppercase leading-[1.2] tracking-[0.02em] text-foreground break-words"
               style={{ textWrap: "balance", overflowWrap: "anywhere" }}
             >
               {t("hero.line1")}
-            </motion.h1>
+            </h1>
           </div>
           <div className="mb-2 overflow-hidden">
-            <motion.h1
-              initial={{ y: "110%" }}
-              animate={{ y: 0 }}
-              transition={{ duration: 1, delay: 0.55, ease: [0.25, 0.1, 0.25, 1] }}
-              className="font-display text-[clamp(1.9rem,min(6.5vw,5rem),7rem)] font-bold uppercase leading-[1.2] tracking-[0.02em] text-foreground/60 hero-subtitle-line break-words"
+            <h1
+              className="hero-entrance-line2 font-display text-[clamp(1.9rem,min(6.5vw,5rem),7rem)] font-bold uppercase leading-[1.2] tracking-[0.02em] text-foreground/60 hero-subtitle-line break-words"
               style={{ overflowWrap: "anywhere" }}
             >
               {t("hero.line2")}
-            </motion.h1>
+            </h1>
           </div>
           <div className="mb-6 md:mb-8 overflow-hidden">
-            <motion.h1
-              initial={{ y: "110%" }}
-              animate={{ y: 0 }}
-              transition={{ duration: 1, delay: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
-              className="neon-glow-red font-display text-[clamp(1.9rem,min(6.5vw,5rem),7rem)] font-bold uppercase leading-[1.2] tracking-[0.02em] text-neon-red break-words"
+            <h1
+              className="hero-entrance-line3 neon-glow-red font-display text-[clamp(1.9rem,min(6.5vw,5rem),7rem)] font-bold uppercase leading-[1.2] tracking-[0.02em] text-neon-red break-words"
               style={{ overflowWrap: "anywhere" }}
             >
               {t("hero.line3")}
-            </motion.h1>
+            </h1>
           </div>
 
-          {/* Neon underline animation below title */}
-          <motion.div
-            initial={{ scaleX: 0, opacity: 0 }}
-            animate={{ scaleX: 1, opacity: 1 }}
-            transition={{ duration: 1.2, delay: 0.9, ease: "easeOut" }}
-            className="mb-6 md:mb-8 h-[2px] w-48 origin-left md:w-64"
+          {/* Neon underline */}
+          <div
+            className="hero-entrance-underline mb-6 md:mb-8 h-[2px] w-48 md:w-64"
             style={{
               background: "linear-gradient(90deg, hsl(var(--neon-red)), hsl(var(--neon-red) / 0.2), transparent)",
               boxShadow: "0 0 15px hsl(var(--neon-red) / 0.4), 0 0 40px hsl(var(--neon-red) / 0.15)",
             }}
           />
 
-          {/* Subtitle — improved contrast on video background */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1 }}
-            className="hero-subtitle mb-8 md:mb-10 max-w-md font-body text-[clamp(0.9375rem,1.5vw,1rem)] leading-[1.65] text-muted-foreground/90 break-words"
+          {/* Subtitle */}
+          <p
+            className="hero-entrance-subtitle hero-subtitle mb-8 md:mb-10 max-w-md font-body text-[clamp(0.9375rem,1.5vw,1rem)] leading-[1.65] text-muted-foreground/90 break-words"
             style={{ overflowWrap: "anywhere" }}
           >
             {t("hero.subtitle")}
-          </motion.p>
+          </p>
 
           {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.2 }}
-            className="flex flex-col gap-4 sm:flex-row sm:items-center"
-          >
+          <div className="hero-entrance-ctas flex flex-col gap-4 sm:flex-row sm:items-center">
             <a
               href={BOOKING_URL}
               target="_blank"
@@ -185,16 +165,11 @@ export default function Hero() {
                 <path d="M8 3v10m0 0l-3-3m3 3l3-3" />
               </svg>
             </a>
-          </motion.div>
+          </div>
         </div>
 
         {/* Bottom industrial markers */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1.5 }}
-          className="mt-16 flex items-center justify-between md:mt-24"
-        >
+        <div className="hero-entrance-markers mt-16 flex items-center justify-between md:mt-24">
           <span className="hero-markers font-mono text-[7px] uppercase tracking-[0.5em] text-neon-red/15">
             SYSTEM ONLINE
           </span>
@@ -205,7 +180,7 @@ export default function Hero() {
           <span className="hero-markers font-mono text-[7px] uppercase tracking-[0.5em] text-neon-red/15">
             EST. LVIV
           </span>
-        </motion.div>
+        </div>
       </motion.div>
 
       {/* Hero-to-section transition: film frame + soft blur edge + subtle shadow */}
