@@ -43,13 +43,17 @@ function MasterCard({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       data-active={isOpen ? "true" : undefined}
-      className={cn(
-        "group relative cursor-pointer overflow-hidden bg-card transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] md:min-h-[520px] select-none touch-manipulation scroll-reveal",
-        inView && "in-view"
-      )}
-      style={{ flex: isOpen ? 3 : 1, transitionDelay: inView ? `${index * 0.12}s` : "0s" }}
+      className="group relative flex min-w-0 cursor-pointer select-none touch-manipulation transition-[flex] duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] md:min-h-[520px]"
+      style={{ flex: isOpen ? 3 : 1 }}
       {...tapHandlers}
     >
+      <div
+        className={cn(
+          "relative h-full w-full overflow-hidden bg-card scroll-reveal",
+          inView && "in-view"
+        )}
+        style={{ transitionDelay: inView ? `${index * 0.12}s` : "0s" }}
+      >
       <div className="masters-image-wrap relative isolate h-64 overflow-hidden bg-card md:absolute md:inset-0 md:h-auto">
         <Image
           src={master.image}
@@ -95,6 +99,7 @@ function MasterCard({
         </AnimatePresence>
       </div>
       <div className="absolute bottom-0 left-0 h-px w-0 transition-all duration-700 group-hover:w-full group-data-[active=true]:w-full" style={{ background: "linear-gradient(90deg, hsl(var(--neon-red) / 0.6), transparent)", boxShadow: "0 0 8px hsl(var(--neon-red) / 0.3)" }} />
+      </div>
     </div>
   );
 }
