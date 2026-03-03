@@ -509,6 +509,16 @@
   }
 }
 
+/* Hero video: hide browser play button and controls — autoplay only */
+.hero-video::-webkit-media-controls,
+.hero-video::-webkit-media-controls-enclosure,
+.hero-video::-webkit-media-controls-panel,
+.hero-video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* Hero: improved contrast for gray text on video */
 .hero-subtitle {
   text-shadow: 0 1px 3px hsl(var(--background) / 0.9), 0 0 24px hsl(var(--background) / 0.6), 0 2px 4px rgba(0,0,0,0.5);

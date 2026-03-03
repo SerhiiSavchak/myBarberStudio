@@ -61,9 +61,9 @@ export default function Hero() {
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="auto"
           poster={POSTER_SRC}
-          className="absolute inset-0 h-full w-full object-cover scale-110"
+          className="hero-video absolute inset-0 h-full w-full object-cover scale-110"
         >
           <source src={VIDEO_SRC} type="video/mp4" />
         </video>
