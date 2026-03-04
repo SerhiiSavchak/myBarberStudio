@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { motion, useTransform } from "framer-motion";
-import { useScrollSuppressed } from "@/hooks/use-scroll-suppressed";
+import { useEffect, useRef, useState } from "react";
 import { useLocale } from "@/lib/locale-context";
 import { BOOKING_URL, SECTION_IDS } from "@/constants/routes";
 
@@ -12,22 +10,36 @@ const POSTER_SRC = "/hero-poster.jpg";
 export default function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const { t } = useLocale();
 
-  const { scrollYProgress } = useScrollSuppressed({
-    target: sectionRef,
-    offset: ["start start", "end start"],
-  });
+  /* Native scroll-based parallax — no Framer Motion, reduces main bundle */
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
 
-  /* Parallax: video 50%, content 30% — background moves slower on scroll */
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const overlayOpacity = useTransform(scrollYProgress, [0, 0.5], [0.55, 0.95]);
+    const update = () => {
+      const rect = section.getBoundingClientRect();
+      const viewportH = window.innerHeight;
+      const progress = rect.top <= 0 ? Math.min(-rect.top / viewportH, 1) : 0;
+      setScrollProgress(progress);
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, []);
+
+  const bgY = `${scrollProgress * 50}%`;
+  const contentY = `${scrollProgress * 30}%`;
+  const overlayOpacity = 0.55 + scrollProgress * 0.8;
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    const play = () => { video.play().catch(() => {}); };
+    const play = () => {
+      video.play().catch(() => {});
+    };
     if (video.readyState >= 3) play();
     else video.addEventListener("canplay", play, { once: true });
     const onVisibility = () => {
@@ -38,7 +50,6 @@ export default function Hero() {
     };
     document.addEventListener("visibilitychange", onVisibility);
     return () => {
-      video.removeEventListener("canplay", play);
       document.removeEventListener("visibilitychange", onVisibility);
     };
   }, []);
@@ -50,10 +61,10 @@ export default function Hero() {
       className="grain vignette scanlines relative flex min-h-[100dvh] min-h-[100svh] items-end overflow-hidden pb-28 pt-6 md:items-center md:pb-0 md:pt-0"
     >
       {/* Video Background — CSS fade in, then parallax on scroll */}
-      <motion.div
+      <div
         data-hero-video
         className="hero-entrance-video absolute inset-0 z-0"
-        style={{ y: bgY }}
+        style={{ transform: `translateY(${bgY})` }}
       >
         <video
           ref={videoRef}
@@ -61,20 +72,22 @@ export default function Hero() {
           muted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
           poster={POSTER_SRC}
+          width={1920}
+          height={1080}
           className="hero-video absolute inset-0 h-full w-full object-cover scale-110"
         >
+          <source src="/hero-video.webm" type="video/webm" />
           <source src={VIDEO_SRC} type="video/mp4" />
         </video>
-        <motion.div
+        <div
           className="hero-video-overlay absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30"
           style={{ opacity: overlayOpacity }}
         />
         <div className="hero-video-tint absolute inset-0 bg-neon-red/[0.03] mix-blend-overlay" />
-        {/* Light theme only: cinematic darkening — dark overlay + vignette, no white washout */}
         <div className="hero-video-light-cinematic pointer-events-none absolute inset-0 z-[1]" aria-hidden />
-      </motion.div>
+      </div>
 
       {/* Decorative: cyber grid overlay */}
       <div className="pointer-events-none absolute inset-0 z-[1] cyber-grid opacity-30" />
@@ -84,9 +97,9 @@ export default function Hero() {
       <div className="pointer-events-none absolute right-0 top-0 bottom-0 z-[2] w-px bg-gradient-to-b from-transparent via-neon-red/10 to-transparent" />
 
       {/* Content — z-30 above gradient/glitch so buttons stay clickable when scrolled */}
-      <motion.div
+      <div
         className="relative z-30 mx-auto w-full max-w-7xl px-6 lg:px-8"
-        style={{ y: contentY }}
+        style={{ transform: `translateY(${contentY})` }}
       >
         <div className="hero-content-block relative max-w-3xl w-full min-w-0">
           {/* District tag */}
@@ -181,7 +194,7 @@ export default function Hero() {
             EST. LVIV
           </span>
         </div>
-      </motion.div>
+      </div>
 
       {/* Hero-to-section transition: film frame + soft blur edge + subtle shadow */}
       <div

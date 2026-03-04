@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
-import { cn, throttle } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { useLocale } from "@/lib/locale-context";
 import { LOCALES } from "@/lib/i18n";
 import { BOOKING_URL, NAV_LINKS } from "@/constants/routes";
@@ -10,8 +10,11 @@ import ThemeToggle from "./ThemeToggle";
 
 const MENU_ANIM_DURATION = 250;
 
+const SCROLL_THRESHOLD = 40;
+const SCROLL_ZONE = 60;
+
 export default function Header() {
-  const [scrolled, setScrolled] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
@@ -28,12 +31,27 @@ export default function Header() {
   }, [mobileOpen, isAnimatingOut]);
 
   useEffect(() => {
-    const update = () => setScrolled(window.scrollY > 40);
-    const onScroll = throttle(update, 100);
-    update();
+    let rafId: number;
+    const onScroll = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        setScrollY(window.scrollY);
+      });
+    };
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("scrollend", onScroll);
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("scrollend", onScroll);
+    };
   }, []);
+
+  const scrolled = scrollY > SCROLL_THRESHOLD;
+  const progress = Math.min((scrollY - SCROLL_THRESHOLD) / SCROLL_ZONE, 1);
+  const bgOpacity = Math.max(0, progress) * 0.85;
+  const blurPx = progress > 0.25 ? Math.min((progress - 0.25) / 0.75, 1) * 24 : 0;
 
   useLockBodyScroll(mobileOpen || isAnimatingOut);
 
@@ -57,16 +75,17 @@ export default function Header() {
 
   return (
     <header
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
-        scrolled
-          ? "bg-background/85 backdrop-blur-xl border-b border-neon-red/10"
-          : "bg-transparent"
-      )}
+      className="fixed top-0 left-0 right-0 z-50 transition-[background-color,backdrop-filter,border-color] duration-200 ease-out"
+      style={{
+        backgroundColor: bgOpacity > 0 ? `hsl(var(--background) / ${bgOpacity})` : "transparent",
+        backdropFilter: `blur(${blurPx}px)`,
+        WebkitBackdropFilter: `blur(${blurPx}px)`,
+        borderBottom: scrolled ? "1px solid hsl(var(--neon-red) / 0.1)" : "1px solid transparent",
+      }}
     >
       {/* Top TRON-style edge line */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-px opacity-0 transition-opacity duration-500"
+        className="absolute bottom-0 left-0 right-0 h-px transition-opacity duration-300"
         style={{
           background: "linear-gradient(90deg, transparent, hsl(var(--neon-red) / 0.3), transparent)",
           opacity: scrolled ? 1 : 0,

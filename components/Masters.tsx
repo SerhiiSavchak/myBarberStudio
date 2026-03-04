@@ -59,7 +59,8 @@ function MasterCard({
           src={master.image}
           alt={`${master.name} - ${master.title}`}
           fill
-          sizes="(max-width: 768px) 100vw, 33vw"
+          sizes="(max-width: 768px) 100vw, 640px"
+          quality={90}
           placeholder="blur"
           blurDataURL={MASTER_IMAGE_BLUR}
           className="object-cover transition-transform duration-700 group-hover:scale-[1.04] group-data-[active=true]:scale-[1.04]"

@@ -94,9 +94,11 @@ function GalleryModal({
             <Image
               src={image.src}
               alt={image.alt}
-              width={1200}
-              height={800}
+              width={1920}
+              height={1280}
+              quality={95}
               className="h-auto max-h-[85vh] w-full object-contain"
+              sizes="(max-width: 1280px) 100vw, 1280px"
             />
 
             {/* Bottom label bar */}
@@ -212,12 +214,14 @@ function BeforeAfterSlide({
       aria-valuenow={Math.round(pos)}
       tabIndex={0}
     >
-      <Image src={after} alt="After" fill sizes="(max-width: 640px) 100vw, 50vw" className="object-cover" />
+      <Image src={after} alt="After" fill sizes="(max-width: 640px) 100vw, 50vw" quality={90} className="object-cover" />
       <div className="absolute inset-0 overflow-hidden" style={{ width: `${pos}%` }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={before}
           alt="Before"
+          decoding="async"
+          loading="lazy"
           className="absolute inset-0 h-full object-cover"
           style={{ width: `${containerRef.current?.offsetWidth || 800}px`, maxWidth: "none" }}
         />
@@ -375,7 +379,8 @@ function GalleryItem({
         src={img.src}
         alt={img.alt}
         fill
-        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 640px"
+        quality={90}
         className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
       />
       <div className="absolute inset-0 bg-background/0 transition-colors duration-500 group-hover:bg-background/40" />

@@ -67,7 +67,8 @@ export default function Tattoo() {
                 src="/tattoo-preview.jpg"
                 alt="Tattoo work preview"
                 fill
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="(max-width: 768px) 100vw, 960px"
+                quality={90}
                 className="object-cover"
               />
             </motion.div>

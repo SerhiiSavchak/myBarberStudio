@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:analyze": "ANALYZE=true next build --webpack",
+    "video:optimize": "bash scripts/optimize-hero-video.sh",
     "start": "next start",
     "lint": "next lint"
   },
@@ -17,6 +19,7 @@
     "tailwind-merge": "^2.6.0"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^15.0.0",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

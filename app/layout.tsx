@@ -6,10 +6,10 @@ import { SITE_URL } from "@/constants/routes";
 import { LocaleProvider } from "@/lib/locale-context";
 import { ThemeProvider } from "@/lib/theme-context";
 
-/* Display: геометрический, futuristic, tech, кириллица */
+/* Display: геометрический, futuristic, tech, кириллица — 400/500/700 only for faster load */
 const exo2 = Exo_2({
   subsets: ["latin", "cyrillic"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "700"],
   variable: "--font-display",
   display: "swap",
 });
@@ -17,7 +17,7 @@ const exo2 = Exo_2({
 /* Body: максимально читаемый, современный UI, кириллица */
 const inter = Inter({
   subsets: ["latin", "cyrillic"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "700"],
   variable: "--font-body",
   display: "swap",
 });
@@ -104,6 +104,9 @@ export default function RootLayout({
 
   return (
     <html lang="uk" className={`relative dark ${exo2.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
+      <head>
+        <link rel="preload" href="/hero-poster.jpg" as="image" fetchPriority="high" />
+      </head>
       <body className="relative font-body antialiased overflow-x-hidden">
         <script
           type="application/ld+json"

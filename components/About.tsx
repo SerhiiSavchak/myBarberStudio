@@ -169,7 +169,8 @@ export default function About() {
                 src="/gallery/gallery-4.jpg"
                 alt="Interior M&Y Barber Studio"
                 fill
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="(max-width: 768px) 100vw, 960px"
+                quality={90}
                 className="object-cover scale-110"
               />
             </motion.div>
