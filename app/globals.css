@@ -550,11 +550,17 @@
   color: hsl(0 0% 100%);
 }
 .light .hero-subtitle {
-  color: hsl(0 0% 14%);
+  color: hsl(0 0% 95%);
+  text-shadow: 0 1px 2px hsl(0 0% 0% / 0.4), 0 0 20px hsl(0 0% 0% / 0.2);
 }
 .light .hero-cta-secondary {
-  color: hsl(0 0% 12%);
-  text-shadow: none;
+  color: hsl(0 0% 92%);
+  font-weight: 600;
+  text-shadow: 0 1px 2px hsl(0 0% 0% / 0.4), 0 0 16px hsl(0 0% 0% / 0.15);
+}
+.light .hero-cta-secondary:hover {
+  color: hsl(var(--neon-red));
+  text-shadow: 0 0 12px hsl(var(--neon-red) / 0.4);
 }
 /* Light theme: district tag, bottom markers — readable contrast */
 .light .hero-tag {
@@ -569,9 +575,22 @@
   color: hsl(0 0% 15%);
 }
 
+/* Section headings — prevent overflow */
+.section-heading {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  min-width: 0;
+}
+@media (max-width: 767px) {
+  .section-tag {
+    font-weight: 600 !important;
+    font-size: 10px !important;
+  }
+}
+
 /* Hero: light theme — cinematic video treatment, no white washout */
 .light .hero-video-overlay {
-  background: linear-gradient(to top, hsl(0 0% 0% / 0.5) 0%, hsl(0 0% 0% / 0.25) 40%, transparent 75%) !important;
+  background: linear-gradient(to top, hsl(0 0% 0% / 0.65) 0%, hsl(0 0% 0% / 0.35) 45%, transparent 80%) !important;
 }
 .light .hero-video-tint {
   opacity: 0.15;
@@ -719,7 +738,7 @@
 }
 @keyframes glitch-line {
   0% { transform: translateX(-60px); }
-  100% { transform: translateX(calc(100vw + 60px)); }
+  100% { transform: translateX(100%); }
 }
 
 /* Glitch heading — RGB split, visible burst */

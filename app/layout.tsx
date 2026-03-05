@@ -103,7 +103,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="uk" className={`relative dark ${exo2.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
+    <html lang="uk" className={`relative dark overflow-x-hidden ${exo2.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
       <head>
         <link rel="preload" href="/hero-poster.jpg" as="image" fetchPriority="high" />
       </head>

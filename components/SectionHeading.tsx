@@ -24,7 +24,7 @@ export default function SectionHeading({ tag, title, description, id }: SectionH
           )}
           style={{ boxShadow: "0 0 6px hsl(var(--neon-red) / 0.3)", transitionDelay: inView ? "0.2s" : "0s" }}
         />
-        <span className="font-mono text-[9px] uppercase tracking-[0.5em] text-neon-red/60">
+        <span className="section-tag font-mono text-[9px] uppercase tracking-[0.5em] text-neon-red/60">
           {tag}
         </span>
         <span className={cn("h-1 w-1 bg-neon-red/40", inView && "animate-pulse-red")} />
@@ -32,7 +32,7 @@ export default function SectionHeading({ tag, title, description, id }: SectionH
 
       <h2
         className={cn(
-          "font-display text-[clamp(2rem,5vw,4rem)] font-bold uppercase leading-[1.2] tracking-[0.03em] text-foreground scroll-reveal",
+          "section-heading font-display text-[clamp(2rem,5vw,4rem)] font-bold uppercase leading-[1.2] tracking-[0.03em] text-foreground scroll-reveal",
           inViewClass
         )}
         style={{ textWrap: "balance", transitionDelay: inView ? "0.15s" : "0s" }}
