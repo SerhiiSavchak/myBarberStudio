@@ -32,6 +32,7 @@ const dict = {
   },
   "hero.cta": { uk: "Записатись", en: "Book Now", ru: "Записаться" },
   "hero.services": { uk: "Наші послуги", en: "Our Services", ru: "Наши услуги" },
+  "hero.playVideo": { uk: "Відтворити відео", en: "Play video", ru: "Воспроизвести видео" },
 
   // About
   "about.tag": { uk: "Про нас", en: "About Us", ru: "О нас" },

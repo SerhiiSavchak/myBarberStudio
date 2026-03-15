@@ -1,50 +1,64 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { useHeroReady } from "@/lib/hero-ready-context";
 
 /** Minimum loader display time — avoids flash, feels intentional */
-const MIN_DURATION_MS = 800;
+const MIN_DURATION_MS = 600;
 /** Exit fade duration */
 const EXIT_DURATION = 400;
+/** Max wait if hero never signals (e.g. non-home page) — then hide on load */
+const FALLBACK_WAIT_MS = 3500;
 
 /**
- * Readiness detection:
- * - document.readyState === "complete" — DOM + all subresources loaded
- * Loader hides as soon as page is ready, but never before MIN_DURATION_MS.
- * CSS-only animations — no Framer Motion, reduces main bundle.
+ * Readiness: waits for Hero video ready (canplaythrough) so hero looks complete when loader hides.
+ * Fallback: if hero never signals (other page / error), hides after load + FALLBACK_WAIT_MS.
+ * Never hides before MIN_DURATION_MS.
  */
 export default function SiteLoader() {
   const [visible, setVisible] = useState(true);
   const [exiting, setExiting] = useState(false);
+  const { heroReady } = useHeroReady();
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const hideScheduledRef = useRef(false);
+  const startRef = useRef(performance.now());
+
+  const scheduleHide = () => {
+    if (hideScheduledRef.current) return;
+    hideScheduledRef.current = true;
+    const elapsed = performance.now() - startRef.current;
+    const remaining = Math.max(0, MIN_DURATION_MS - elapsed);
+    timersRef.current.push(
+      setTimeout(() => {
+        setExiting(true);
+        timersRef.current.push(
+          setTimeout(() => setVisible(false), EXIT_DURATION)
+        );
+      }, remaining)
+    );
+  };
 
   useEffect(() => {
-    const start = performance.now();
-
-    const scheduleHide = () => {
-      const elapsed = performance.now() - start;
-      const remaining = Math.max(0, MIN_DURATION_MS - elapsed);
-      timersRef.current.push(
-        setTimeout(() => {
-          setExiting(true);
-          timersRef.current.push(
-            setTimeout(() => setVisible(false), EXIT_DURATION)
-          );
-        }, remaining)
-      );
+    const onLoad = () => {
+      timersRef.current.push(setTimeout(scheduleHide, FALLBACK_WAIT_MS));
     };
-
     if (document.readyState === "complete") {
-      scheduleHide();
+      timersRef.current.push(setTimeout(scheduleHide, FALLBACK_WAIT_MS));
     } else {
-      window.addEventListener("load", scheduleHide);
+      window.addEventListener("load", onLoad);
     }
-
     return () => {
-      window.removeEventListener("load", scheduleHide);
+      window.removeEventListener("load", onLoad);
       timersRef.current.forEach(clearTimeout);
     };
   }, []);
+
+  /* Hide as soon as hero video is ready (overrides fallback) */
+  useEffect(() => {
+    if (heroReady && !hideScheduledRef.current) {
+      scheduleHide();
+    }
+  }, [heroReady]);
 
   if (!visible) return null;
 

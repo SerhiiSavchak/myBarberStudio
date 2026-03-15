@@ -439,11 +439,11 @@
   to { opacity: 1; -webkit-transform: scaleX(1); transform: scaleX(1); }
 }
 
-/* Delays: synced with SiteLoader — loader hides ~500ms, hero starts 0.7s after load */
+/* Delays: synced with SiteLoader — loader hides when video ready, hero fades in quickly */
 .hero-entrance-video {
   opacity: 0;
-  -webkit-animation: hero-entrance-fade 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) 0.7s forwards;
-  animation: hero-entrance-fade 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) 0.7s forwards;
+  -webkit-animation: hero-entrance-fade 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) 0.2s forwards;
+  animation: hero-entrance-fade 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) 0.2s forwards;
 }
 .hero-entrance-tag {
   opacity: 0;

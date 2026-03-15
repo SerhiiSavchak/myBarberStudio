@@ -2,16 +2,22 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useLocale } from "@/lib/locale-context";
+import { useHeroReady } from "@/lib/hero-ready-context";
 import { BOOKING_URL, SECTION_IDS } from "@/constants/routes";
 
 const VIDEO_SRC = "/hero-video.mp4";
 const POSTER_SRC = "/hero-poster.jpg";
 
+/** Max wait before signaling ready (poster fallback if video fails) */
+const VIDEO_READY_TIMEOUT_MS = 4000;
+
 export default function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [autoplayBlocked, setAutoplayBlocked] = useState(false);
   const { t } = useLocale();
+  const { setHeroReady } = useHeroReady();
 
   /* Native scroll-based parallax — no Framer Motion, reduces main bundle */
   useEffect(() => {
@@ -34,14 +40,46 @@ export default function Hero() {
   const contentY = `${scrollProgress * 30}%`;
   const overlayOpacity = 0.55 + scrollProgress * 0.8;
 
+  /* Video init: play when ready, signal HeroReady for loader, handle autoplay block */
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    const play = () => {
-      video.play().catch(() => {});
+
+    let readySignaled = false;
+    const signalReady = () => {
+      if (readySignaled) return;
+      readySignaled = true;
+      setHeroReady();
     };
-    if (video.readyState >= 3) play();
-    else video.addEventListener("canplay", play, { once: true });
+
+    const play = () => {
+      video.play().catch(() => {
+        setAutoplayBlocked(true);
+        signalReady();
+      });
+    };
+
+    const onCanPlay = () => {
+      play();
+    };
+    const onCanPlayThrough = () => {
+      signalReady();
+    };
+    const onError = () => {
+      signalReady();
+    };
+
+    if (video.readyState >= 3) {
+      play();
+      signalReady();
+    } else {
+      video.addEventListener("canplay", onCanPlay, { once: true });
+      video.addEventListener("canplaythrough", onCanPlayThrough, { once: true });
+      video.addEventListener("error", onError, { once: true });
+    }
+
+    const timeout = setTimeout(signalReady, VIDEO_READY_TIMEOUT_MS);
+
     const onVisibility = () => {
       if (document.visibilityState === "visible") {
         video.currentTime = 0;
@@ -49,10 +87,15 @@ export default function Hero() {
       }
     };
     document.addEventListener("visibilitychange", onVisibility);
+
     return () => {
+      clearTimeout(timeout);
       document.removeEventListener("visibilitychange", onVisibility);
+      video.removeEventListener("canplay", onCanPlay);
+      video.removeEventListener("canplaythrough", onCanPlayThrough);
+      video.removeEventListener("error", onError);
     };
-  }, []);
+  }, [setHeroReady]);
 
   return (
     <section
@@ -72,15 +115,31 @@ export default function Hero() {
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="auto"
           poster={POSTER_SRC}
           width={1920}
           height={1080}
           className="hero-video absolute inset-0 h-full w-full object-cover scale-110"
         >
-          <source src="/hero-video.webm" type="video/webm" />
           <source src={VIDEO_SRC} type="video/mp4" />
+          <source src="/hero-video.webm" type="video/webm" />
         </video>
+        {autoplayBlocked && (
+          <button
+            type="button"
+            onClick={() => {
+              videoRef.current?.play().then(() => setAutoplayBlocked(false)).catch(() => {});
+            }}
+            className="absolute inset-0 z-10 flex items-center justify-center bg-background/20 backdrop-blur-sm transition-opacity hover:bg-background/10"
+            aria-label={t("hero.playVideo")}
+          >
+            <span className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-neon-red/60 bg-neon-red/10 text-neon-red transition-colors hover:bg-neon-red/20">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="ml-1 h-8 w-8">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </span>
+          </button>
+        )}
         <div
           className="hero-video-overlay absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30"
           style={{ opacity: overlayOpacity }}

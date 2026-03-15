@@ -3,6 +3,7 @@ import { Exo_2, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import SiteLoader from "@/components/SiteLoader";
 import { SITE_URL } from "@/constants/routes";
+import { HeroReadyProvider } from "@/lib/hero-ready-context";
 import { LocaleProvider } from "@/lib/locale-context";
 import { ThemeProvider } from "@/lib/theme-context";
 
@@ -114,8 +115,10 @@ export default function RootLayout({
         />
         <ThemeProvider>
           <LocaleProvider>
-            <SiteLoader />
-            {children}
+            <HeroReadyProvider>
+              <SiteLoader />
+              {children}
+            </HeroReadyProvider>
           </LocaleProvider>
         </ThemeProvider>
       </body>
