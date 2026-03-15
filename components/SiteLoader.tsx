@@ -3,62 +3,66 @@
 import { useEffect, useState, useRef } from "react";
 import { useHeroReady } from "@/lib/hero-ready-context";
 
-/** Minimum loader display time — avoids flash, feels intentional */
+/** Minimum loader display time — polish, avoids flash */
 const MIN_DURATION_MS = 600;
 /** Exit fade duration */
-const EXIT_DURATION = 400;
-/** Max wait if hero never signals (e.g. non-home page) — then hide on load */
+const EXIT_DURATION_MS = 400;
+/** Max wait if hero never signals (non-home page) — then hide on load */
 const FALLBACK_WAIT_MS = 3500;
 
 /**
- * Readiness: waits for Hero video ready (canplaythrough) so hero looks complete when loader hides.
- * Fallback: if hero never signals (other page / error), hides after load + FALLBACK_WAIT_MS.
- * Never hides before MIN_DURATION_MS.
+ * Reveal strategy: reveal when (minDuration passed) AND (hero media ready).
+ * - heroReady: from Hero when video playing or fallback safe
+ * - Fallback: if no Hero (other page), hide after load + FALLBACK_WAIT_MS
  */
 export default function SiteLoader() {
   const [visible, setVisible] = useState(true);
   const [exiting, setExiting] = useState(false);
   const { heroReady } = useHeroReady();
-  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const hideScheduledRef = useRef(false);
   const startRef = useRef(performance.now());
+  const revealTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-  const scheduleHide = () => {
+  const scheduleReveal = () => {
     if (hideScheduledRef.current) return;
     hideScheduledRef.current = true;
+
     const elapsed = performance.now() - startRef.current;
     const remaining = Math.max(0, MIN_DURATION_MS - elapsed);
-    timersRef.current.push(
+
+    revealTimersRef.current.push(
       setTimeout(() => {
         setExiting(true);
-        timersRef.current.push(
-          setTimeout(() => setVisible(false), EXIT_DURATION)
+        revealTimersRef.current.push(
+          setTimeout(() => setVisible(false), EXIT_DURATION_MS)
         );
       }, remaining)
     );
   };
 
+  /* Media ready: reveal when hero signals (minDuration enforced in scheduleReveal) */
   useEffect(() => {
+    if (heroReady) scheduleReveal();
+  }, [heroReady]);
+
+  /* Fallback: if hero never signals (non-home page), reveal after load + delay */
+  useEffect(() => {
+    let fallbackTimer: ReturnType<typeof setTimeout>;
     const onLoad = () => {
-      timersRef.current.push(setTimeout(scheduleHide, FALLBACK_WAIT_MS));
+      fallbackTimer = setTimeout(scheduleReveal, FALLBACK_WAIT_MS);
     };
     if (document.readyState === "complete") {
-      timersRef.current.push(setTimeout(scheduleHide, FALLBACK_WAIT_MS));
+      fallbackTimer = setTimeout(scheduleReveal, FALLBACK_WAIT_MS);
     } else {
       window.addEventListener("load", onLoad);
     }
     return () => {
       window.removeEventListener("load", onLoad);
-      timersRef.current.forEach(clearTimeout);
+      clearTimeout(fallbackTimer);
+      revealTimersRef.current.forEach(clearTimeout);
+      revealTimersRef.current = [];
     };
   }, []);
-
-  /* Hide as soon as hero video is ready (overrides fallback) */
-  useEffect(() => {
-    if (heroReady && !hideScheduledRef.current) {
-      scheduleHide();
-    }
-  }, [heroReady]);
 
   if (!visible) return null;
 

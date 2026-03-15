@@ -3,9 +3,9 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
 
 interface HeroReadyContextValue {
-  /** Hero video is ready to play (canplaythrough) or has failed with fallback */
+  /** True when hero media is visually ready (playing or fallback) — loader may reveal */
   heroReady: boolean;
-  /** Call when hero video is ready — triggers loader to hide (after MIN_DURATION) */
+  /** Call when hero media is ready — triggers coordinated reveal */
   setHeroReady: () => void;
 }
 
@@ -16,10 +16,7 @@ const HeroReadyContext = createContext<HeroReadyContextValue>({
 
 export function HeroReadyProvider({ children }: { children: ReactNode }) {
   const [heroReady, setHeroReadyState] = useState(false);
-
-  const setHeroReady = useCallback(() => {
-    setHeroReadyState(true);
-  }, []);
+  const setHeroReady = useCallback(() => setHeroReadyState(true), []);
 
   return (
     <HeroReadyContext.Provider value={{ heroReady, setHeroReady }}>

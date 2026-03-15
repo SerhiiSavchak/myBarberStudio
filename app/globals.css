@@ -509,9 +509,12 @@
   }
 }
 
-/* Hero video: hide all native controls and play button — background autoplay only */
+/* Hero video: non-interactive background layer — no controls, no play icon */
+.hero-entrance-video {
+  background: hsl(var(--background)); /* Prevents black flash while video loads */
+}
 .hero-video {
-  pointer-events: none; /* Prevent tap-to-play overlay on mobile */
+  pointer-events: none;
 }
 .hero-video::-webkit-media-controls,
 .hero-video::-webkit-media-controls-enclosure,
