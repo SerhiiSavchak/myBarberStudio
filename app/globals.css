@@ -509,14 +509,20 @@
   }
 }
 
-/* Hero video: hide browser play button and controls — autoplay only */
+/* Hero video: hide all native controls and play button — background autoplay only */
+.hero-video {
+  pointer-events: none; /* Prevent tap-to-play overlay on mobile */
+}
 .hero-video::-webkit-media-controls,
 .hero-video::-webkit-media-controls-enclosure,
 .hero-video::-webkit-media-controls-panel,
-.hero-video::-webkit-media-controls-start-playback-button {
+.hero-video::-webkit-media-controls-start-playback-button,
+.hero-video::-webkit-media-controls-overlay-play-button {
   display: none !important;
-  opacity: 0;
-  pointer-events: none;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 /* Hero: improved contrast for gray text on video */

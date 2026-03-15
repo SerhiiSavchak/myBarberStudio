@@ -107,6 +107,7 @@ export default function RootLayout({
     <html lang="uk" className={`relative dark overflow-x-hidden ${exo2.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
       <head>
         <link rel="preload" href="/hero-poster.jpg" as="image" fetchPriority="high" />
+        <link rel="preload" href="/hero-video.mp4" as="video" type="video/mp4" />
       </head>
       <body className="relative font-body antialiased overflow-x-hidden">
         <script
