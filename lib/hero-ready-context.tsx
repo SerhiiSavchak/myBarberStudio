@@ -3,9 +3,9 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
 
 interface HeroReadyContextValue {
-  /** True when hero media is visually ready (playing or fallback) — loader may reveal */
+  /** True when hero media is visually ready (playing or poster fallback) — loader may reveal */
   heroReady: boolean;
-  /** Call when hero media is ready — triggers coordinated reveal */
+  /** Called by Hero when media lifecycle reaches playing or fallback */
   setHeroReady: () => void;
 }
 

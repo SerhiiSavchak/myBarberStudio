@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocale } from "@/lib/locale-context";
 import { useHeroReady } from "@/lib/hero-ready-context";
-import { useHeroVideo } from "@/hooks/use-hero-video";
+import { useHeroMediaLifecycle } from "@/hooks/use-hero-media-lifecycle";
 import { BOOKING_URL, SECTION_IDS } from "@/constants/routes";
 
 const VIDEO_SRC = "/hero-video.mp4";
@@ -15,9 +15,8 @@ export default function Hero() {
   const { t } = useLocale();
   const { setHeroReady } = useHeroReady();
 
-  const { videoRef } = useHeroVideo({
-    onReady: setHeroReady,
-    maxWaitMs: 4000,
+  const { videoCallbackRef } = useHeroMediaLifecycle({
+    onVisualReady: setHeroReady,
   });
 
   /* Native scroll-based parallax */
@@ -54,7 +53,7 @@ export default function Hero() {
         style={{ transform: `translateY(${bgY})` }}
       >
         <video
-          ref={videoRef}
+          ref={videoCallbackRef}
           autoPlay
           muted
           loop
@@ -63,6 +62,8 @@ export default function Hero() {
           poster={POSTER_SRC}
           width={1920}
           height={1080}
+          disablePictureInPicture
+          disableRemotePlayback
           className="hero-video absolute inset-0 h-full w-full object-cover scale-110"
           aria-hidden
         >

@@ -1,68 +1,62 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { useHeroReady } from "@/lib/hero-ready-context";
+import { HERO_MEDIA_CONSTANTS } from "@/lib/hero-media-types";
 
-/** Minimum loader display time — polish, avoids flash */
-const MIN_DURATION_MS = 600;
-/** Exit fade duration */
-const EXIT_DURATION_MS = 400;
-/** Max wait if hero never signals (non-home page) — then hide on load */
-const FALLBACK_WAIT_MS = 3500;
+const { MIN_LOADER_MS, EXIT_DURATION_MS, NO_HERO_FALLBACK_MS } = HERO_MEDIA_CONSTANTS;
 
 /**
- * Reveal strategy: reveal when (minDuration passed) AND (hero media ready).
- * - heroReady: from Hero when video playing or fallback safe
- * - Fallback: if no Hero (other page), hide after load + FALLBACK_WAIT_MS
+ * Reveal strategy: reveal when (minDuration passed) AND (hero media visualReady).
+ * - heroReady: from Hero when video playing or poster fallback is safe
+ * - Fallback: if no Hero (non-home page), hide after load + NO_HERO_FALLBACK_MS
  */
 export default function SiteLoader() {
   const [visible, setVisible] = useState(true);
   const [exiting, setExiting] = useState(false);
   const { heroReady } = useHeroReady();
-  const hideScheduledRef = useRef(false);
+  const revealScheduledRef = useRef(false);
   const startRef = useRef(performance.now());
-  const revealTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-  const scheduleReveal = () => {
-    if (hideScheduledRef.current) return;
-    hideScheduledRef.current = true;
+  const scheduleReveal = useCallback(() => {
+    if (revealScheduledRef.current) return;
+    revealScheduledRef.current = true;
 
     const elapsed = performance.now() - startRef.current;
-    const remaining = Math.max(0, MIN_DURATION_MS - elapsed);
+    const remaining = Math.max(0, MIN_LOADER_MS - elapsed);
 
-    revealTimersRef.current.push(
+    timersRef.current.push(
       setTimeout(() => {
         setExiting(true);
-        revealTimersRef.current.push(
+        timersRef.current.push(
           setTimeout(() => setVisible(false), EXIT_DURATION_MS)
         );
       }, remaining)
     );
-  };
+  }, []);
 
-  /* Media ready: reveal when hero signals (minDuration enforced in scheduleReveal) */
   useEffect(() => {
     if (heroReady) scheduleReveal();
-  }, [heroReady]);
+  }, [heroReady, scheduleReveal]);
 
-  /* Fallback: if hero never signals (non-home page), reveal after load + delay */
   useEffect(() => {
     let fallbackTimer: ReturnType<typeof setTimeout>;
     const onLoad = () => {
-      fallbackTimer = setTimeout(scheduleReveal, FALLBACK_WAIT_MS);
+      fallbackTimer = setTimeout(scheduleReveal, NO_HERO_FALLBACK_MS);
     };
     if (document.readyState === "complete") {
-      fallbackTimer = setTimeout(scheduleReveal, FALLBACK_WAIT_MS);
+      fallbackTimer = setTimeout(scheduleReveal, NO_HERO_FALLBACK_MS);
     } else {
       window.addEventListener("load", onLoad);
     }
     return () => {
       window.removeEventListener("load", onLoad);
       clearTimeout(fallbackTimer);
-      revealTimersRef.current.forEach(clearTimeout);
-      revealTimersRef.current = [];
+      timersRef.current.forEach(clearTimeout);
+      timersRef.current = [];
     };
-  }, []);
+  }, [scheduleReveal]);
 
   if (!visible) return null;
 

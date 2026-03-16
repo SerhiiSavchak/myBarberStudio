@@ -1,43 +1,51 @@
 # Hero Background Video — Architecture
 
-Reusable pattern for reliable hero background video across projects.
+Deterministic hero background video with explicit media lifecycle.
 
-## Lifecycle
+## Lifecycle (State Machine)
 
 ```
-mount → video attached → canplay → play() → [playing | fallback] → signalReady
+idle → loading → canplay → attempting_play → [playing | fallback]
 ```
 
-- **playing**: `play()` resolved, video is playing
-- **fallback**: `play()` rejected (autoplay blocked), error, or timeout — poster stays, no play icon
+- **playing**: `play()` resolved or `playing` event — video is visually ready
+- **fallback**: `play()` rejected (autoplay blocked), `error` event, or timeout — poster is safe to show
 
 ## Components
 
-### 1. `useHeroVideo` (hooks/use-hero-video.ts)
+### 1. `useHeroMediaLifecycle` (hooks/use-hero-media-lifecycle.ts)
 
-Manages video lifecycle. Returns `videoRef`. Calls `onReady` when:
-- `play()` resolves (video playing), or
+Manages video lifecycle with callback ref for robust attachment. Returns `videoCallbackRef`. Calls `onVisualReady` when:
+- `play()` resolves (playing), or
+- `playing` event fires, or
 - `play()` rejects (autoplay blocked), or
 - `error` event, or
-- `maxWaitMs` timeout
+- `fallbackMs` timeout
 
-**Video attributes**: `autoPlay`, `muted`, `loop`, `playsInline`, `preload="auto"`, `poster`
+**Robust attachment**: Uses callback ref — no reliance on first effect run. Listeners attach when element is in DOM.
 
 ### 2. `HeroReadyContext` (lib/hero-ready-context.tsx)
 
-- `heroReady`: boolean — true when hero media is visually safe to reveal
-- `setHeroReady`: called by Hero when ready
+- `heroReady`: true when hero media is visually safe to reveal
+- `setHeroReady`: called by Hero when lifecycle reaches playing or fallback
 
 ### 3. `SiteLoader`
 
-Reveal strategy: `(minDuration passed) AND (heroReady OR load+fallback)`
-- `heroReady`: from Hero
-- Fallback: if no Hero (other page), hide after `load` + `FALLBACK_WAIT_MS`
-- Never hides before `MIN_DURATION_MS`
+Reveal strategy: `(minDuration passed) AND (heroReady OR load+NO_HERO_FALLBACK_MS)`
+- `heroReady`: from Hero when visualReady
+- Fallback: if no Hero (non-home page), hide after `load` + `NO_HERO_FALLBACK_MS`
+- Constants from `lib/hero-media-types.ts`
 
 ### 4. Hero component
 
-Uses `useHeroVideo`, passes `setHeroReady`. Renders video with correct attributes.
+Uses `useHeroMediaLifecycle`, passes `setHeroReady` as `onVisualReady`. Renders video with `ref={videoCallbackRef}`.
+
+## Constants (lib/hero-media-types.ts)
+
+- `FALLBACK_MS`: 4500 — max wait before forcing fallback
+- `MIN_LOADER_MS`: 600 — minimum loader display time
+- `EXIT_DURATION_MS`: 400 — loader exit fade
+- `NO_HERO_FALLBACK_MS`: 3500 — fallback when no Hero on page
 
 ## CSS Requirements
 
@@ -60,9 +68,10 @@ Uses `useHeroVideo`, passes `setHeroReady`. Renders video with correct attribute
 
 ## Applying to Another Project
 
-1. Copy `hooks/use-hero-video.ts`
-2. Copy `lib/hero-ready-context.tsx`
-3. Add `HeroReadyProvider` to layout, wrap `SiteLoader` + children
-4. Hero: use `useHeroVideo`, pass `setHeroReady`
-5. SiteLoader: use `useHeroReady`, implement same reveal logic
-6. Add CSS rules for `.hero-video` and `.hero-entrance-video`
+1. Copy `hooks/use-hero-media-lifecycle.ts`
+2. Copy `lib/hero-media-types.ts`
+3. Copy `lib/hero-ready-context.tsx`
+4. Add `HeroReadyProvider` to layout, wrap `SiteLoader` + children
+5. Hero: use `useHeroMediaLifecycle`, pass `setHeroReady` as `onVisualReady`
+6. SiteLoader: use `useHeroReady`, implement reveal with constants from hero-media-types
+7. Add CSS rules for `.hero-video` and `.hero-entrance-video`
