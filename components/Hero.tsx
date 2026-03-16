@@ -112,6 +112,7 @@ export default function Hero() {
           disablePictureInPicture
           disableRemotePlayback
           className="hero-video absolute inset-0 h-full w-full object-cover scale-110"
+          style={videoState === "playing" ? undefined : { opacity: 0 }}
           aria-hidden
         >
           {WEBM_AVAILABLE && <source src="/hero-video.webm" type="video/webm" />}

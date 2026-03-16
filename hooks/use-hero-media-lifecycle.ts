@@ -15,6 +15,9 @@ export interface UseHeroMediaLifecycleOptions {
  * Hero background video lifecycle — poster-first strategy.
  * Delays full video load until after delay, then attempts play.
  * Handles visibility change (tab focus) for replay.
+ *
+ * Resilient to Strict Mode: ref cleanup does not reset visual state to avoid
+ * visible poster/video flicker during mount → unmount → remount cycles.
  */
 export function useHeroMediaLifecycle(options: UseHeroMediaLifecycleOptions = {}) {
   const {
@@ -23,6 +26,7 @@ export function useHeroMediaLifecycle(options: UseHeroMediaLifecycleOptions = {}
   } = options;
   const [state, setState] = useState<HeroMediaState>("idle");
   const signaledRef = useRef(false);
+  const loadTriggeredRef = useRef(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const loadDelayRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const cleanupRef = useRef<(() => void) | null>(null);
@@ -38,10 +42,13 @@ export function useHeroMediaLifecycle(options: UseHeroMediaLifecycleOptions = {}
         loadDelayRef.current = null;
       }
       if (!el) {
-        setState("idle");
+        /* Do NOT setState("idle") on unmount — prevents visible flicker during
+         * Strict Mode unmount/remount. A re-render with poster would flash before
+         * the component unmounts. The next mount gets fresh state anyway. */
         return;
       }
 
+      loadTriggeredRef.current = false;
       setState("loading");
 
       const onCanPlay = () => {
@@ -78,7 +85,15 @@ export function useHeroMediaLifecycle(options: UseHeroMediaLifecycleOptions = {}
         }
       };
 
-      el.addEventListener("canplay", onCanPlay, { once: true });
+      /* Only process canplay after we've called load() — prevents premature
+       * "playing" from browser auto-load (readyState >= 3) before our load
+       * delay. Ensures deterministic poster → video sequence. */
+      const onCanPlayGuarded = () => {
+        if (!loadTriggeredRef.current) return;
+        onCanPlay();
+      };
+
+      el.addEventListener("canplay", onCanPlayGuarded, { once: true });
       el.addEventListener("error", onError, { once: true });
       el.addEventListener("playing", onPlaying, { once: true });
       document.addEventListener("visibilitychange", onVisibility);
@@ -86,7 +101,12 @@ export function useHeroMediaLifecycle(options: UseHeroMediaLifecycleOptions = {}
       /* Delay full video load — poster shows, critical resources load first */
       loadDelayRef.current = setTimeout(() => {
         loadDelayRef.current = null;
+        loadTriggeredRef.current = true;
         el.load();
+        /* readyState check only after load() — deterministic, no early jump */
+        if (el.readyState >= 3) {
+          onCanPlay();
+        }
       }, loadDelayMs);
 
       /* Fallback timeout — if video never plays, poster stays visible */
@@ -98,13 +118,9 @@ export function useHeroMediaLifecycle(options: UseHeroMediaLifecycleOptions = {}
         }
       }, fallbackMs);
 
-      if (el.readyState >= 3) {
-        onCanPlay();
-      }
-
       cleanupRef.current = () => {
         document.removeEventListener("visibilitychange", onVisibility);
-        el.removeEventListener("canplay", onCanPlay);
+        el.removeEventListener("canplay", onCanPlayGuarded);
         el.removeEventListener("error", onError);
         el.removeEventListener("playing", onPlaying);
         if (timeoutRef.current) {
