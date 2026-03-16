@@ -51,7 +51,7 @@ export default function Header() {
   const scrolled = scrollY > SCROLL_THRESHOLD;
   const progress = Math.min((scrollY - SCROLL_THRESHOLD) / SCROLL_ZONE, 1);
   const bgOpacity = Math.max(0, progress) * 0.85;
-  const blurPx = progress > 0.25 ? Math.min((progress - 0.25) / 0.75, 1) * 24 : 0;
+  const blurPx = progress > 0.25 ? Math.min((progress - 0.25) / 0.75, 1) * 12 : 0;
 
   useLockBodyScroll(mobileOpen || isAnimatingOut);
 

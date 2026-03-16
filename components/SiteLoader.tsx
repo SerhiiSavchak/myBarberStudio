@@ -7,9 +7,10 @@ import { HERO_MEDIA_CONSTANTS } from "@/lib/hero-media-types";
 const { MIN_LOADER_MS, EXIT_DURATION_MS, NO_HERO_FALLBACK_MS } = HERO_MEDIA_CONSTANTS;
 
 /**
- * Reveal strategy: reveal when (minDuration passed) AND (hero media visualReady).
- * - heroReady: from Hero when video playing or poster fallback is safe
+ * Reveal strategy: interface readiness, not media.
+ * - heroReady: from Hero on mount (poster visible immediately)
  * - Fallback: if no Hero (non-home page), hide after load + NO_HERO_FALLBACK_MS
+ * Loader no longer waits for heavy video — poster-first Hero appears fast.
  */
 export default function SiteLoader() {
   const [visible, setVisible] = useState(true);

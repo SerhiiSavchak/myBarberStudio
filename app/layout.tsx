@@ -7,15 +7,15 @@ import { HeroReadyProvider } from "@/lib/hero-ready-context";
 import { LocaleProvider } from "@/lib/locale-context";
 import { ThemeProvider } from "@/lib/theme-context";
 
-/* Display: геометрический, futuristic, tech, кириллица — 400/500/700 only for faster load */
+/* Display: 400/700 only — reduced weights for faster load */
 const exo2 = Exo_2({
   subsets: ["latin", "cyrillic"],
-  weight: ["400", "500", "700"],
+  weight: ["400", "700"],
   variable: "--font-display",
   display: "swap",
 });
 
-/* Body: максимально читаемый, современный UI, кириллица */
+/* Body: 400/500/700 — 500 for font-medium UI */
 const inter = Inter({
   subsets: ["latin", "cyrillic"],
   weight: ["400", "500", "700"],
@@ -23,10 +23,10 @@ const inter = Inter({
   display: "swap",
 });
 
-/* Mono: промышленные метки, labels, кириллица */
+/* Mono: single weight for labels */
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin", "cyrillic"],
-  weight: ["400", "500"],
+  weight: ["400"],
   variable: "--font-mono",
   display: "swap",
 });
@@ -107,7 +107,6 @@ export default function RootLayout({
     <html lang="uk" className={`relative dark overflow-x-hidden ${exo2.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
       <head>
         <link rel="preload" href="/hero-poster.jpg" as="image" fetchPriority="high" />
-        <link rel="preload" href="/hero-video.mp4" as="video" type="video/mp4" />
       </head>
       <body className="relative font-body antialiased overflow-x-hidden">
         <script

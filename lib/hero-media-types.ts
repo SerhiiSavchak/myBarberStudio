@@ -22,9 +22,11 @@ export const HERO_MEDIA_CONSTANTS = {
   /** Max wait before forcing fallback — single source of truth */
   FALLBACK_MS: 4500,
   /** Min loader display time — polish */
-  MIN_LOADER_MS: 600,
+  MIN_LOADER_MS: 500,
   /** Loader exit fade duration */
-  EXIT_DURATION_MS: 400,
-  /** Fallback when no Hero on page (e.g. non-home) */
-  NO_HERO_FALLBACK_MS: 3500,
+  EXIT_DURATION_MS: 350,
+  /** Fallback when no Hero on page — interface readiness, not media */
+  NO_HERO_FALLBACK_MS: 800,
+  /** Delay before starting full video load — lets critical resources load first */
+  VIDEO_LOAD_DELAY_MS: 1200,
 } as const;

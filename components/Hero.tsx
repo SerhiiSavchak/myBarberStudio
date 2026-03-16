@@ -1,13 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocale } from "@/lib/locale-context";
 import { useHeroReady } from "@/lib/hero-ready-context";
 import { useHeroMediaLifecycle } from "@/hooks/use-hero-media-lifecycle";
 import { BOOKING_URL, SECTION_IDS } from "@/constants/routes";
+import { HERO_MEDIA_CONSTANTS } from "@/lib/hero-media-types";
 
 const VIDEO_SRC = "/hero-video.mp4";
 const POSTER_SRC = "/hero-poster.jpg";
+
+/** WebM is only rendered when the file exists (build-time check via env) */
+const WEBM_AVAILABLE = process.env.NEXT_PUBLIC_HERO_WEBM_AVAILABLE === "true";
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -15,25 +19,57 @@ export default function Hero() {
   const { t } = useLocale();
   const { setHeroReady } = useHeroReady();
 
-  const { videoCallbackRef } = useHeroMediaLifecycle({
-    onVisualReady: setHeroReady,
+  /* Poster-first: signal ready only when poster image is actually loaded and visually ready */
+  const signalReadyWhenPosterLoaded = useCallback(() => {
+    setHeroReady();
+  }, [setHeroReady]);
+
+  const posterCallbackRef = useCallback(
+    (el: HTMLImageElement | null) => {
+      if (!el) return;
+      if (el.complete && el.naturalWidth > 0) {
+        signalReadyWhenPosterLoaded();
+      }
+    },
+    [signalReadyWhenPosterLoaded]
+  );
+
+  const handlePosterLoad = useCallback(() => {
+    signalReadyWhenPosterLoaded();
+  }, [signalReadyWhenPosterLoaded]);
+
+  /* Fallback: if poster fails to load, signal anyway to avoid infinite loader */
+  const handlePosterError = useCallback(() => {
+    signalReadyWhenPosterLoaded();
+  }, [signalReadyWhenPosterLoaded]);
+
+  const { videoCallbackRef, state: videoState } = useHeroMediaLifecycle({
+    loadDelayMs: HERO_MEDIA_CONSTANTS.VIDEO_LOAD_DELAY_MS,
   });
 
-  /* Native scroll-based parallax */
+  /* Native scroll-based parallax — throttled via rAF */
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
-    const update = () => {
-      const rect = section.getBoundingClientRect();
-      const viewportH = window.innerHeight;
-      const progress = rect.top <= 0 ? Math.min(-rect.top / viewportH, 1) : 0;
-      setScrollProgress(progress);
+    let rafId = 0;
+    const onScroll = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        const rect = section.getBoundingClientRect();
+        const viewportH = window.innerHeight;
+        const progress = rect.top <= 0 ? Math.min(-rect.top / viewportH, 1) : 0;
+        setScrollProgress(progress);
+      });
     };
 
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    return () => window.removeEventListener("scroll", update);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   const bgY = `${scrollProgress * 50}%`;
@@ -46,19 +82,30 @@ export default function Hero() {
       id="hero"
       className="grain vignette scanlines relative flex min-h-[100dvh] min-h-[100svh] items-end overflow-hidden pb-28 pt-6 md:items-center md:pb-0 md:pt-0"
     >
-      {/* Video Background — non-interactive, autoplay or poster fallback */}
+      {/* Video Background — poster first, video fades in when ready */}
       <div
         data-hero-video
+        data-video-ready={videoState === "playing"}
         className="hero-entrance-video absolute inset-0 z-0"
         style={{ transform: `translateY(${bgY})` }}
       >
+        <img
+          ref={posterCallbackRef}
+          src={POSTER_SRC}
+          alt=""
+          className="hero-video-poster absolute inset-0 h-full w-full object-cover object-center scale-110"
+          aria-hidden
+          fetchPriority="high"
+          onLoad={handlePosterLoad}
+          onError={handlePosterError}
+        />
         <video
           ref={videoCallbackRef}
           autoPlay
           muted
           loop
           playsInline
-          preload="auto"
+          preload="none"
           poster={POSTER_SRC}
           width={1920}
           height={1080}
@@ -67,8 +114,8 @@ export default function Hero() {
           className="hero-video absolute inset-0 h-full w-full object-cover scale-110"
           aria-hidden
         >
+          {WEBM_AVAILABLE && <source src="/hero-video.webm" type="video/webm" />}
           <source src={VIDEO_SRC} type="video/mp4" />
-          <source src="/hero-video.webm" type="video/webm" />
         </video>
         <div
           className="hero-video-overlay absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30"
