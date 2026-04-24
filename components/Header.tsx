@@ -94,7 +94,7 @@ export default function Header() {
 
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
         {/* Logo */}
-        <a href="/" className="group flex items-center gap-3 cursor-pointer select-none" onClick={(e) => { if (window.location.pathname === "/") { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); } }}>
+        <a href="/" className="group flex select-none items-center gap-3 cursor-pointer" onClick={(e) => { if (window.location.pathname === "/") { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); } }}>
           <svg viewBox="0 0 24 24" className="h-7 w-7" aria-hidden="true">
             <path
               d="M12 2L22 20H2Z"
@@ -116,7 +116,7 @@ export default function Header() {
             <li key={link.href}>
               <a
                 href={link.href}
-                className="header-nav-link group relative font-body text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-300 hover:text-foreground cursor-pointer"
+                className="header-nav-link group relative select-none font-body text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-300 hover:text-foreground cursor-pointer"
               >
                 {t(link.key)}
                 {/* Scanning underline */}
@@ -140,7 +140,7 @@ export default function Header() {
             <button
               type="button"
               onClick={() => setLangOpen(!langOpen)}
-              className="flex items-center gap-1.5 border border-neon-red/15 bg-background/50 px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground transition-all duration-300 hover:border-neon-red/30 hover:text-foreground cursor-pointer select-none"
+              className="flex items-center gap-1.5 border border-neon-red/20 bg-card/85 px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground transition-all duration-300 hover:border-neon-red/35 hover:bg-card hover:text-foreground cursor-pointer select-none"
             >
               {currentLocale.short}
               <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" className={cn("h-2.5 w-2.5 transition-transform duration-200", langOpen && "rotate-180")}>

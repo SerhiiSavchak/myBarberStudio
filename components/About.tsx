@@ -166,12 +166,12 @@ export default function About() {
           >
             <motion.div className="absolute inset-0" style={{ y: imageY }}>
               <Image
-                src="/gallery/gallery-4.jpg"
-                alt="Interior M&Y Barber Studio"
+                src="/images/about/about-new-01.png"
+                alt={t("about.imageAlt")}
                 fill
                 sizes="(max-width: 768px) 100vw, 960px"
                 quality={90}
-                className="object-cover scale-110"
+                className="object-cover object-center"
               />
             </motion.div>
             <div className="about-image-overlay absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />

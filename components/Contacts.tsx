@@ -1,25 +1,24 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import SectionHeading from "./SectionHeading";
 import { useLocale } from "@/lib/locale-context";
 import { BOOKING_URL, SECTION_IDS } from "@/constants/routes";
 import { useSectionInView } from "@/hooks/use-section-in-view";
+import type { TranslationKey } from "@/lib/i18n";
 
 const CONTACT_INFO = {
-  address: "Львів, вул. Мирослава Скорика, 21",
   phone: "+38 (066) 033 60 00",
   email: "mybarbershop36@gmail.com",
-  hours: "Пн-Нд: 10:00-20:00",
   mapsUrl: "https://maps.google.com/?q=Львів+вул+Мирослава+Скорика+21",
   mapsEmbedUrl:
     "https://maps.google.com/maps?q=Львів+вул.+Мирослава+Скорика+21&z=17&output=embed",
-};
+} as const;
 
-const SOCIALS = [
+const SOCIAL_LINKS: { labelKey: TranslationKey; href: string; icon: ReactNode }[] = [
   {
-    label: "Instagram",
+    labelKey: "contacts.social.instagram",
     href: "https://instagram.com/mybarber.studio",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4">
@@ -30,7 +29,7 @@ const SOCIALS = [
     ),
   },
   {
-    label: "Telegram",
+    labelKey: "contacts.social.telegram",
     href: "https://t.me/mybarberstudio",
     icon: (
       <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
@@ -39,7 +38,7 @@ const SOCIALS = [
     ),
   },
   {
-    label: "Phone",
+    labelKey: "contacts.social.phone",
     href: `tel:${CONTACT_INFO.phone.replace(/[\s()]/g, "")}`,
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4">
@@ -130,6 +129,7 @@ function LazyMap() {
   const [shouldLoad, setShouldLoad] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
+  const { t } = useLocale();
 
   useEffect(() => {
     const el = mapRef.current;
@@ -156,7 +156,7 @@ function LazyMap() {
       {/* iframe when in view */}
       {shouldLoad && (
         <iframe
-          title="M&Y Barber Studio Location"
+          title={t("contacts.mapIframeTitle")}
           src={CONTACT_INFO.mapsEmbedUrl}
           className="absolute inset-0 h-full w-full"
           style={{ border: 0, filter: "invert(0.9) hue-rotate(180deg) saturate(0.3) brightness(0.6) contrast(1.3)" }}
@@ -216,15 +216,15 @@ export default function Contacts() {
         >
           <span className="h-px w-6 bg-neon-cyan/20" />
           <span className="font-mono text-[7px] uppercase tracking-[0.7em] text-neon-cyan/25">
-            District 07 // Access Point // Barber Hub
+            {t("contacts.subline")}
           </span>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
           {/* LEFT COLUMN */}
           <div className="flex flex-col gap-3">
-            <InfoBlock label="Location Node" delay={0.1} inView={inView}>
-              <p className="text-sm font-medium text-foreground">{CONTACT_INFO.address}</p>
+            <InfoBlock label={t("contacts.label.location")} delay={0.1} inView={inView}>
+              <p className="text-sm font-medium text-foreground">{t("contacts.addressLine")}</p>
               <a
                 href={CONTACT_INFO.mapsUrl}
                 target="_blank"
@@ -239,7 +239,7 @@ export default function Contacts() {
               </a>
             </InfoBlock>
 
-            <InfoBlock label="Comms Channel" delay={0.2} inView={inView}>
+            <InfoBlock label={t("contacts.label.comms")} delay={0.2} inView={inView}>
               <a
                 href={`tel:${CONTACT_INFO.phone.replace(/[\s()]/g, "")}`}
                 className="group/phone relative inline-block text-sm font-medium text-foreground transition-all duration-300 hover:text-neon-red"
@@ -255,11 +255,11 @@ export default function Contacts() {
               </a>
             </InfoBlock>
 
-            <InfoBlock label="Schedule // Uptime" delay={0.3} inView={inView}>
-              <p className="text-sm font-medium text-foreground">{CONTACT_INFO.hours}</p>
+            <InfoBlock label={t("contacts.label.schedule")} delay={0.3} inView={inView}>
+              <p className="text-sm font-medium text-foreground">{t("contacts.hoursLine")}</p>
               <div className="mt-3 flex items-center gap-2">
                 <span className="h-1.5 w-1.5 animate-pulse-red bg-neon-red/50" style={{ boxShadow: "0 0 6px hsl(var(--neon-red) / 0.4)" }} />
-                <span className="font-mono text-[7px] uppercase tracking-[0.5em] text-neon-cyan/30">System Online</span>
+                <span className="font-mono text-[7px] uppercase tracking-[0.5em] text-neon-cyan/30">{t("contacts.systemOnline")}</span>
               </div>
             </InfoBlock>
 
@@ -270,15 +270,15 @@ export default function Contacts() {
               )}
               style={{ transitionDelay: inView ? "0.4s" : "0s" }}
             >
-              <span className="mb-4 block font-mono text-[7px] uppercase tracking-[0.6em] text-neon-cyan/30">Network Links</span>
+              <span className="mb-4 block font-mono text-[7px] uppercase tracking-[0.6em] text-neon-cyan/30">{t("contacts.label.network")}</span>
               <div className="flex items-center gap-3">
-                {SOCIALS.map((social) => (
+                {SOCIAL_LINKS.map((social) => (
                   <a
-                    key={social.label}
+                    key={social.labelKey}
                     href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={social.label}
+                    target={social.href.startsWith("tel:") ? undefined : "_blank"}
+                    rel={social.href.startsWith("tel:") ? undefined : "noopener noreferrer"}
+                    aria-label={t(social.labelKey)}
                     className="group/icon relative flex h-10 w-10 items-center justify-center border border-neon-red/15 bg-background text-muted-foreground transition-all duration-300 hover:border-neon-red/40 hover:text-neon-red"
                   >
                     {social.icon}
@@ -302,18 +302,18 @@ export default function Contacts() {
               <div className="flex items-center justify-between border-b border-neon-red/10 px-4 py-2">
                 <div className="flex items-center gap-2">
                   <span className="h-1.5 w-1.5 animate-pulse-red bg-neon-red/60" style={{ boxShadow: "0 0 4px hsl(var(--neon-red) / 0.3)" }} />
-                  <span className="font-mono text-[7px] uppercase tracking-[0.5em] text-neon-red/40">Location Terminal</span>
+                  <span className="font-mono text-[7px] uppercase tracking-[0.5em] text-neon-red/40">{t("contacts.label.mapHeader")}</span>
                 </div>
-                <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-muted-foreground/30">49.8376N // 24.0305E</span>
+                <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-muted-foreground/30">{t("contacts.coords")}</span>
               </div>
 
               <LazyMap />
 
               <div className="flex items-center justify-between border-t border-neon-red/10 px-4 py-2">
-                <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-muted-foreground/25">Signal Locked</span>
+                <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-muted-foreground/25">{t("contacts.label.signalOk")}</span>
                 <div className="flex items-center gap-2">
                   <span className="h-px w-4 bg-neon-cyan/15" />
-                  <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-neon-cyan/20">LVIV // UA</span>
+                  <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-neon-cyan/20">{t("contacts.label.mapFooterLviv")}</span>
                 </div>
               </div>
             </div>
@@ -332,7 +332,7 @@ export default function Contacts() {
           <div className="relative px-8 py-6 text-center">
             <div className="pointer-events-none absolute inset-0 border border-neon-red/20" />
             <div className="pointer-events-none absolute inset-[3px] border border-neon-red/10" />
-            <span className="mb-3 block font-mono text-[7px] uppercase tracking-[0.7em] text-neon-cyan/25">Ready to Deploy</span>
+            <span className="mb-3 block font-mono text-[7px] uppercase tracking-[0.7em] text-neon-cyan/25">{t("contacts.ctaPretitle")}</span>
             <a
               href={BOOKING_URL}
               target="_blank"
@@ -342,7 +342,7 @@ export default function Contacts() {
               <span className="h-1.5 w-1.5 animate-pulse-red bg-neon-red/60" style={{ boxShadow: "0 0 6px hsl(var(--neon-red) / 0.4)" }} />
               {t("contacts.bookNow")}
             </a>
-            <p className="mt-3 font-mono text-[7px] uppercase tracking-[0.5em] text-muted-foreground/30">Booking System // Online</p>
+            <p className="mt-3 font-mono text-[7px] uppercase tracking-[0.5em] text-muted-foreground/30">{t("contacts.bookingLine")}</p>
             <CornerBrackets />
           </div>
         </div>

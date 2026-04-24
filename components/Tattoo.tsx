@@ -27,9 +27,9 @@ export default function Tattoo() {
     offset: ["start end", "end start"],
   });
 
-  // Ink reveal: clip from 0% to 100% as user scrolls in
+  // Ink reveal: clip from 0% to 100% as user scrolls in (keep scale near 1 — large scale blurs 681px-wide source)
   const clipProgress = useTransform(scrollYProgress, [0, 0.5], [100, 0]);
-  const imageScale = useTransform(scrollYProgress, [0, 0.6], [1.15, 1]);
+  const imageScale = useTransform(scrollYProgress, [0, 0.6], [1.04, 1]);
 
   return (
     <section id="tattoo" className="relative px-6 py-24 md:py-32 lg:px-8">
@@ -38,6 +38,7 @@ export default function Tattoo() {
         <SectionHeading
           tag={t("tattoo.tag")}
           title={t("tattoo.title")}
+          description={t("tattoo.description")}
         />
 
         <div ref={ref} className="grid items-center gap-12 md:grid-cols-2 md:gap-16">
@@ -64,12 +65,12 @@ export default function Tattoo() {
               }}
             >
               <Image
-                src="/tattoo-preview.jpg"
-                alt="Tattoo work preview"
+                src="/images/tattoo/tattoo-hq-v2.jpg"
+                alt={t("tattoo.imageAlt")}
                 fill
-                sizes="(max-width: 768px) 100vw, 960px"
-                quality={90}
-                className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 800px"
+                quality={95}
+                className="object-cover object-[50%_28%] md:object-[50%_22%]"
               />
             </motion.div>
 
@@ -91,7 +92,7 @@ export default function Tattoo() {
                 }}
               />
               <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-neon-red/20">
-                INK SESSION
+                {t("tattoo.inkLabel")}
               </span>
             </div>
           </div>
