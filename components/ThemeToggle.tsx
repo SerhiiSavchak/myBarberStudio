@@ -41,7 +41,7 @@ export default function ThemeToggle({ variant = "desktop" }: ThemeToggleProps) {
     <button
       type="button"
       onClick={toggleTheme}
-      className="theme-toggle flex items-center gap-1.5 rounded border border-neon-red/15 bg-background/60 px-2.5 py-1.5 transition-all duration-300 hover:border-neon-red/30 hover:bg-background/80 cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-red/50"
+      className="theme-toggle flex items-center gap-1.5 rounded border border-neon-red/20 bg-card/85 px-2.5 py-1.5 transition-all duration-300 hover:border-neon-red/35 hover:bg-card cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-red/50"
       aria-label={theme === "dark" ? "Увімкнути світлу тему" : "Увімкнути темну тему"}
     >
       <span

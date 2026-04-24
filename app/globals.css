@@ -31,16 +31,72 @@
   opacity: 1;
   transform: translateX(0);
 }
+/* Horizontal L→R draw — transform only (no opacity:0 on the paint layer: compositing can drop the line) */
 .scroll-reveal-scale-x {
-  opacity: 0;
+  display: block;
   transform: scaleX(0);
   transform-origin: left center;
-  transition: opacity var(--motion-duration-slow) var(--motion-ease),
-    transform var(--motion-duration-slow) var(--motion-ease);
+  --section-line-dur: 0.5s;
+  transition: transform var(--section-line-dur) var(--motion-ease);
+  backface-visibility: hidden;
 }
 .scroll-reveal-scale-x.in-view {
-  opacity: 1;
   transform: scaleX(1);
+}
+/*
+ * .section-line-* utilities: optional stacked lines (e.g. short tag accent in SectionHeading).
+ * Full-width top “slider” lives on section-level .glitch-divider (dim track + ::after, keyframed).
+ */
+.section-line-wrap {
+  position: relative;
+  align-self: stretch;
+  min-width: 0;
+  overflow: hidden;
+}
+.section-line-wrap--sm {
+  width: 2.5rem;
+  height: 2px;
+  flex-shrink: 0;
+}
+.section-line-wrap--rule {
+  width: 100%;
+  height: 2px;
+}
+.section-line-base {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  background: linear-gradient(90deg, hsl(var(--neon-red) / 0.45) 0%, hsl(var(--neon-red) / 0.12) 55%, hsl(var(--neon-red) / 0.04) 100%);
+  box-shadow: 0 0 10px hsl(var(--neon-red) / 0.12);
+}
+.section-line-bright {
+  position: absolute;
+  inset: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: left center;
+  background: linear-gradient(90deg, hsl(var(--neon-red) / 0.85) 0%, hsl(var(--neon-red) / 0.45) 40%, transparent 100%);
+  box-shadow: 0 0 14px hsl(var(--neon-red) / 0.22);
+  pointer-events: none;
+  transition: transform 0.5s cubic-bezier(0.33, 0, 0.2, 1);
+  backface-visibility: hidden;
+}
+.section-line-bright--in {
+  transform: scaleX(1);
+}
+/* Top tag row: small red accent (decoupled from .scroll-reveal-x — always opaquely in layout) */
+.section-top-tag-line {
+  position: relative;
+  opacity: 1;
+  isolation: isolate;
+  align-self: center;
+  z-index: 0;
+}
+.section-top-tag-line__base {
+  background: linear-gradient(90deg, hsl(var(--neon-red) / 0.55) 0%, hsl(var(--neon-red) / 0.18) 65%, hsl(var(--neon-red) / 0.08) 100%) !important;
+  box-shadow: 0 0 10px hsl(var(--neon-red) / 0.22) !important;
 }
 .scroll-reveal-scale {
   opacity: 0;
@@ -78,10 +134,12 @@
   .scroll-reveal,
   .scroll-reveal-x,
   .scroll-reveal-scale-x,
+  .section-line-bright,
   .scroll-reveal-scale {
     opacity: 1;
     transform: none;
     transition: none;
+    visibility: visible;
   }
   .scroll-reveal-delay-1,
   .scroll-reveal-delay-2,
@@ -164,6 +222,47 @@
     line-height: 1.6;
   }
 
+  /*
+   * Landing: hide text caret + selection on static UI.
+   * App Router: no #__next root — html/body cover the page shell.
+   * Form controls and contenteditable are opted out; keyboard focus rings unchanged.
+   */
+  html,
+  body,
+  main,
+  section,
+  header,
+  footer,
+  nav,
+  div:not([contenteditable="true"]),
+  span,
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  a,
+  button,
+  label,
+  li,
+  svg,
+  canvas {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    caret-color: transparent;
+  }
+
+  /* Required: blocks inherit `user-select: none` from div/body; forms must still select & show caret */
+  :where(input, textarea, select, [contenteditable="true"]) {
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    user-select: text !important;
+    caret-color: auto !important;
+  }
+
   /* Small text — body font + increased letter-spacing */
   .text-small-tracking {
     letter-spacing: 0.08em;
@@ -184,6 +283,13 @@
 }
 
 @layer utilities {
+  /* Non-editable display copy: no selection caret in Caret Browsing; never use on form fields */
+  .ui-decorative {
+    -webkit-user-select: none;
+    user-select: none;
+    caret-color: transparent;
+  }
+
   /* Micro-feedback on tap (mobile) — 80–120ms, confirmation only */
   .tap-feedback {
     animation: tap-feedback-pulse 0.12s ease-out;
@@ -415,8 +521,16 @@
   to { opacity: 1; transform: translateY(0); }
 }
 @keyframes hero-entrance-scale {
-  from { opacity: 0; transform: scaleX(0); }
-  to { opacity: 1; transform: scaleX(1); }
+  from {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+    -webkit-clip-path: inset(0 100% 0 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0% 0 0);
+    -webkit-clip-path: inset(0 0% 0 0);
+  }
 }
 /* -webkit- for iOS Safari */
 @-webkit-keyframes hero-entrance-fade {
@@ -435,8 +549,16 @@
   to { opacity: 1; -webkit-transform: translateY(0); transform: translateY(0); }
 }
 @-webkit-keyframes hero-entrance-scale {
-  from { opacity: 0; -webkit-transform: scaleX(0); transform: scaleX(0); }
-  to { opacity: 1; -webkit-transform: scaleX(1); transform: scaleX(1); }
+  from {
+    opacity: 0;
+    -webkit-clip-path: inset(0 100% 0 0);
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    opacity: 1;
+    -webkit-clip-path: inset(0 0% 0 0);
+    clip-path: inset(0 0% 0 0);
+  }
 }
 
 /* Delays: synced with SiteLoader — loader hides when video ready, hero fades in quickly */
@@ -473,7 +595,8 @@
 }
 .hero-entrance-underline {
   opacity: 0;
-  transform-origin: left center;
+  clip-path: inset(0 100% 0 0);
+  -webkit-clip-path: inset(0 100% 0 0);
   -webkit-animation: hero-entrance-scale 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) 1.2s forwards;
   animation: hero-entrance-scale 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) 1.2s forwards;
 }
@@ -506,6 +629,8 @@
     animation: none;
     opacity: 1;
     transform: none;
+    clip-path: none;
+    -webkit-clip-path: none;
   }
 }
 
@@ -546,7 +671,15 @@
   height: 0 !important;
 }
 
-/* Hero: improved contrast for gray text on video */
+/* Hero: dark theme — body subtitle under title (higher contrast than muted-foreground) */
+html:not(.light) .hero-content-block .hero-entrance-subtitle.hero-subtitle {
+  color: hsl(0 0% 80%) !important;
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.95),
+    0 0 20px rgba(0, 0, 0, 0.65),
+    0 0 1px rgba(0, 0, 0, 1);
+}
+/* Hero: improved contrast for gray text on video (also applies where .hero-subtitle used) */
 .hero-subtitle {
   text-shadow: 0 1px 3px hsl(var(--background) / 0.9), 0 0 24px hsl(var(--background) / 0.6), 0 2px 4px rgba(0,0,0,0.5);
 }
@@ -746,26 +879,50 @@
   box-shadow: 0 2px 24px hsl(0 0% 0% / 0.06), 0 1px 3px hsl(0 0% 0% / 0.04);
 }
 
-/* Glitch section divider */
+/* Section top accent — full-width dim track; bright segment (pseudo) continuously slides L→R (not scroll / inView) */
+@keyframes section-top-slider-pass {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    /* % in translateX = width of the animated element; (1-frac)/frac maps parent travel to that unit */
+    transform: translateX(
+      calc(100% * (1 - var(--section-top-slider-frac, 0.145)) / var(--section-top-slider-frac, 0.145))
+    );
+  }
+}
+/* --section-top-slider-frac: bright segment width as a fraction of the track */
 .glitch-divider {
+  --section-top-slider-frac: 0.145;
   position: relative;
-  height: 1px;
-  background: hsl(var(--neon-red) / 0.2);
+  z-index: 0;
+  height: 2px;
   overflow: hidden;
+  pointer-events: none;
+  /* dim track: same language as .section-line-base */
+  background: linear-gradient(90deg, hsl(var(--neon-red) / 0.38) 0%, hsl(var(--neon-red) / 0.14) 50%, hsl(var(--neon-red) / 0.08) 100%);
+  box-shadow: 0 0 10px hsl(var(--neon-red) / 0.1);
+  isolation: isolate;
 }
 .glitch-divider::after {
   content: "";
   position: absolute;
-  left: 0;
-  top: 0;
-  width: 60px;
+  inset: 0 auto 0 0;
+  z-index: 1;
+  width: calc(100% * var(--section-top-slider-frac, 0.145));
   height: 100%;
-  background: hsl(var(--neon-red) / 0.8);
-  animation: glitch-line 4s linear infinite;
+  background: linear-gradient(90deg, hsl(var(--neon-red) / 0.9) 0%, hsl(var(--neon-red) / 0.48) 45%, transparent 100%);
+  box-shadow: 0 0 12px hsl(var(--neon-red) / 0.2);
+  transform: translateX(0);
+  animation: section-top-slider-pass 1.85s linear infinite;
+  will-change: transform;
 }
-@keyframes glitch-line {
-  0% { transform: translateX(-60px); }
-  100% { transform: translateX(100%); }
+@media (prefers-reduced-motion: reduce) {
+  .glitch-divider::after {
+    animation: none !important;
+    opacity: 0.55;
+    transform: translateX(15%);
+  }
 }
 
 /* Glitch heading — RGB split, visible burst */
@@ -842,18 +999,47 @@ button:focus-visible {
 
 /* Masters: light theme — stronger overlay for readable text on any image */
 .light .masters-card-overlay {
-  background: linear-gradient(to top, hsl(0 0% 100% / 0.95) 0%, hsl(0 0% 100% / 0.7) 35%, transparent 70%) !important;
+  background: linear-gradient(to top, hsl(0 0% 100% / 0.92) 0%, hsl(0 0% 100% / 0.45) 45%, transparent 75%) !important;
+}
+/* Light: cleaner portrait — remove heavy black hover wash; flatter, lighter bottom text panel */
+.light .masters-hover-wash {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none;
+}
+@media (min-width: 768px) {
+  .light .masters-group:hover .masters-card-image {
+    transform: none !important;
+  }
+}
+.light .masters-bottom-panel {
+  background: linear-gradient(
+    to top,
+    hsl(0 0% 100% / 0.99) 0%,
+    hsl(0 0% 100% / 0.9) 35%,
+    hsl(0 0% 100% / 0.55) 62%,
+    transparent 100%
+  ) !important;
+}
+.light .masters-bottom-dim {
+  display: none !important;
+  opacity: 0 !important;
 }
 /* Masters: light theme — names in red for contrast and brand */
 .light .masters-name {
   color: hsl(var(--neon-red));
+  text-shadow: 0 1px 0 hsl(0 0% 100% / 0.4);
 }
-/* Masters: light theme — title and description readable on light overlay */
+/* Masters: light theme — title and description: stronger legibility */
 .light .masters-title {
-  color: hsl(220 15% 18%);
+  color: hsl(220 18% 12%);
+  font-weight: 600;
+  text-shadow: none;
 }
 .light .master-description-flash {
-  color: hsl(220 12% 22%);
+  color: hsl(220 16% 14%);
+  font-weight: 500;
+  text-shadow: none;
 }
 
 /* Masters: flash animation for expand text — cyberpunk neon */

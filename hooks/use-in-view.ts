@@ -16,7 +16,7 @@ export interface UseInViewOptions {
 export function useInView<T extends Element = HTMLDivElement>(
   options: UseInViewOptions = {}
 ) {
-  const { once = true, amount = 0.25, margin = "-50px 0px", root = null } = options;
+  const { once = true, amount = 0, margin = "0px", root = null } = options;
   const ref = useRef<T>(null);
   const [inView, setInView] = useState(false);
 
@@ -33,18 +33,41 @@ export function useInView<T extends Element = HTMLDivElement>(
     [once]
   );
 
+  const syncInView = useCallback((el: T) => {
+    const r = el.getBoundingClientRect();
+    const vh = typeof window !== "undefined" ? window.innerHeight : 0;
+    const intersectsY = r.top < vh && r.bottom > 0;
+    const intersectsX = r.left < (typeof window !== "undefined" ? window.innerWidth : 0) && r.right > 0;
+    if (intersectsX && intersectsY) {
+      setInView(true);
+    }
+  }, []);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
+    syncInView(el);
+    const raf = requestAnimationFrame(() => syncInView(el));
+
+    const threshold =
+      amount === 0
+        ? 0
+        : amount <= 1
+          ? [0, amount, 1]
+          : amount;
+
     const observer = new IntersectionObserver(handleIntersect, {
       root,
       rootMargin: margin,
-      threshold: amount,
+      threshold: threshold as number | number[],
     });
     observer.observe(el);
-    return () => observer.disconnect();
-  }, [handleIntersect, margin, amount, root]);
+    return () => {
+      cancelAnimationFrame(raf);
+      observer.disconnect();
+    };
+  }, [handleIntersect, margin, amount, root, syncInView]);
 
   return { ref, inView };
 }

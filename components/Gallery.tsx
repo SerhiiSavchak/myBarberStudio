@@ -11,23 +11,26 @@ import type { TranslationKey } from "@/lib/i18n";
 import { useLockBodyScroll, setPendingScrollTo } from "@/hooks/use-lock-body-scroll";
 import { useSectionInView } from "@/hooks/use-section-in-view";
 import { SECTION_IDS } from "@/constants/routes";
+import { useElementWidth } from "@/hooks/use-element-width";
 
-const GALLERY_IMAGES = [
-  { src: "/gallery/gallery-1.jpg", alt: "Fade haircut", tag: "IMG-001" },
-  { src: "/gallery/gallery-2.jpg", alt: "Beard styling", tag: "IMG-002" },
-  { src: "/gallery/gallery-3.jpg", alt: "Textured cut", tag: "IMG-003" },
-  { src: "/gallery/gallery-4.jpg", alt: "Studio interior", tag: "IMG-004" },
-  { src: "/gallery/gallery-5.jpg", alt: "Barber tools", tag: "IMG-005" },
-  { src: "/gallery/gallery-6.jpg", alt: "Classic style", tag: "IMG-006" },
+const GALLERY_IMAGES: { src: string; altKey: "gallery.work01" | "gallery.work02" | "gallery.work03" | "gallery.work04" | "gallery.work05" | "gallery.work06"; tag: string }[] = [
+  { src: "/gallery/gallery-1.png", altKey: "gallery.work01", tag: "IMG-001" },
+  { src: "/gallery/gallery-2.png", altKey: "gallery.work02", tag: "IMG-002" },
+  { src: "/gallery/gallery-3.png", altKey: "gallery.work03", tag: "IMG-003" },
+  { src: "/gallery/gallery-4.png", altKey: "gallery.work04", tag: "IMG-004" },
+  { src: "/gallery/gallery-5.png", altKey: "gallery.work05", tag: "IMG-005" },
+  { src: "/gallery/gallery-6.png", altKey: "gallery.work06", tag: "IMG-006" },
 ];
 
 /* Cinematic lightbox modal */
 function GalleryModal({
   image,
   onClose,
+  t,
 }: {
   image: (typeof GALLERY_IMAGES)[0] | null;
   onClose: () => void;
+  t: (key: TranslationKey) => string;
 }) {
   const overlayRef = useRef<HTMLDivElement>(null);
   useLockBodyScroll(!!image);
@@ -93,7 +96,7 @@ function GalleryModal({
 
             <Image
               src={image.src}
-              alt={image.alt}
+              alt={t(image.altKey)}
               width={1920}
               height={1280}
               quality={95}
@@ -101,9 +104,7 @@ function GalleryModal({
               sizes="(max-width: 1280px) 100vw, 1280px"
             />
 
-            {/* Bottom label bar */}
-            <div className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-between bg-background/80 px-4 py-2 backdrop-blur-sm">
-              <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-foreground/60">{image.alt}</span>
+            <div className="absolute bottom-0 right-0 z-20 p-2">
               <span className="font-mono text-[7px] uppercase tracking-[0.4em] text-neon-red/40">{image.tag}</span>
             </div>
           </motion.div>
@@ -113,7 +114,7 @@ function GalleryModal({
             type="button"
             onClick={onClose}
             className="absolute right-6 top-6 z-[101] flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center border border-neon-red/20 bg-background/50 text-foreground transition-all duration-300 hover:border-neon-red/50 hover:text-neon-red backdrop-blur-sm cursor-pointer select-none"
-            aria-label="Закрити"
+            aria-label={t("gallery.closeModal")}
           >
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4">
               <path d="M4 4l8 8M12 4l-8 8" />
@@ -125,10 +126,11 @@ function GalleryModal({
   );
 }
 
+/* Original high-res pairs only — not the team/gallery grid PNGs (see /before-after/ assets). */
 const BEFORE_AFTER_CASES = [
-  { before: "/gallery/gallery-3.jpg", after: "/gallery/gallery-1.jpg", tag: "CASE-01" },
-  { before: "/gallery/gallery-2.jpg", after: "/gallery/gallery-4.jpg", tag: "CASE-02" },
-  { before: "/gallery/gallery-5.jpg", after: "/gallery/gallery-6.jpg", tag: "CASE-03" },
+  { before: "/before-after/gallery-3.jpg", after: "/before-after/gallery-1.jpg", tag: "CASE-01" },
+  { before: "/before-after/gallery-2.jpg", after: "/before-after/gallery-4.jpg", tag: "CASE-02" },
+  { before: "/before-after/gallery-5.jpg", after: "/before-after/gallery-6.jpg", tag: "CASE-03" },
 ];
 
 function BeforeAfterSlide({
@@ -146,8 +148,8 @@ function BeforeAfterSlide({
   containerRef: React.RefObject<HTMLDivElement | null>;
   t: (key: TranslationKey) => string;
 }) {
-  const [isDragging, setIsDragging] = useState(false);
   const dragging = useRef(false);
+  const containerW = useElementWidth(containerRef);
 
   const updatePos = useCallback(
     (clientX: number) => {
@@ -163,7 +165,6 @@ function BeforeAfterSlide({
   const handleDown = useCallback(
     (clientX: number) => {
       dragging.current = true;
-      setIsDragging(true);
       updatePos(clientX);
     },
     [updatePos]
@@ -171,7 +172,6 @@ function BeforeAfterSlide({
 
   const handleUp = useCallback(() => {
     dragging.current = false;
-    setIsDragging(false);
   }, []);
 
   useEffect(() => {
@@ -196,7 +196,7 @@ function BeforeAfterSlide({
   return (
     <div
       ref={containerRef}
-      className="tron-edge relative aspect-[16/10] cursor-ew-resize overflow-hidden bg-card select-none touch-manipulation"
+      className="tron-edge relative aspect-[16/10] cursor-ew-resize overflow-hidden bg-card select-none touch-manipulation outline-none focus:outline-none focus-visible:ring-0"
       onPointerDown={(e) => {
         e.currentTarget.setPointerCapture(e.pointerId);
         handleDown(e.clientX);
@@ -210,24 +210,27 @@ function BeforeAfterSlide({
       onPointerUp={handleUp}
       onPointerCancel={handleUp}
       role="slider"
-      aria-label="Before/After comparison"
+      aria-label={t("gallery.beforeAfterAria")}
       aria-valuenow={Math.round(pos)}
-      tabIndex={0}
+      tabIndex={-1}
     >
-      <Image src={after} alt="After" fill sizes="(max-width: 640px) 100vw, 50vw" quality={90} className="object-cover" />
-      <div className="absolute inset-0 overflow-hidden" style={{ width: `${pos}%` }}>
+      <Image src={after} alt={t("gallery.after")} fill sizes="(max-width: 640px) 100vw, 50vw" quality={90} className="object-cover" />
+      <div className="absolute inset-y-0 left-0 overflow-hidden" style={{ width: `${pos}%` }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={before}
-          alt="Before"
+          alt={t("gallery.before")}
           decoding="async"
           loading="lazy"
-          className="absolute inset-0 h-full object-cover"
-          style={{ width: `${containerRef.current?.offsetWidth || 800}px`, maxWidth: "none" }}
+          className="absolute left-0 top-0 h-full object-cover"
+          style={{
+            width: containerW > 0 ? `${containerW}px` : "100%",
+            maxWidth: "none",
+          }}
         />
       </div>
       <div
-        className="absolute top-0 bottom-0 z-10 w-[2px]"
+        className="absolute top-0 bottom-0 z-10 w-px -translate-x-1/2"
         style={{
           left: `${pos}%`,
           background: "hsl(var(--neon-red))",
@@ -235,7 +238,7 @@ function BeforeAfterSlide({
         }}
       >
         <div
-          className="absolute left-1/2 top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center border border-neon-red/40 bg-background/80 backdrop-blur-sm"
+          className="absolute left-1/2 top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center border border-neon-red/40 bg-card/90 text-foreground backdrop-blur-sm"
           style={{ boxShadow: "0 0 10px hsl(var(--neon-red) / 0.2)" }}
         >
           <svg viewBox="0 0 16 16" fill="none" stroke="hsl(var(--neon-red))" strokeWidth="1.5" className="h-4 w-4 opacity-70">
@@ -243,10 +246,10 @@ function BeforeAfterSlide({
           </svg>
         </div>
       </div>
-      <span className="absolute left-4 bottom-4 z-10 border border-neon-red/20 bg-background/60 px-3 py-1 font-mono text-[9px] uppercase tracking-[0.4em] text-neon-red/60 backdrop-blur-sm">
+      <span className="absolute left-4 bottom-4 z-10 border border-neon-red/20 bg-card/80 px-3 py-1 font-mono text-[9px] uppercase tracking-[0.4em] text-neon-red/60 backdrop-blur-sm">
         {t("gallery.before")}
       </span>
-      <span className="absolute right-4 bottom-4 z-10 border border-neon-red/20 bg-background/60 px-3 py-1 font-mono text-[9px] uppercase tracking-[0.4em] text-neon-red/60 backdrop-blur-sm">
+      <span className="absolute right-4 bottom-4 z-10 border border-neon-red/20 bg-card/80 px-3 py-1 font-mono text-[9px] uppercase tracking-[0.4em] text-neon-red/60 backdrop-blur-sm">
         {t("gallery.after")}
       </span>
     </div>
@@ -278,7 +281,13 @@ function BeforeAfterSlider() {
   );
 
   return (
-    <div className="relative" tabIndex={0} onKeyDown={handleKeyDown} role="region" aria-label="Before / After gallery">
+    <div
+      className="relative outline-none focus:outline-none focus-visible:ring-0"
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      role="region"
+      aria-label={t("gallery.beforeAfter")}
+    >
       <div className="overflow-hidden">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
@@ -287,7 +296,7 @@ function BeforeAfterSlider() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
-            className="relative"
+            className="relative w-full min-h-0"
           >
             <BeforeAfterSlide
               before={BEFORE_AFTER_CASES[activeIndex].before}
@@ -305,7 +314,7 @@ function BeforeAfterSlider() {
       </div>
 
       {/* Carousel controls */}
-      <div className="mt-4 flex items-center justify-between gap-4">
+      <div className="mt-3 flex items-center justify-between gap-4 pb-0">
         <div className="flex items-center gap-2">
           {BEFORE_AFTER_CASES.map((_, i) => (
             <button
@@ -327,7 +336,7 @@ function BeforeAfterSlider() {
             type="button"
             onClick={() => goTo(-1)}
             disabled={activeIndex === 0}
-            aria-label="Previous"
+            aria-label={t("gallery.prev")}
             className="flex h-9 w-9 items-center justify-center border border-neon-red/25 bg-background/60 text-neon-red/70 transition-colors hover:border-neon-red/50 hover:text-neon-red disabled:opacity-30 disabled:pointer-events-none"
           >
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4">
@@ -338,7 +347,7 @@ function BeforeAfterSlider() {
             type="button"
             onClick={() => goTo(1)}
             disabled={activeIndex === BEFORE_AFTER_CASES.length - 1}
-            aria-label="Next"
+            aria-label={t("gallery.next")}
             className="flex h-9 w-9 items-center justify-center border border-neon-red/25 bg-background/60 text-neon-red/70 transition-colors hover:border-neon-red/50 hover:text-neon-red disabled:opacity-30 disabled:pointer-events-none"
           >
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4">
@@ -356,11 +365,13 @@ function GalleryItem({
   index,
   inView,
   onSelect,
+  alt,
 }: {
   img: (typeof GALLERY_IMAGES)[0];
   index: number;
   inView: boolean;
   onSelect: () => void;
+  alt: string;
 }) {
   const { ref, tapHandlers } = useScrollSafeTap();
 
@@ -377,20 +388,14 @@ function GalleryItem({
     >
       <Image
         src={img.src}
-        alt={img.alt}
+        alt={alt}
         fill
         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 640px"
         quality={90}
-        className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+        className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
       />
-      <div className="absolute inset-0 bg-background/0 transition-colors duration-500 group-hover:bg-background/40" />
+      <div className="absolute inset-0 bg-background/0 transition-colors duration-500 group-hover:bg-background/30" />
       <div className="absolute inset-0 bg-neon-red/0 transition-all duration-500 group-hover:bg-neon-red/[0.04] mix-blend-overlay" />
-
-      <div className="absolute inset-x-0 bottom-0 translate-y-full p-4 transition-transform duration-500 group-hover:translate-y-0">
-        <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-foreground/70">
-          {img.alt}
-        </span>
-      </div>
 
       <span className="absolute top-3 right-3 font-mono text-[7px] uppercase tracking-[0.3em] text-neon-red/0 transition-all duration-500 group-hover:text-neon-red/30">
         {img.tag}
@@ -431,13 +436,14 @@ export default function Gallery() {
               index={i}
               inView={inView}
               onSelect={() => setSelectedImage(img)}
+              alt={t(img.altKey)}
             />
           ))}
         </div>
 
         {/* Before / After */}
-        <div className="mx-auto mt-16 max-w-3xl">
-          <div className="mb-4 flex items-center gap-3">
+        <div className="mx-auto mt-10 w-full max-w-3xl">
+          <div className="mb-3 flex items-center gap-3">
             <span
               className="block h-px w-8"
               style={{ background: "linear-gradient(90deg, hsl(var(--neon-red) / 0.5), transparent)" }}
@@ -451,7 +457,14 @@ export default function Gallery() {
       </div>
 
       {/* Lightbox Modal */}
-      <GalleryModal image={selectedImage} onClose={() => { setPendingScrollTo(null); setSelectedImage(null); }} />
+      <GalleryModal
+        image={selectedImage}
+        t={t}
+        onClose={() => {
+          setPendingScrollTo(null);
+          setSelectedImage(null);
+        }}
+      />
     </section>
   );
 }
