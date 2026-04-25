@@ -5,9 +5,11 @@ import { cn } from "@/lib/utils";
 
 interface ThemeToggleProps {
   variant?: "desktop" | "mobile";
+  /** Over Hero: light-on-video styling, no background bar */
+  overHero?: boolean;
 }
 
-export default function ThemeToggle({ variant = "desktop" }: ThemeToggleProps) {
+export default function ThemeToggle({ variant = "desktop", overHero = false }: ThemeToggleProps) {
   const { theme, toggleTheme } = useTheme();
 
   if (variant === "mobile") {
@@ -41,13 +43,22 @@ export default function ThemeToggle({ variant = "desktop" }: ThemeToggleProps) {
     <button
       type="button"
       onClick={toggleTheme}
-      className="theme-toggle flex items-center gap-1.5 rounded border border-neon-red/20 bg-card/85 px-2.5 py-1.5 transition-all duration-300 hover:border-neon-red/35 hover:bg-card cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-red/50"
+      className={cn(
+        "theme-toggle flex items-center gap-1.5 rounded border px-2.5 py-1.5 transition-all duration-300 cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-red/50",
+        overHero
+          ? "border-zinc-400/45 bg-transparent hover:border-zinc-300/60"
+          : "border-neon-red/20 bg-card/85 hover:border-neon-red/35 hover:bg-card"
+      )}
       aria-label={theme === "dark" ? "Увімкнути світлу тему" : "Увімкнути темну тему"}
     >
       <span
         className={cn(
           "flex h-6 w-6 items-center justify-center rounded transition-colors duration-300",
-          theme === "dark" ? "bg-neon-red/15 text-neon-red" : "text-muted-foreground"
+          overHero
+            ? "bg-transparent text-zinc-100"
+            : theme === "dark"
+              ? "bg-neon-red/15 text-neon-red"
+              : "text-muted-foreground"
         )}
       >
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-3.5 w-3.5">
@@ -57,7 +68,11 @@ export default function ThemeToggle({ variant = "desktop" }: ThemeToggleProps) {
       <span
         className={cn(
           "flex h-6 w-6 items-center justify-center rounded transition-colors duration-300",
-          theme === "light" ? "bg-neon-red/15 text-neon-red" : "text-muted-foreground"
+          overHero
+            ? "bg-transparent text-zinc-100"
+            : theme === "light"
+              ? "bg-neon-red/15 text-neon-red"
+              : "text-muted-foreground"
         )}
       >
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-3.5 w-3.5">

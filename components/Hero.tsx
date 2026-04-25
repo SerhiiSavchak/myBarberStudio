@@ -6,12 +6,11 @@ import { useHeroReady } from "@/lib/hero-ready-context";
 import { useHeroMediaLifecycle } from "@/hooks/use-hero-media-lifecycle";
 import { BOOKING_URL, SECTION_IDS } from "@/constants/routes";
 import { HERO_MEDIA_CONSTANTS } from "@/lib/hero-media-types";
-
-const VIDEO_SRC = "/hero-video.mp4";
-const POSTER_SRC = "/hero-poster.jpg";
-
-/** WebM is only rendered when the file exists (build-time check via env) */
-const WEBM_AVAILABLE = process.env.NEXT_PUBLIC_HERO_WEBM_AVAILABLE === "true";
+import {
+  HERO_VIDEO_DESKTOP_SRC,
+  HERO_VIDEO_MOBILE_SRC,
+  HERO_VIDEO_POSTER_SRC,
+} from "@/constants/media";
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -43,9 +42,10 @@ export default function Hero() {
     signalReadyWhenPosterLoaded();
   }, [signalReadyWhenPosterLoaded]);
 
-  const { videoCallbackRef, state: videoState } = useHeroMediaLifecycle({
-    loadDelayMs: HERO_MEDIA_CONSTANTS.VIDEO_LOAD_DELAY_MS,
-  });
+  const { mobileCallbackRef, desktopCallbackRef, state: videoState, hasRevealedVideo } =
+    useHeroMediaLifecycle({
+      loadDelayMs: HERO_MEDIA_CONSTANTS.VIDEO_LOAD_DELAY_MS,
+    });
 
   /* Native scroll-based parallax — throttled via rAF */
   useEffect(() => {
@@ -74,60 +74,77 @@ export default function Hero() {
 
   const bgY = `${scrollProgress * 50}%`;
   const contentY = `${scrollProgress * 30}%`;
-  const overlayOpacity = 0.55 + scrollProgress * 0.8;
+  /* Subtle legibility only — was heavy (0.55+); stripes/grain/scanlines removed in markup */
+  const overlayOpacity = 0.32 + scrollProgress * 0.22;
 
   return (
     <section
       ref={sectionRef}
       id="hero"
-      className="grain vignette scanlines relative flex min-h-[100dvh] min-h-[100svh] items-end overflow-hidden pb-28 pt-6 md:items-center md:pb-0 md:pt-0"
+      className="relative flex min-h-[100dvh] min-h-[100svh] items-end overflow-hidden pb-28 pt-6 md:items-center md:pb-0 md:pt-0"
     >
       {/* Video Background — poster first, video fades in when ready */}
       <div
         data-hero-video
-        data-video-ready={videoState === "playing"}
+        data-video-ready={hasRevealedVideo && videoState !== "fallback"}
         className="hero-entrance-video absolute inset-0 z-0"
         style={{ transform: `translateY(${bgY})` }}
       >
         <img
           ref={posterCallbackRef}
-          src={POSTER_SRC}
+          src={HERO_VIDEO_POSTER_SRC}
           alt=""
-          className="hero-video-poster absolute inset-0 h-full w-full object-cover object-center scale-110"
+          className="hero-video-poster absolute inset-0 h-full w-full object-cover object-center"
           aria-hidden
           fetchPriority="high"
           onLoad={handlePosterLoad}
           onError={handlePosterError}
         />
+        {/*
+          No native poster on <video>: browser can flash it at loop boundary; the <img> is the only first-load poster.
+        */}
         <video
-          ref={videoCallbackRef}
+          ref={mobileCallbackRef}
           autoPlay
           muted
           loop
           playsInline
-          preload="none"
-          poster={POSTER_SRC}
+          preload="auto"
           width={1920}
           height={1080}
           disablePictureInPicture
           disableRemotePlayback
-          className="hero-video absolute inset-0 h-full w-full object-cover scale-110"
-          style={videoState === "playing" ? undefined : { opacity: 0 }}
+          className="hero-video absolute inset-0 h-full w-full object-cover object-center md:hidden"
           aria-hidden
         >
-          {WEBM_AVAILABLE && <source src="/hero-video.webm" type="video/webm" />}
-          <source src={VIDEO_SRC} type="video/mp4" />
+          <source src={HERO_VIDEO_MOBILE_SRC} type="video/mp4" />
+        </video>
+        <video
+          ref={desktopCallbackRef}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          width={1920}
+          height={1080}
+          disablePictureInPicture
+          disableRemotePlayback
+          className="hero-video absolute inset-0 hidden h-full w-full object-cover object-center md:block"
+          aria-hidden
+        >
+          <source src={HERO_VIDEO_DESKTOP_SRC} type="video/mp4" />
         </video>
         <div
-          className="hero-video-overlay absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30"
+          className="hero-video-overlay pointer-events-none absolute inset-0 z-[2] bg-gradient-to-t from-background/50 via-background/15 to-transparent"
           style={{ opacity: overlayOpacity }}
         />
-        <div className="hero-video-tint absolute inset-0 bg-neon-red/[0.03] mix-blend-overlay" />
-        <div className="hero-video-light-cinematic pointer-events-none absolute inset-0 z-[1]" aria-hidden />
+        {/* Readability: darkens under fixed header + upper title, both themes; no video texture */}
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 z-[3] h-[min(55vh,36rem)] bg-gradient-to-b from-black/[0.68] from-[0%] via-black/30 via-[42%] to-transparent to-[100%]"
+          aria-hidden
+        />
       </div>
-
-      {/* Decorative: cyber grid overlay */}
-      <div className="pointer-events-none absolute inset-0 z-[1] cyber-grid opacity-30" />
 
       {/* Decorative: side TRON lines */}
       <div className="pointer-events-none absolute left-0 top-0 bottom-0 z-[2] w-px bg-gradient-to-b from-transparent via-neon-red/10 to-transparent" />

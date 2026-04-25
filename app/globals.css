@@ -671,9 +671,16 @@
   height: 0 !important;
 }
 
-/* Hero: dark theme — body subtitle under title (higher contrast than muted-foreground) */
+/* Dark theme Hero: first title line on variable video */
+html:not(.light) .hero-content-block .hero-entrance-line1 {
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.95),
+    0 0 32px rgba(0, 0, 0, 0.45),
+    0 0 1px rgba(0, 0, 0, 1);
+}
+/* Hero: dark theme — body subtitle */
 html:not(.light) .hero-content-block .hero-entrance-subtitle.hero-subtitle {
-  color: hsl(0 0% 80%) !important;
+  color: hsl(0 0% 92%) !important;
   text-shadow:
     0 1px 2px rgba(0, 0, 0, 0.95),
     0 0 20px rgba(0, 0, 0, 0.65),
@@ -681,37 +688,42 @@ html:not(.light) .hero-content-block .hero-entrance-subtitle.hero-subtitle {
 }
 /* Hero: improved contrast for gray text on video (also applies where .hero-subtitle used) */
 .hero-subtitle {
-  text-shadow: 0 1px 3px hsl(var(--background) / 0.9), 0 0 24px hsl(var(--background) / 0.6), 0 2px 4px rgba(0,0,0,0.5);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95), 0 0 24px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.55);
 }
 .hero-subtitle-line {
-  text-shadow: 0 1px 4px hsl(var(--background) / 0.8), 0 0 20px hsl(var(--background) / 0.5), 0 2px 6px rgba(0,0,0,0.4);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.92), 0 0 20px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.5);
 }
 /* Hero "Наші послуги" and similar CTAs — readable on dark video */
 .hero-cta-secondary {
-  color: hsl(0 0% 75%);
-  text-shadow: 0 1px 4px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5);
+  color: hsl(0 0% 86%);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.85), 0 0 20px rgba(0, 0, 0, 0.55);
 }
 .hero-cta-secondary:hover {
   color: hsl(var(--neon-red));
 }
-/* Light theme: hero text — readable in daylight, no white shadow */
-.light .hero-subtitle,
-.light .hero-subtitle-line {
-  text-shadow: none;
-}
-.light .hero-content-block h1,
-.light .hero-content-block .font-display {
-  text-shadow: none;
-}
+/* Light theme on Hero: light text on video (not dark text on variable frames) */
 .light .hero-content-block .hero-entrance-line1 {
-  color: hsl(0 0% 8%);
+  color: hsl(0 0% 100%);
+  text-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.9),
+    0 0 32px rgba(0, 0, 0, 0.45),
+    0 0 1px rgba(0, 0, 0, 0.8);
+}
+.light .hero-content-block .hero-subtitle-line,
+.light .hero-subtitle-line {
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9), 0 0 28px rgba(0, 0, 0, 0.4);
+}
+.light .hero-content-block .font-display {
+  text-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.88),
+    0 0 28px rgba(0, 0, 0, 0.35);
 }
 .light .hero-content-block .hero-subtitle-line {
   color: hsl(0 0% 100%);
 }
 .light .hero-subtitle {
-  color: hsl(0 0% 95%);
-  text-shadow: 0 1px 2px hsl(0 0% 0% / 0.4), 0 0 20px hsl(0 0% 0% / 0.2);
+  color: hsl(0 0% 100% / 0.9);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 22px rgba(0, 0, 0, 0.45);
 }
 .light .hero-cta-secondary {
   color: hsl(0 0% 92%);
@@ -730,9 +742,18 @@ html:not(.light) .hero-content-block .hero-entrance-subtitle.hero-subtitle {
   color: hsl(var(--neon-red) / 0.55);
 }
 
-/* Desktop header: light theme — nav text contrast */
+/* Default: light theme nav on normal (scroll) background */
 .light .header-nav-link {
   color: hsl(0 0% 15%);
+}
+
+/* Fixed over Hero: light nav in both themes (overrides .light .header-nav-link) */
+header.header-over-hero .header-nav-link {
+  color: hsl(0 0% 98% / 0.9) !important;
+}
+header.header-over-hero .header-nav-link:hover,
+header.header-over-hero .header-nav-link:focus-visible {
+  color: hsl(0 0% 100%) !important;
 }
 
 /* Section headings — prevent overflow */
@@ -748,23 +769,9 @@ html:not(.light) .hero-content-block .hero-entrance-subtitle.hero-subtitle {
   }
 }
 
-/* Hero: light theme — cinematic video treatment, no white washout */
+/* Hero: light theme — subtle darkening for text; no extra cinematic / blend layers */
 .light .hero-video-overlay {
-  background: linear-gradient(to top, hsl(0 0% 0% / 0.65) 0%, hsl(0 0% 0% / 0.35) 45%, transparent 80%) !important;
-}
-.light .hero-video-tint {
-  opacity: 0.15;
-}
-/* Cinematic dark overlay for light theme: darken video, preserve highlights, reduce glare */
-.hero-video-light-cinematic {
-  display: none;
-  z-index: 1;
-}
-.light .hero-video-light-cinematic {
-  display: block;
-  background:
-    radial-gradient(ellipse 85% 75% at 50% 45%, transparent 0%, hsl(0 0% 0% / 0.12) 55%, hsl(0 0% 0% / 0.38) 100%),
-    linear-gradient(to bottom, hsl(0 0% 0% / 0.18) 0%, transparent 40%, hsl(0 0% 0% / 0.12) 100%);
+  background: linear-gradient(to top, hsl(0 0% 0% / 0.42) 0%, hsl(0 0% 0% / 0.18) 48%, transparent 82%) !important;
 }
 .light .about-image-overlay {
   background: linear-gradient(to top, hsl(var(--background) / 0.3) 0%, transparent 50%) !important;

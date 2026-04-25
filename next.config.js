@@ -1,20 +1,9 @@
-/** @type {import('next').NextConfig} */
-const fs = require("fs");
-const path = require("path");
-
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.ANALYZE === "true",
 });
 
-/** WebM exists only after running pnpm video:optimize — avoid 404 when absent */
-const heroWebmPath = path.join(process.cwd(), "public", "hero-video.webm");
-const heroWebmAvailable = fs.existsSync(heroWebmPath);
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  env: {
-    NEXT_PUBLIC_HERO_WEBM_AVAILABLE: heroWebmAvailable ? "true" : "false",
-  },
   images: {
     unoptimized: false,
     /* 1400/1536: large team portraits in expanded flex (sizes ~1400px) */

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, useLayoutEffect } from "react";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/lib/locale-context";
 import { LOCALES } from "@/lib/i18n";
@@ -14,7 +15,9 @@ const SCROLL_THRESHOLD = 40;
 const SCROLL_ZONE = 60;
 
 export default function Header() {
+  const pathname = usePathname();
   const [scrollY, setScrollY] = useState(0);
+  const [heroReadabilityEndY, setHeroReadabilityEndY] = useState(700);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
@@ -29,6 +32,16 @@ export default function Header() {
     el.addEventListener("touchmove", prevent, { passive: false });
     return () => el.removeEventListener("touchmove", prevent);
   }, [mobileOpen, isAnimatingOut]);
+
+  useLayoutEffect(() => {
+    const sync = () => {
+      const h = window.innerHeight;
+      setHeroReadabilityEndY(Math.min(Math.round(h * 0.72), 900));
+    };
+    sync();
+    window.addEventListener("resize", sync);
+    return () => window.removeEventListener("resize", sync);
+  }, []);
 
   useEffect(() => {
     let rafId: number;
@@ -47,6 +60,9 @@ export default function Header() {
       window.removeEventListener("scrollend", onScroll);
     };
   }, []);
+
+  const isHome = pathname === "/";
+  const overHero = isHome && scrollY < heroReadabilityEndY;
 
   const scrolled = scrollY > SCROLL_THRESHOLD;
   const progress = Math.min((scrollY - SCROLL_THRESHOLD) / SCROLL_ZONE, 1);
@@ -75,7 +91,10 @@ export default function Header() {
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50 transition-[background-color,backdrop-filter,border-color] duration-200 ease-out"
+      className={cn(
+        "fixed top-0 left-0 right-0 z-50 transition-[background-color,backdrop-filter,border-color] duration-200 ease-out",
+        overHero && "header-over-hero"
+      )}
       style={{
         backgroundColor: bgOpacity > 0 ? `hsl(var(--background) / ${bgOpacity})` : "transparent",
         backdropFilter: `blur(${blurPx}px)`,
@@ -104,9 +123,14 @@ export default function Header() {
               className="drop-shadow-[0_0_4px_hsl(var(--neon-red)/0.5)]"
             />
           </svg>
-          <span className="hidden text-sm font-bold tracking-[0.15em] uppercase text-foreground sm:inline">
+          <span
+            className={cn(
+              "hidden text-sm font-bold tracking-[0.15em] uppercase sm:inline",
+              overHero ? "text-zinc-100" : "text-foreground"
+            )}
+          >
             {"M&Y"}
-            <span className="text-neon-red/70"> Barber</span>
+            <span className={overHero ? "text-neon-red" : "text-neon-red/70"}> Barber</span>
           </span>
         </a>
 
@@ -116,7 +140,12 @@ export default function Header() {
             <li key={link.href}>
               <a
                 href={link.href}
-                className="header-nav-link group relative select-none font-body text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-300 hover:text-foreground cursor-pointer"
+                className={cn(
+                  "header-nav-link group relative select-none font-body text-[11px] font-medium uppercase tracking-[0.2em] transition-colors duration-300 cursor-pointer",
+                  overHero
+                    ? "text-zinc-100/90 hover:text-white"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
               >
                 {t(link.key)}
                 {/* Scanning underline */}
@@ -140,7 +169,12 @@ export default function Header() {
             <button
               type="button"
               onClick={() => setLangOpen(!langOpen)}
-              className="flex items-center gap-1.5 border border-neon-red/20 bg-card/85 px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground transition-all duration-300 hover:border-neon-red/35 hover:bg-card hover:text-foreground cursor-pointer select-none"
+              className={cn(
+                "flex items-center gap-1.5 border px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.3em] transition-all duration-300 cursor-pointer select-none",
+                overHero
+                  ? "border-zinc-400/50 bg-transparent text-zinc-100 hover:border-zinc-200 hover:text-white"
+                  : "border-neon-red/20 bg-card/85 text-muted-foreground hover:border-neon-red/35 hover:bg-card hover:text-foreground"
+              )}
             >
               {currentLocale.short}
               <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" className={cn("h-2.5 w-2.5 transition-transform duration-200", langOpen && "rotate-180")}>
@@ -167,10 +201,10 @@ export default function Header() {
           </div>
 
           {/* Theme Toggle */}
-          <ThemeToggle variant="desktop" />
+          <ThemeToggle variant="desktop" overHero={overHero} />
 
           {/* Futuristic separator */}
-          <div className="mx-1 h-5 w-px bg-neon-red/10" />
+          <div className={cn("mx-1 h-5 w-px", overHero ? "bg-zinc-400/30" : "bg-neon-red/10")} />
 
           {/* CTA */}
           <a
@@ -196,9 +230,27 @@ export default function Header() {
           aria-label={mobileOpen ? "Закрити меню" : "Відкрити меню"}
           aria-expanded={mobileOpen}
         >
-          <span className={cn("block h-px w-6 bg-neon-red transition-all duration-300", mobileOpen && "translate-y-[7px] rotate-45")} />
-          <span className={cn("block h-px w-6 bg-neon-red transition-all duration-300", mobileOpen && "opacity-0")} />
-          <span className={cn("block h-px w-6 bg-neon-red transition-all duration-300", mobileOpen && "-translate-y-[7px] -rotate-45")} />
+          <span
+            className={cn(
+              "block h-px w-6 transition-all duration-300",
+              overHero && !mobileOpen ? "bg-zinc-100" : "bg-neon-red",
+              mobileOpen && "translate-y-[7px] rotate-45"
+            )}
+          />
+          <span
+            className={cn(
+              "block h-px w-6 transition-all duration-300",
+              overHero && !mobileOpen ? "bg-zinc-100" : "bg-neon-red",
+              mobileOpen && "opacity-0"
+            )}
+          />
+          <span
+            className={cn(
+              "block h-px w-6 transition-all duration-300",
+              overHero && !mobileOpen ? "bg-zinc-100" : "bg-neon-red",
+              mobileOpen && "-translate-y-[7px] -rotate-45"
+            )}
+          />
         </button>
       </nav>
 
