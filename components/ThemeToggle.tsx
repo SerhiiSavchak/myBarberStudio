@@ -55,7 +55,9 @@ export default function ThemeToggle({ variant = "desktop", overHero = false }: T
         className={cn(
           "flex h-6 w-6 items-center justify-center rounded transition-colors duration-300",
           overHero
-            ? "bg-transparent text-zinc-100"
+            ? theme === "dark"
+              ? "bg-neon-red/30 text-neon-red shadow-[0_0_12px_hsl(var(--neon-red)/0.35)]"
+              : "bg-white/10 text-zinc-100/55"
             : theme === "dark"
               ? "bg-neon-red/15 text-neon-red"
               : "text-muted-foreground"
@@ -69,7 +71,9 @@ export default function ThemeToggle({ variant = "desktop", overHero = false }: T
         className={cn(
           "flex h-6 w-6 items-center justify-center rounded transition-colors duration-300",
           overHero
-            ? "bg-transparent text-zinc-100"
+            ? theme === "light"
+              ? "bg-neon-red/30 text-neon-red shadow-[0_0_12px_hsl(var(--neon-red)/0.35)]"
+              : "bg-white/10 text-zinc-100/55"
             : theme === "light"
               ? "bg-neon-red/15 text-neon-red"
               : "text-muted-foreground"

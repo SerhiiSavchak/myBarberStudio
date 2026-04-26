@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef, useLayoutEffect } from "react";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/lib/locale-context";
 import { LOCALES } from "@/lib/i18n";
 import { BOOKING_URL, NAV_LINKS } from "@/constants/routes";
+import { useTheme } from "@/lib/theme-context";
 import { useLockBodyScroll, setPendingScrollTo } from "@/hooks/use-lock-body-scroll";
 import ThemeToggle from "./ThemeToggle";
 
@@ -24,6 +26,7 @@ export default function Header() {
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const menuOverlayRef = useRef<HTMLDivElement>(null);
   const { locale, setLocale, t } = useLocale();
+  const { theme } = useTheme();
 
   useEffect(() => {
     const el = menuOverlayRef.current;
@@ -63,6 +66,8 @@ export default function Header() {
 
   const isHome = pathname === "/";
   const overHero = isHome && scrollY < heroReadabilityEndY;
+  /** Light theme on solid/light header: dark-detail logo so white shapes stay visible on --background */
+  const useLightHeaderLogo = theme === "light" && !overHero;
 
   const scrolled = scrollY > SCROLL_THRESHOLD;
   const progress = Math.min((scrollY - SCROLL_THRESHOLD) / SCROLL_ZONE, 1);
@@ -111,26 +116,38 @@ export default function Header() {
         }}
       />
 
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-0 sm:py-2.5 lg:py-3 lg:px-8">
         {/* Logo */}
-        <a href="/" className="group flex select-none items-center gap-3 cursor-pointer" onClick={(e) => { if (window.location.pathname === "/") { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); } }}>
-          <svg viewBox="0 0 24 24" className="h-7 w-7" aria-hidden="true">
-            <path
-              d="M12 2L22 20H2Z"
-              fill="none"
-              stroke="hsl(var(--neon-red))"
-              strokeWidth="1"
-              className="drop-shadow-[0_0_4px_hsl(var(--neon-red)/0.5)]"
+        <a
+          href="/"
+          className="group flex select-none items-center cursor-pointer"
+          aria-label="M&Y Barber Studio"
+          onClick={(e) => { if (window.location.pathname === "/") { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); } }}
+        >
+          <span className="relative h-28 w-28 shrink-0 overflow-visible sm:h-24 sm:w-24">
+            <Image
+              src="/images/logo/header-logo-dark.png"
+              alt=""
+              fill
+              className={cn(
+                "origin-center scale-[1.28] object-contain object-center transition-opacity duration-200",
+                useLightHeaderLogo ? "opacity-0" : "opacity-100"
+              )}
+              sizes="(min-width: 640px) 120px, 112px"
+              priority
+              aria-hidden
             />
-          </svg>
-          <span
-            className={cn(
-              "hidden text-sm font-bold tracking-[0.15em] uppercase sm:inline",
-              overHero ? "text-zinc-100" : "text-foreground"
-            )}
-          >
-            {"M&Y"}
-            <span className={overHero ? "text-neon-red" : "text-neon-red/70"}> Barber</span>
+            <Image
+              src="/images/logo/header-logo-light.png"
+              alt=""
+              fill
+              className={cn(
+                "origin-center scale-[1.28] object-contain object-center transition-opacity duration-200",
+                useLightHeaderLogo ? "opacity-100" : "opacity-0"
+              )}
+              sizes="(min-width: 640px) 120px, 112px"
+              aria-hidden
+            />
           </span>
         </a>
 
@@ -226,29 +243,29 @@ export default function Header() {
               closeMenu();
             } else setMobileOpen(true);
           }}
-          className="relative z-[60] flex h-10 w-10 min-w-[44px] min-h-[44px] flex-col items-center justify-center gap-1.5 lg:hidden cursor-pointer select-none touch-manipulation"
+          className="relative z-[60] flex min-h-28 min-w-28 flex-col items-center justify-center gap-2.5 rounded-md sm:min-h-24 sm:min-w-24 sm:gap-2.5 lg:hidden cursor-pointer select-none touch-manipulation active:bg-foreground/5"
           aria-label={mobileOpen ? "Закрити меню" : "Відкрити меню"}
           aria-expanded={mobileOpen}
         >
           <span
             className={cn(
-              "block h-px w-6 transition-all duration-300",
+              "block h-[3px] w-11 rounded-[1px] transition-all duration-300 sm:h-[3px] sm:w-10",
               overHero && !mobileOpen ? "bg-zinc-100" : "bg-neon-red",
-              mobileOpen && "translate-y-[7px] rotate-45"
+              mobileOpen && "translate-y-[12px] rotate-45 sm:translate-y-[11px]"
             )}
           />
           <span
             className={cn(
-              "block h-px w-6 transition-all duration-300",
+              "block h-[3px] w-11 rounded-[1px] transition-all duration-300 sm:h-[3px] sm:w-10",
               overHero && !mobileOpen ? "bg-zinc-100" : "bg-neon-red",
               mobileOpen && "opacity-0"
             )}
           />
           <span
             className={cn(
-              "block h-px w-6 transition-all duration-300",
+              "block h-[3px] w-11 rounded-[1px] transition-all duration-300 sm:h-[3px] sm:w-10",
               overHero && !mobileOpen ? "bg-zinc-100" : "bg-neon-red",
-              mobileOpen && "-translate-y-[7px] -rotate-45"
+              mobileOpen && "-translate-y-[12px] -rotate-45 sm:-translate-y-[11px]"
             )}
           />
         </button>
