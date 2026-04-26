@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export interface UseInViewOptions {
   once?: boolean;
@@ -12,13 +12,21 @@ export interface UseInViewOptions {
 /**
  * Native IntersectionObserver hook — no framer-motion dependency.
  * Use for scroll-triggered reveals that can be done with CSS + class toggles.
+ *
+ * The returned `ref` is a **callback ref** (not useRef) so the observer re-attaches when the
+ * DOM node mounts after conditional render (e.g. mobile-only blocks). A plain ref can stay null
+ * on the first effect run and never observe the element.
  */
 export function useInView<T extends Element = HTMLDivElement>(
   options: UseInViewOptions = {}
 ) {
   const { once = true, amount = 0, margin = "0px", root = null } = options;
-  const ref = useRef<T>(null);
+  const [node, setNode] = useState<T | null>(null);
   const [inView, setInView] = useState(false);
+
+  const setRef = useCallback((el: T | null) => {
+    setNode(el);
+  }, []);
 
   const handleIntersect = useCallback(
     (entries: IntersectionObserverEntry[]) => {
@@ -40,15 +48,21 @@ export function useInView<T extends Element = HTMLDivElement>(
     const intersectsX = r.left < (typeof window !== "undefined" ? window.innerWidth : 0) && r.right > 0;
     if (intersectsX && intersectsY) {
       setInView(true);
+    } else if (!once) {
+      setInView(false);
     }
-  }, []);
+  }, [once]);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
+    if (!node) {
+      if (!once) {
+        setInView(false);
+      }
+      return;
+    }
 
-    syncInView(el);
-    const raf = requestAnimationFrame(() => syncInView(el));
+    syncInView(node);
+    const raf = requestAnimationFrame(() => syncInView(node));
 
     const threshold =
       amount === 0
@@ -62,12 +76,12 @@ export function useInView<T extends Element = HTMLDivElement>(
       rootMargin: margin,
       threshold: threshold as number | number[],
     });
-    observer.observe(el);
+    observer.observe(node);
     return () => {
       cancelAnimationFrame(raf);
       observer.disconnect();
     };
-  }, [handleIntersect, margin, amount, root, syncInView]);
+  }, [node, handleIntersect, margin, amount, root, once, syncInView]);
 
-  return { ref, inView };
+  return { ref: setRef, inView };
 }

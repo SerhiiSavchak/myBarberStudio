@@ -116,7 +116,7 @@ export default function Header() {
         }}
       />
 
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-0 sm:py-2.5 lg:py-3 lg:px-8">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-0 sm:py-2.5 lg:py-1.5 lg:px-8">
         {/* Logo */}
         <a
           href="/"
@@ -124,7 +124,7 @@ export default function Header() {
           aria-label="M&Y Barber Studio"
           onClick={(e) => { if (window.location.pathname === "/") { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); } }}
         >
-          <span className="relative h-28 w-28 shrink-0 overflow-visible sm:h-24 sm:w-24">
+          <span className="relative h-24 w-24 shrink-0 overflow-visible">
             <Image
               src="/images/logo/header-logo-dark.png"
               alt=""
@@ -133,7 +133,7 @@ export default function Header() {
                 "origin-center scale-[1.28] object-contain object-center transition-opacity duration-200",
                 useLightHeaderLogo ? "opacity-0" : "opacity-100"
               )}
-              sizes="(min-width: 640px) 120px, 112px"
+              sizes="(max-width: 639px) 96px, 120px"
               priority
               aria-hidden
             />
@@ -145,7 +145,7 @@ export default function Header() {
                 "origin-center scale-[1.28] object-contain object-center transition-opacity duration-200",
                 useLightHeaderLogo ? "opacity-100" : "opacity-0"
               )}
-              sizes="(min-width: 640px) 120px, 112px"
+              sizes="(max-width: 639px) 96px, 120px"
               aria-hidden
             />
           </span>

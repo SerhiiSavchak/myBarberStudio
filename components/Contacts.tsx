@@ -190,7 +190,7 @@ export default function Contacts() {
   return (
     <section
       id={SECTION_IDS.contacts}
-      className="contacts-section relative overflow-hidden px-6 py-24 md:py-32 lg:px-8"
+      className="contacts-section relative overflow-hidden px-6 py-12 md:py-16 lg:px-8"
       style={{ background: "linear-gradient(180deg, hsl(var(--background)) 0%, hsl(0 0% 2%) 100%)" }}
     >
       <div className="absolute left-0 right-0 top-0 glitch-divider" />

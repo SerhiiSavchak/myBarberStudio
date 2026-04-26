@@ -60,6 +60,76 @@ const dict = {
     en: "M&Y Barber Studio interior",
     ru: "Интерьер M&Y Barber Studio",
   },
+  "about.slideAlt.1": {
+    uk: "Сучасний інтер'єр M&Y Barber Studio з кирпичними стінами та преміум обладнанням",
+    en: "M&Y Barber Studio interior with brick walls and premium equipment",
+    ru: "Современный интерьер M&Y Barber Studio с кирпичными стенами и премиум оборудованием",
+  },
+  "about.slideAlt.2": {
+    uk: "Зона миття волосся: крісла та неоновий логотип M&Y на кирпичній стіні",
+    en: "Hair-wash stations and glowing M&Y logo on exposed brick at M&Y Barber Studio",
+    ru: "Зона мытья: кресла и неоновый логотип M&Y на кирпичной стене",
+  },
+  "about.slideAlt.3": {
+    uk: "Настінний декор: неоновий напис M&Y Barber Studio на сітці з рослинами",
+    en: "Neon M&Y Barber Studio sign on a metal plant grid at the studio",
+    ru: "Неоновая вывеска M&Y Barber Studio и зелень на сетке",
+  },
+  "about.slideAlt.4": {
+    uk: "Робочі місця: два барбер-крісла та дерев'яна стійка біля кирпичної стіни",
+    en: "Two barber chairs and a wood workstation along a red-brick wall",
+    ru: "Два кресла и длинная деревянная стойка у кирпичной стены",
+  },
+  "about.slideAlt.5": {
+    uk: "Преміальна вітрина з косметикою на підсвічених полицях",
+    en: "Premium grooming products on illuminated wood shelves in the studio",
+    ru: "Премиальная косметика на подсвеченных деревянных полках",
+  },
+  "about.slideAlt.6": {
+    uk: "Крупний план полиць з косметикою DEPOT та STMNT на кирпичній стіні",
+    en: "Close-up of professional styling products on lit shelves at M&Y Barber Studio",
+    ru: "Крупный план косметики на подсвеченных полках",
+  },
+  "about.slideAlt.7": {
+    uk: "Рецепція M&Y Barber Studio: стійка, рослини, неонова вивіска",
+    en: "Reception desk, plants, and neon M&Y sign at the barber studio",
+    ru: "Ресепшн, растения и неоновая вывеска M&Y",
+  },
+  "about.carouselRegion": {
+    uk: "Галерея фото інтер'єру M&Y Barber Studio",
+    en: "M&Y Barber Studio interior photo gallery",
+    ru: "Галерея фотографий интерьера M&Y Barber Studio",
+  },
+  "about.slideIndicatorsLabel": {
+    uk: "Перемикання слайдів",
+    en: "Slide selection",
+    ru: "Переключение слайдов",
+  },
+  "about.carouselNavLabel": {
+    uk: "Навігація по слайдах інтер'єру",
+    en: "Interior slide navigation",
+    ru: "Навигация по слайдам интерьера",
+  },
+  "about.cardDotsLabel": {
+    uk: "Вибір слайду",
+    en: "Choose a slide",
+    ru: "Выбор слайда",
+  },
+  "masters.carouselRegion": {
+    uk: "Команда M&Y Barber Studio, горизонтальна прокрутка",
+    en: "M&Y Barber Studio team, horizontal scroll",
+    ru: "Команда M&Y Barber Studio, прокрутка по горизонтали",
+  },
+  "masters.carouselNavLabel": {
+    uk: "Перемикання карток команди",
+    en: "Team card navigation",
+    ru: "Переключение карточек команды",
+  },
+  "masters.cardDotsLabel": {
+    uk: "Вибір картки",
+    en: "Choose a card",
+    ru: "Выбор карточки",
+  },
 
   // Services
   "services.tag": { uk: "Послуги", en: "Services", ru: "Услуги" },
@@ -177,17 +247,17 @@ const dict = {
     en: "Custom tattooing in a sterile setup, with sketch consultation and careful execution: from the idea to a finished piece you will wear for years.",
     ru: "Авторская татуировка в стерильных условиях, консультация с эскизом и аккуратная реализация: от задумы до готовой работы, с которой ты проживёшь не один год.",
   },
-  "masters.illia.title": { uk: "Експерт", en: "Expert", ru: "Эксперт" },
+  "masters.illia.title": { uk: "Топ майстер", en: "Top Master", ru: "Топ мастер" },
   "masters.illia.desc": {
-    uk: "Експерт, який уважно ставиться до деталей і створює сучасні, охайні образи з урахуванням побажань клієнта.",
-    en: "An expert who is meticulous with detail and creates clean, modern looks tailored to each client.",
-    ru: "Эксперт, внимательный к деталям, создающий современные аккуратные образы с учётом пожеланий клиента.",
+    uk: "Топ майстер із впевненим стилем, уважним підходом до деталей і сильним відчуттям форми. Допомагає створити образ, який виглядає охайно, сучасно й підкреслює індивідуальність.",
+    en: "A top master with a confident style, strong attention to detail, and a sharp sense of shape. Helps create a clean, modern look that highlights each client’s individuality.",
+    ru: "Топ мастер с уверенным стилем, внимательным подходом к деталям и сильным чувством формы. Помогает создать образ, который выглядит аккуратно, современно и подчёркивает индивидуальность.",
   },
-  "masters.iryna.title": { uk: "Експерт", en: "Expert", ru: "Эксперт" },
+  "masters.iryna.title": { uk: "Адміністратор", en: "Administrator", ru: "Администратор" },
   "masters.iryna.desc": {
-    uk: "Майстриня з тонким відчуттям стилю, яка поєднує професійний підхід, акуратність і комфортну атмосферу.",
-    en: "A stylist with a sharp sense of style, combining a professional approach, precision, and a relaxed atmosphere.",
-    ru: "Мастер с тонким чувством стиля, сочетающая профессиональный подход, аккуратность и комфортную атмосферу.",
+    uk: "Адміністраторка, яка допомагає з записом, комунікацією та комфортом гостей у студії. Відповідає за порядок, увагу до деталей і приємний сервіс.",
+    en: "An administrator who helps with bookings, communication, and guest comfort in the studio. She keeps things organized, attentive, and welcoming.",
+    ru: "Администратор, которая помогает с записью, коммуникацией и комфортом гостей в студии. Отвечает за порядок, внимание к деталям и приятный сервис.",
   },
   "masters.mariia.title": { uk: "Адміністратор", en: "Admin", ru: "Администратор" },
   "masters.mariia.desc": {
@@ -205,7 +275,7 @@ const dict = {
   "masters.n.oleh": { uk: "Олег", en: "Oleh", ru: "Олег" },
   "masters.n.roman": { uk: "Роман", en: "Roman", ru: "Роман" },
   "masters.n.serhii": { uk: "Сергій", en: "Serhii", ru: "Сергей" },
-  "masters.n.illia": { uk: "Ілля", en: "Illia", ru: "Илля" },
+  "masters.n.illia": { uk: "Ілля", en: "Illia", ru: "Илья" },
   "masters.n.iryna": { uk: "Ірина", en: "Iryna", ru: "Ирина" },
   "masters.n.mariia": { uk: "Марія", en: "Mariia", ru: "Мария" },
   "masters.n.vita": { uk: "Віта", en: "Vita", ru: "Вита" },
@@ -213,8 +283,8 @@ const dict = {
   "masters.portrait.oleh": { uk: "Барбер Олег", en: "Barber Oleh", ru: "Барбер Олег" },
   "masters.portrait.roman": { uk: "Барбер Роман", en: "Barber Roman", ru: "Барбер Роман" },
   "masters.portrait.serhii": { uk: "Тату-майстер Сергій", en: "Tattoo artist Serhii", ru: "Тату-мастер Сергей" },
-  "masters.portrait.illia": { uk: "Барбер Ілля", en: "Barber Illia", ru: "Барбер Илля" },
-  "masters.portrait.iryna": { uk: "Барбер Ірина", en: "Barber Iryna", ru: "Барбер Ирина" },
+  "masters.portrait.illia": { uk: "Топ майстер Ілля", en: "Top master Illia", ru: "Топ мастер Илья" },
+  "masters.portrait.iryna": { uk: "Адміністраторка Ірина", en: "Administrator Iryna", ru: "Администратор Ирина" },
   "masters.portrait.mariia": { uk: "Адміністратор Марія", en: "Mariia, admin", ru: "Администратор Мария" },
   "masters.portrait.vita": { uk: "Барбер Віта", en: "Barber Vita", ru: "Барбер Вита" },
 
@@ -226,17 +296,13 @@ const dict = {
     en: "Every haircut tells its own story.",
     ru: "Каждая стрижка рассказывает свою историю.",
   },
-  "gallery.before": { uk: "До", en: "Before", ru: "До" },
-  "gallery.after": { uk: "Після", en: "After", ru: "После" },
-  "gallery.beforeAfter": { uk: "До / Після", en: "Before / After", ru: "До / После" },
   "gallery.work01": { uk: "Інтер'єр студії", en: "Studio interior", ru: "Интерьер студии" },
   "gallery.work02": { uk: "Робота барбера", en: "Barber at work", ru: "Барбер за работой" },
   "gallery.work03": { uk: "Наші роботи", en: "Our work", ru: "Наши работы" },
-  "gallery.work04": { uk: "Процес у студії", en: "In the studio", ru: "В студии" },
+  "gallery.work04": { uk: "Майстер за роботою — стрижка в студії M&Y", en: "Barber at work during a cut at the studio", ru: "Мастер за работой — стрижка в студии M&Y" },
   "gallery.work05": { uk: "Команда студії", en: "Studio team", ru: "Команда студии" },
   "gallery.work06": { uk: "Робота з бородою", en: "Beard work", ru: "Работа с бородой" },
   "gallery.closeModal": { uk: "Закрити", en: "Close", ru: "Закрыть" },
-  "gallery.beforeAfterAria": { uk: "Порівняння до і після", en: "Before and after comparison", ru: "Сравнение до и после" },
 
   // Reviews
   "reviews.tag": { uk: "Відгуки", en: "Reviews", ru: "Отзывы" },
@@ -316,6 +382,9 @@ const dict = {
   "contacts.social.phone": { uk: "Телефон", en: "Phone", ru: "Телефон" },
   "gallery.prev": { uk: "Попередній", en: "Previous", ru: "Предыдущий" },
   "gallery.next": { uk: "Наступний", en: "Next", ru: "Следующий" },
+  /** Image/slide carousels — distinct from gallery grid prev/next */
+  "carousel.prevSlide": { uk: "Попередній слайд", en: "Previous slide", ru: "Предыдущий слайд" },
+  "carousel.nextSlide": { uk: "Наступний слайд", en: "Next slide", ru: "Следующий слайд" },
 
   // Services & Prices (detailed)
   "pricing.tag": { uk: "Послуги та ціни", en: "Services & Prices", ru: "Услуги и цены" },

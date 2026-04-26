@@ -32,7 +32,7 @@ export default function Tattoo() {
   const imageScale = useTransform(scrollYProgress, [0, 0.6], [1.04, 1]);
 
   return (
-    <section id="tattoo" className="relative px-6 py-24 md:py-32 lg:px-8">
+    <section id="tattoo" className="relative px-6 py-12 md:py-16 lg:px-8">
       <div className="absolute top-0 left-0 right-0 glitch-divider" />
       <div className="mx-auto max-w-7xl pt-6">
         <SectionHeading
@@ -153,7 +153,7 @@ export default function Tattoo() {
               href={BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="neon-btn inline-flex w-fit items-center justify-center gap-2 px-8 py-3 font-body text-[11px] font-medium uppercase tracking-[0.2em] cursor-pointer select-none"
+              className="tattoo-booking-cta neon-btn inline-flex w-fit min-h-[48px] max-w-full items-center justify-center gap-2.5 rounded-none px-10 py-3.5 font-body text-xs font-medium uppercase leading-tight tracking-[0.2em] cursor-pointer select-none sm:min-h-0 sm:px-12 sm:py-4 sm:text-sm md:px-14"
             >
               {t("tattoo.bookConsult")}
             </a>

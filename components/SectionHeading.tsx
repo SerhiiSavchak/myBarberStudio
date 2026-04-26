@@ -15,7 +15,7 @@ export default function SectionHeading({ tag, title, description, id }: SectionH
   const inViewClass = inView ? "in-view" : "";
 
   return (
-    <div ref={ref} id={id} className="ui-decorative mb-10 flex w-full min-w-0 flex-col items-start pb-6">
+    <div ref={ref} id={id} className="ui-decorative mb-5 flex w-full min-w-0 flex-col items-start pb-3">
       {/*
         Full-width moving accent: parent section’s .glitch-divider (globals.css).
         Short line by the tag: static only.

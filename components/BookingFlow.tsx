@@ -17,7 +17,7 @@ export default function BookingFlow() {
   ];
 
   return (
-    <section className="relative px-6 py-24 md:py-32 lg:px-8">
+    <section className="relative px-6 py-12 md:py-16 lg:px-8">
       <div className="absolute top-0 left-0 right-0 glitch-divider" />
       <div className="mx-auto max-w-7xl pt-6">
         <SectionHeading
