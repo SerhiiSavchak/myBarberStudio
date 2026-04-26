@@ -275,7 +275,7 @@ export default function Masters() {
                 className={cn(
                   "flex w-full min-w-0 max-w-full snap-x snap-mandatory flex-nowrap gap-0",
                   "overflow-x-auto overflow-y-visible scroll-smooth overscroll-x-contain",
-                  "touch-pan-x scrollbar-hide"
+                  "touch-[pan-x_pan-y] scrollbar-hide"
                 )}
               >
                 {MASTERS.map((master, i) => {

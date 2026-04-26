@@ -192,7 +192,8 @@ export default function About() {
    * Framer Motion on the parent can steal hit targets; that parent is pointer-events-none
    * and the scroller is pointer-events-auto. React's delegated pointer events are bypassed
    * so mouse drag always updates scrollLeft.
-   * Touch: handler returns early — horizontal swipe stays native (touch-pan-x on small screens).
+   * Touch: handler returns early — horizontal swipe stays native; touch-action pan-x pan-y so
+   * vertical drags scroll the page (pan-x alone traps vertical scrolling on mobile).
    * During mouse drag, scroll-snap is disabled — otherwise the browser fights scrollLeft and it stutters.
    * Pointer target is smoothed (lerp); release uses eased scroll (not only native "smooth") for a softer landing.
    */
@@ -404,7 +405,7 @@ export default function About() {
                     "flex snap-x snap-mandatory flex-nowrap overflow-x-auto overflow-y-hidden",
                     !isPtrDragging && "scroll-smooth",
                     "overscroll-x-contain",
-                    "select-none touch-pan-x scrollbar-hide",
+                    "select-none touch-[pan-x_pan-y] scrollbar-hide",
                     isPtrDragging && "md:cursor-grabbing",
                     !isPtrDragging && "md:cursor-grab"
                   )}
