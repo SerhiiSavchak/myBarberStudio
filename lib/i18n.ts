@@ -241,6 +241,12 @@ const dict = {
     en: "Focuses on clean lines, smooth fades, and a comfortable service. Values precision and consistent results.",
     ru: "Специализуется на чистых формах, аккуратных переходах и комфортном сервисе. Ценит точность и стабильный результат.",
   },
+  "masters.danya.title": { uk: "Топ майстер", en: "Top Master", ru: "Топ мастер" },
+  "masters.danya.desc": {
+    uk: "Топ майстер з добре відчутною естетикою та спокійною виваженістю: підкреслює риси обличчя й характер без зайвого шуму. Підбирає сучасний охайний образ під твій ритм життя.",
+    en: "A top master with a refined eye and a calm, deliberate touch—highlighting face and character without excess noise. Shapes a clean, modern look that fits your everyday rhythm.",
+    ru: "Топ мастер с выдержанной эстетикой и спокойной выверенностью: подчёркивает черты лица и характер без лишнего шума. Подбирает аккуратный современный образ под твой ритм жизни.",
+  },
   "masters.serhii.title": { uk: "Тату-майстер", en: "Tattoo Artist", ru: "Тату-мастер" },
   "masters.serhii.desc": {
     uk: "Авторське татуювання в стерильних умовах, консультація з ескізу та акуратна реалізація: від задуму до готового тату, яке носитимеш довгими роками.",
@@ -249,9 +255,9 @@ const dict = {
   },
   "masters.illia.title": { uk: "Топ майстер", en: "Top Master", ru: "Топ мастер" },
   "masters.illia.desc": {
-    uk: "Топ майстер із впевненим стилем, уважним підходом до деталей і сильним відчуттям форми. Допомагає створити образ, який виглядає охайно, сучасно й підкреслює індивідуальність.",
-    en: "A top master with a confident style, strong attention to detail, and a sharp sense of shape. Helps create a clean, modern look that highlights each client’s individuality.",
-    ru: "Топ мастер с уверенным стилем, внимательным подходом к деталям и сильным чувством формы. Помогает создать образ, который выглядит аккуратно, современно и подчёркивает индивидуальность.",
+    uk: "Топ майстер, який будує чітку геометрію та плавні переходи, враховує структуру волосся й темперамент. Створює стрижки, що довго тримають форму й легко вкладаються вдома.",
+    en: "A top master who builds clean geometry and smooth fades, reading hair structure and temperament. Haircuts that hold their shape and stay easy to style between visits.",
+    ru: "Топ мастер, который выстраивает чистую геометрию и плавные переходы, учитывает структуру волос и темперамент. Создаёт стрижки, которые долго держат форму и легко укладываются дома.",
   },
   "masters.iryna.title": { uk: "Адміністратор", en: "Administrator", ru: "Администратор" },
   "masters.iryna.desc": {
@@ -274,6 +280,7 @@ const dict = {
   "masters.n.myroslav": { uk: "Мирослав", en: "Myroslav", ru: "Мирослав" },
   "masters.n.oleh": { uk: "Олег", en: "Oleh", ru: "Олег" },
   "masters.n.roman": { uk: "Роман", en: "Roman", ru: "Роман" },
+  "masters.n.danya": { uk: "Даня", en: "Danil", ru: "Даня" },
   "masters.n.serhii": { uk: "Сергій", en: "Serhii", ru: "Сергей" },
   "masters.n.illia": { uk: "Ілля", en: "Illia", ru: "Илья" },
   "masters.n.iryna": { uk: "Ірина", en: "Iryna", ru: "Ирина" },
@@ -282,6 +289,7 @@ const dict = {
   "masters.portrait.miroslav": { uk: "Барбер Мирослав", en: "Barber Myroslav", ru: "Барбер Мирослав" },
   "masters.portrait.oleh": { uk: "Барбер Олег", en: "Barber Oleh", ru: "Барбер Олег" },
   "masters.portrait.roman": { uk: "Барбер Роман", en: "Barber Roman", ru: "Барбер Роман" },
+  "masters.portrait.danya": { uk: "Даня — топ майстер", en: "Danil — Top Master", ru: "Даня — топ мастер" },
   "masters.portrait.serhii": { uk: "Тату-майстер Сергій", en: "Tattoo artist Serhii", ru: "Тату-мастер Сергей" },
   "masters.portrait.illia": { uk: "Топ майстер Ілля", en: "Top master Illia", ru: "Топ мастер Илья" },
   "masters.portrait.iryna": { uk: "Адміністраторка Ірина", en: "Administrator Iryna", ru: "Администратор Ирина" },

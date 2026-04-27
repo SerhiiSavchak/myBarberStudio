@@ -33,11 +33,12 @@ const MASTER_LIST: readonly MasterDef[] = [
   { nameKey: "masters.n.myroslav", titleKey: "masters.myroslav.title", descKey: "masters.myroslav.desc", image: "/masters/miroslav.png", altKey: "masters.portrait.miroslav", posNarrow: "50% 8%", posWide: "50% 14%" },
   { nameKey: "masters.n.oleh", titleKey: "masters.oleh.title", descKey: "masters.oleh.desc", image: "/masters/oleg.png", altKey: "masters.portrait.oleh", posNarrow: "50% 7%", posWide: "50% 13%" },
   { nameKey: "masters.n.roman", titleKey: "masters.roman.title", descKey: "masters.roman.desc", image: "/masters/roman.png", altKey: "masters.portrait.roman", posNarrow: "50% 8%", posWide: "50% 14%" },
+  { nameKey: "masters.n.danya", titleKey: "masters.danya.title", descKey: "masters.danya.desc", image: "/masters/danya.png", altKey: "masters.portrait.danya", posNarrow: "50% 15%", posWide: "50% 22%" },
   { nameKey: "masters.n.illia", titleKey: "masters.illia.title", descKey: "masters.illia.desc", image: "/masters/illia.png", altKey: "masters.portrait.illia", posNarrow: "50% 8%", posWide: "50% 14%" },
   { nameKey: "masters.n.serhii", titleKey: "masters.serhii.title", descKey: "masters.serhii.desc", image: "/masters/sergiy.png", altKey: "masters.portrait.serhii", posNarrow: "50% 7%", posWide: "50% 12%" },
-  { nameKey: "masters.n.iryna", titleKey: "masters.iryna.title", descKey: "masters.iryna.desc", image: "/masters/iryna.png", altKey: "masters.portrait.iryna", posNarrow: "50% 4%", posWide: "50% 10%" },
-  { nameKey: "masters.n.mariia", titleKey: "masters.mariia.title", descKey: "masters.mariia.desc", image: "/masters/mariia.png", altKey: "masters.portrait.mariia", posNarrow: "50% 4%", posWide: "50% 10%" },
   { nameKey: "masters.n.vita", titleKey: "masters.vita.title", descKey: "masters.vita.desc", image: "/masters/vita.png", altKey: "masters.portrait.vita", posNarrow: "50% 10%", posWide: "50% 14%" },
+  { nameKey: "masters.n.mariia", titleKey: "masters.mariia.title", descKey: "masters.mariia.desc", image: "/masters/mariia.png", altKey: "masters.portrait.mariia", posNarrow: "50% 4%", posWide: "50% 10%" },
+  { nameKey: "masters.n.iryna", titleKey: "masters.iryna.title", descKey: "masters.iryna.desc", image: "/masters/iryna.png", altKey: "masters.portrait.iryna", posNarrow: "50% 4%", posWide: "50% 10%" },
 ] as const;
 
 /** Card flex-grow when open — lower = subtler width expansion, less “zoomed” look */
@@ -445,38 +446,34 @@ export default function Masters() {
                 );
               })}
             </div>
-            <div className="flex w-full min-h-0 flex-col gap-5 md:min-h-0 md:flex-row md:items-stretch md:gap-0">
-              <div className="hidden min-h-0 min-w-0 flex-1 md:block" aria-hidden />
-              <div
-                className="flex w-full min-w-0 min-h-0 flex-col gap-5 md:max-w-full md:shrink-0 md:flex-row md:gap-6 md:[width:calc(2*(100%-3rem)/3+1.5rem)]"
-                style={{ minHeight: 0 }}
-              >
-                {MASTERS.slice(6, 8).map((master, i) => {
-                  const globalIndex = 6 + i;
-                  const isOpen = getIsOpen(globalIndex);
-                  return (
-                    <MasterCard
-                      key={master.nameKey}
-                      master={{
-                        description: master.description,
-                        image: master.image,
-                        imageAlt: master.imageAlt,
-                      }}
-                      posNarrow={master.posNarrow}
-                      posWide={master.posWide}
-                      name={master.name}
-                      title={master.title}
-                      index={globalIndex}
-                      isOpen={isOpen}
-                      isNarrow={isMobile}
-                      onToggle={() => isMobile && setExpanded(isOpen ? null : globalIndex)}
-                      onMouseEnter={() => !isMobile && setHoveredDesktop(globalIndex)}
-                      onMouseLeave={() => !isMobile && setHoveredDesktop(null)}
-                    />
-                  );
-                })}
-              </div>
-              <div className="hidden min-h-0 min-w-0 flex-1 md:block" aria-hidden />
+            <div
+              className="flex w-full min-h-0 flex-col gap-5 md:flex md:flex-row md:gap-6"
+              style={{ minHeight: 0 }}
+            >
+              {MASTERS.slice(6, 9).map((master, i) => {
+                const globalIndex = 6 + i;
+                const isOpen = getIsOpen(globalIndex);
+                return (
+                  <MasterCard
+                    key={master.nameKey}
+                    master={{
+                      description: master.description,
+                      image: master.image,
+                      imageAlt: master.imageAlt,
+                    }}
+                    posNarrow={master.posNarrow}
+                    posWide={master.posWide}
+                    name={master.name}
+                    title={master.title}
+                    index={globalIndex}
+                    isOpen={isOpen}
+                    isNarrow={isMobile}
+                    onToggle={() => isMobile && setExpanded(isOpen ? null : globalIndex)}
+                    onMouseEnter={() => !isMobile && setHoveredDesktop(globalIndex)}
+                    onMouseLeave={() => !isMobile && setHoveredDesktop(null)}
+                  />
+                );
+              })}
             </div>
           </div>
         )}
