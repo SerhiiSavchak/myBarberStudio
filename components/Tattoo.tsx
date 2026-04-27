@@ -8,7 +8,7 @@ import { useScrollSuppressed } from "@/hooks/use-scroll-suppressed";
 import SectionHeading from "./SectionHeading";
 import { useLocale } from "@/lib/locale-context";
 import { useSectionInView } from "@/hooks/use-section-in-view";
-import { BOOKING_URL } from "@/constants/routes";
+import { TATTOO_BOOKING_URL } from "@/constants/routes";
 
 const BULLET_KEYS = [
   "tattoo.point1",
@@ -150,7 +150,7 @@ export default function Tattoo() {
 
             {/* CTA */}
             <a
-              href={BOOKING_URL}
+              href={TATTOO_BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="tattoo-booking-cta neon-btn inline-flex w-fit min-h-[48px] max-w-full items-center justify-center gap-2.5 rounded-none px-10 py-3.5 font-body text-xs font-medium uppercase leading-tight tracking-[0.2em] cursor-pointer select-none sm:min-h-0 sm:px-12 sm:py-4 sm:text-sm md:px-14"

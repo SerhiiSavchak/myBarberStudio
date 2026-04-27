@@ -33,10 +33,10 @@ const MASTER_LIST: readonly MasterDef[] = [
   { nameKey: "masters.n.myroslav", titleKey: "masters.myroslav.title", descKey: "masters.myroslav.desc", image: "/masters/miroslav.png", altKey: "masters.portrait.miroslav", posNarrow: "50% 8%", posWide: "50% 14%" },
   { nameKey: "masters.n.oleh", titleKey: "masters.oleh.title", descKey: "masters.oleh.desc", image: "/masters/oleg.png", altKey: "masters.portrait.oleh", posNarrow: "50% 7%", posWide: "50% 13%" },
   { nameKey: "masters.n.roman", titleKey: "masters.roman.title", descKey: "masters.roman.desc", image: "/masters/roman.png", altKey: "masters.portrait.roman", posNarrow: "50% 8%", posWide: "50% 14%" },
+  { nameKey: "masters.n.vita", titleKey: "masters.vita.title", descKey: "masters.vita.desc", image: "/masters/vita.png", altKey: "masters.portrait.vita", posNarrow: "50% 10%", posWide: "50% 14%" },
   { nameKey: "masters.n.danya", titleKey: "masters.danya.title", descKey: "masters.danya.desc", image: "/masters/danya.png", altKey: "masters.portrait.danya", posNarrow: "50% 15%", posWide: "50% 22%" },
   { nameKey: "masters.n.illia", titleKey: "masters.illia.title", descKey: "masters.illia.desc", image: "/masters/illia.png", altKey: "masters.portrait.illia", posNarrow: "50% 8%", posWide: "50% 14%" },
   { nameKey: "masters.n.serhii", titleKey: "masters.serhii.title", descKey: "masters.serhii.desc", image: "/masters/sergiy.png", altKey: "masters.portrait.serhii", posNarrow: "50% 7%", posWide: "50% 12%" },
-  { nameKey: "masters.n.vita", titleKey: "masters.vita.title", descKey: "masters.vita.desc", image: "/masters/vita.png", altKey: "masters.portrait.vita", posNarrow: "50% 10%", posWide: "50% 14%" },
   { nameKey: "masters.n.mariia", titleKey: "masters.mariia.title", descKey: "masters.mariia.desc", image: "/masters/mariia.png", altKey: "masters.portrait.mariia", posNarrow: "50% 4%", posWide: "50% 10%" },
   { nameKey: "masters.n.iryna", titleKey: "masters.iryna.title", descKey: "masters.iryna.desc", image: "/masters/iryna.png", altKey: "masters.portrait.iryna", posNarrow: "50% 4%", posWide: "50% 10%" },
 ] as const;

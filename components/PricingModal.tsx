@@ -16,6 +16,8 @@ interface PricingModalProps {
   onClose: () => void;
   title: string;
   items: ServiceItem[];
+  /** Defaults to main booking; e.g. tattoo category uses TATTOO_BOOKING_URL */
+  bookingUrl?: string;
 }
 
 export default function PricingModal({
@@ -23,6 +25,7 @@ export default function PricingModal({
   onClose,
   title,
   items,
+  bookingUrl = BOOKING_URL,
 }: PricingModalProps) {
   const { t } = useLocale();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -143,7 +146,7 @@ export default function PricingModal({
             {/* CTA */}
             <div className="shrink-0 border-t border-neon-red/10 px-6 py-4">
               <a
-                href={BOOKING_URL}
+                href={bookingUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="neon-btn flex w-full items-center justify-center gap-2 px-6 py-3 font-body text-[11px] font-medium uppercase tracking-[0.2em]"

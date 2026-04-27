@@ -11,7 +11,8 @@ import type { TranslationKey } from "@/lib/i18n";
 const CONTACT_INFO = {
   phone: "+38 (066) 033 60 00",
   email: "mybarbershop36@gmail.com",
-  mapsUrl: "https://maps.google.com/?q=Львів+вул+Мирослава+Скорика+21",
+  mapsUrl:
+    "https://www.google.com/maps/place/M%26Y+BARBER+STUDIO%2F%D0%91%D0%B0%D1%80%D0%B1%D0%B5%D1%80%D1%88%D0%BE%D0%BF/@49.8368613,24.0235925,17z/data=!3m1!4b1!4m6!3m5!1s0x473add2c785742b1:0xb00c85a63b08bc4a!8m2!3d49.8368579!4d24.0284688!16s%2Fg%2F11hzwg3vlm?entry=ttu&g_ep=EgoyMDI2MDQyMi4wIKXMDSoASAFQAw%3D%3D",
   mapsEmbedUrl:
     "https://maps.google.com/maps?q=Львів+вул.+Мирослава+Скорика+21&z=17&output=embed",
 } as const;
@@ -19,7 +20,7 @@ const CONTACT_INFO = {
 const SOCIAL_LINKS: { labelKey: TranslationKey; href: string; icon: ReactNode }[] = [
   {
     labelKey: "contacts.social.instagram",
-    href: "https://instagram.com/mybarber.studio",
+    href: "https://www.instagram.com/my.barber_studio/",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4">
         <rect x="2" y="2" width="20" height="20" rx="5" />
@@ -206,19 +207,6 @@ export default function Contacts() {
           title={t("contacts.title")}
           description={t("contacts.description")}
         />
-
-        <div
-          className={cn(
-            "mb-10 flex items-center gap-3 scroll-reveal",
-            inView && "in-view"
-          )}
-          style={{ transitionDelay: inView ? "0.2s" : "0s" }}
-        >
-          <span className="h-px w-6 bg-neon-cyan/20" />
-          <span className="font-mono text-[7px] uppercase tracking-[0.7em] text-neon-cyan/25">
-            {t("contacts.subline")}
-          </span>
-        </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
           {/* LEFT COLUMN */}

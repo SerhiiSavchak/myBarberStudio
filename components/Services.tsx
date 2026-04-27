@@ -7,7 +7,7 @@ import CategoryCard from "./CategoryCard";
 import PricingModal from "./PricingModal";
 import { useLocale } from "@/lib/locale-context";
 import { useSectionInView } from "@/hooks/use-section-in-view";
-import { SECTION_IDS } from "@/constants/routes";
+import { BOOKING_URL, SECTION_IDS, TATTOO_BOOKING_URL } from "@/constants/routes";
 import type { TranslationKey } from "@/lib/i18n";
 
 interface ServiceItem {
@@ -19,7 +19,7 @@ interface Category {
   id: string;
   labelKey: TranslationKey;
   descKey: TranslationKey;
-  items: { name: { uk: string; en: string; ru: string }; price: string }[];
+  items: { name: { uk: string; en: string }; price: string }[];
 }
 
 const PRICING_DATA: Category[] = [
@@ -28,13 +28,13 @@ const PRICING_DATA: Category[] = [
     labelKey: "pricing.cat.haircuts",
     descKey: "services.haircuts.desc",
     items: [
-      { name: { uk: "Стрижка", en: "Haircut", ru: "Стрижка" }, price: "500-1000 грн" },
-      { name: { uk: "Стрижка на подовжене волосся", en: "Long hair cut", ru: "Стрижка на удлинённые волосы" }, price: "600-1100 грн" },
-      { name: { uk: "Стрижка двома насадками", en: "Two-guard cut", ru: "Стрижка двумя насадками" }, price: "350-800 грн" },
-      { name: { uk: "Укладка волосся", en: "Hair styling", ru: "Укладка волос" }, price: "250-350 грн" },
-      { name: { uk: "Моделювання", en: "Modeling", ru: "Моделирование" }, price: "300-600 грн" },
-      { name: { uk: "Хеір тату", en: "Hair tattoo", ru: "Хеір тату" }, price: "200 грн" },
-      { name: { uk: "Дитяча стрижка", en: "Kids haircut", ru: "Детская стрижка" }, price: "500-1000 грн" },
+      { name: { uk: "Стрижка", en: "Haircut" }, price: "500-1000 грн" },
+      { name: { uk: "Стрижка на подовжене волосся", en: "Long haircut" }, price: "600-1100 грн" },
+      { name: { uk: "Стрижка двома насадками", en: "Two-guard cut" }, price: "350-800 грн" },
+      { name: { uk: "Укладка волосся", en: "Hair styling" }, price: "250-350 грн" },
+      { name: { uk: "Моделювання", en: "Modeling" }, price: "300-600 грн" },
+      { name: { uk: "Хеір тату", en: "Hair tattoo" }, price: "200 грн" },
+      { name: { uk: "Дитяча стрижка", en: "Kids haircut" }, price: "500-1000 грн" },
     ],
   },
   {
@@ -42,8 +42,8 @@ const PRICING_DATA: Category[] = [
     labelKey: "pricing.cat.beard",
     descKey: "services.beard.desc",
     items: [
-      { name: { uk: "Стрижка бороди", en: "Beard trim", ru: "Стрижка бороды" }, price: "400-800 грн" },
-      { name: { uk: "Королівське гоління", en: "Royal shave", ru: "Королевское бритьё" }, price: "525-850 грн" },
+      { name: { uk: "Стрижка бороди", en: "Beard trim" }, price: "400-800 грн" },
+      { name: { uk: "Королівське гоління", en: "Royal shave" }, price: "525-850 грн" },
     ],
   },
   {
@@ -51,8 +51,8 @@ const PRICING_DATA: Category[] = [
     labelKey: "pricing.cat.toning",
     descKey: "services.toning.desc",
     items: [
-      { name: { uk: "Тонування волосся", en: "Hair toning", ru: "Тонирование волос" }, price: "500-700 грн" },
-      { name: { uk: "Тонування бороди", en: "Beard toning", ru: "Тонирование бороды" }, price: "450-650 грн" },
+      { name: { uk: "Тонування волосся", en: "Hair toning" }, price: "500-700 грн" },
+      { name: { uk: "Тонування бороди", en: "Beard toning" }, price: "450-650 грн" },
     ],
   },
   {
@@ -60,17 +60,18 @@ const PRICING_DATA: Category[] = [
     labelKey: "pricing.cat.combo",
     descKey: "services.combo.desc",
     items: [
-      { name: { uk: "Стрижка + корекція бороди", en: "Haircut + beard trim", ru: "Стрижка + коррекция бороды" }, price: "1000-1800 грн" },
-      { name: { uk: "Тато + син", en: "Father + son", ru: "Отец + сын" }, price: "1100-2000 грн" },
+      { name: { uk: "Стрижка + корекція бороди", en: "Haircut + beard trim" }, price: "1000-1800 грн" },
+      { name: { uk: "Тато + син", en: "Father + son" }, price: "1100-2000 грн" },
     ],
   },
   {
+    /** Id referenced for modal booking link → TATTOO_BOOKING_URL */
     id: "SVC-005",
     labelKey: "pricing.cat.tattoo",
     descKey: "services.tattoo.desc",
     items: [
-      { name: { uk: "Консультація", en: "Consultation", ru: "Консультация" }, price: "0 грн" },
-      { name: { uk: "Виконання роботи", en: "Tattoo work", ru: "Выполнение работы" }, price: "від 1000 грн" },
+      { name: { uk: "Консультація", en: "Consultation" }, price: "0 грн" },
+      { name: { uk: "Виконання роботи", en: "Tattoo work" }, price: "від 1000 грн" },
     ],
   },
   {
@@ -78,10 +79,10 @@ const PRICING_DATA: Category[] = [
     labelKey: "pricing.cat.care",
     descKey: "services.care.desc",
     items: [
-      { name: { uk: "СПА процедура для обличчя", en: "Face SPA", ru: "СПА процедура для лица" }, price: "300 грн" },
-      { name: { uk: "СПА процедура DEPOT", en: "DEPOT SPA", ru: "СПА процедура DEPOT" }, price: "400 грн" },
-      { name: { uk: "Патчі під очі", en: "Under-eye patches", ru: "Патчи под глаза" }, price: "100-200 грн" },
-      { name: { uk: "Воскова депіляція", en: "Wax depilation", ru: "Восковая депиляция" }, price: "200-300 грн" },
+      { name: { uk: "СПА процедура для обличчя", en: "Face SPA" }, price: "300 грн" },
+      { name: { uk: "СПА процедура DEPOT", en: "DEPOT SPA" }, price: "400 грн" },
+      { name: { uk: "Патчі під очі", en: "Under-eye patches" }, price: "100-200 грн" },
+      { name: { uk: "Воскова депіляція", en: "Waxing" }, price: "200-300 грн" },
     ],
   },
 ];
@@ -155,6 +156,9 @@ export default function Services() {
         onClose={() => setActiveCategoryId(null)}
         title={activeCategory?.title ?? ""}
         items={activeCategory?.items ?? []}
+        bookingUrl={
+          activeCategoryId === "SVC-005" ? TATTOO_BOOKING_URL : BOOKING_URL
+        }
       />
     </section>
   );
