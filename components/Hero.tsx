@@ -214,7 +214,7 @@ export default function Hero() {
               href={BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="hero-cta-primary neon-btn neon-flicker inline-flex items-center justify-center gap-2 px-10 py-4 font-body text-[13px] font-medium uppercase tracking-[0.2em] cursor-pointer select-none"
+              className="hero-cta-primary neon-btn inline-flex items-center justify-center gap-2 px-10 py-4 font-body text-[13px] font-medium uppercase tracking-[0.2em] cursor-pointer select-none"
             >
               {t("hero.cta")}
             </a>

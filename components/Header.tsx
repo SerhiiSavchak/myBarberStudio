@@ -243,29 +243,29 @@ export default function Header() {
               closeMenu();
             } else setMobileOpen(true);
           }}
-          className="relative z-[60] flex min-h-28 min-w-28 flex-col items-center justify-center gap-2.5 rounded-md sm:min-h-24 sm:min-w-24 sm:gap-2.5 lg:hidden cursor-pointer select-none touch-manipulation active:bg-foreground/5"
+          className="relative z-[60] flex h-24 w-24 shrink-0 flex-col items-center justify-center gap-2.5 rounded-md lg:hidden cursor-pointer select-none touch-manipulation active:bg-foreground/5"
           aria-label={mobileOpen ? "Закрити меню" : "Відкрити меню"}
           aria-expanded={mobileOpen}
         >
           <span
             className={cn(
-              "block h-[3px] w-11 rounded-[1px] transition-all duration-300 sm:h-[3px] sm:w-10",
+              "block h-[3px] w-11 rounded-[1px] transition-all duration-300 sm:w-10",
               overHero && !mobileOpen ? "bg-zinc-100" : "bg-neon-red",
-              mobileOpen && "translate-y-[12px] rotate-45 sm:translate-y-[11px]"
+              mobileOpen && "translate-y-[12px] rotate-45"
             )}
           />
           <span
             className={cn(
-              "block h-[3px] w-11 rounded-[1px] transition-all duration-300 sm:h-[3px] sm:w-10",
+              "block h-[3px] w-11 rounded-[1px] transition-all duration-300 sm:w-10",
               overHero && !mobileOpen ? "bg-zinc-100" : "bg-neon-red",
               mobileOpen && "opacity-0"
             )}
           />
           <span
             className={cn(
-              "block h-[3px] w-11 rounded-[1px] transition-all duration-300 sm:h-[3px] sm:w-10",
+              "block h-[3px] w-11 rounded-[1px] transition-all duration-300 sm:w-10",
               overHero && !mobileOpen ? "bg-zinc-100" : "bg-neon-red",
-              mobileOpen && "-translate-y-[12px] -rotate-45 sm:-translate-y-[11px]"
+              mobileOpen && "-translate-y-[12px] -rotate-45"
             )}
           />
         </button>
