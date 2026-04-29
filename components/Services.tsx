@@ -29,7 +29,9 @@ export default function Services() {
         protocolId: cat.protocolId,
         title: t(cat.labelKey),
         description: t(cat.descKey),
-        priceRange: formatCategoryPriceRange(defs, locale, inquiry),
+        priceRange:
+          cat.summaryPriceOverride?.[locale] ??
+          formatCategoryPriceRange(defs, locale, inquiry),
         servicesCount: formatServicesCount(defs.length, locale),
         useTattooBookingUrl: cat.useTattooBookingUrl ?? false,
         modalItems: defs.map((def) => ({

@@ -149,8 +149,8 @@ const dict = {
   },
   "services.tattoo.name": { uk: "Татуювання", en: "Tattoo" },
   "services.tattoo.desc": {
-    uk: "Авторське татуювання: ескіз і сеанс. Конкретну вартість погоджуємо після консультації.",
-    en: "Custom tattoos — sketch and session. Exact pricing is agreed after consultation.",
+    uk: "Індивідуальне татуювання від майстра. Консультація — 1 ₴, сеанс — від 1 000 ₴.",
+    en: "Custom tattooing with our artist. Consultation 1 UAH, sessions from 1,000 UAH.",
   },
   "services.hairTattoo.desc": {
     uk: "Візерунки та символи, виголені на короткій основі.",
@@ -160,7 +160,7 @@ const dict = {
   "services.price.beard": { uk: "від 500 ₴", en: "from 500 UAH" },
   "services.price.combo": { uk: "від 1100 ₴", en: "from 1100 UAH" },
   "services.price.face": { uk: "від 100 ₴", en: "from 100 UAH" },
-  "services.price.tattoo": { uk: "ціну уточнюйте", en: "Price on request" },
+  "services.price.tattoo": { uk: "від 1 000 ₴", en: "from 1,000 UAH" },
 
   // Booking
   "booking.tag": { uk: "Запис", en: "Booking" },
@@ -291,35 +291,37 @@ const dict = {
     uk: "Вибір відгуку",
     en: "Choose a review",
   },
-  "reviews.items.0.name": { uk: "Олександр М.", en: "Oleksandr M." },
+  "reviews.readMore": { uk: "Читати більше", en: "Read more" },
+  "reviews.readLess": { uk: "Згорнути", en: "Show less" },
+  "reviews.items.0.name": { uk: "Katrin G.", en: "Katrin G." },
   "reviews.items.0.text": {
-    uk: "Атмосфера норм, без зайвого пафосу. Стрижка як домовились, слухали що кажу. Зайду ще",
-    en: "Solid vibe, not try-hard. Cut matched what we talked about and they actually listened. I'll be back",
+    uk: "Найкраща перукарня у Львові! Дуже рекомендую M&Y Barber Studio. Атмосфера неймовірна: теплий прийом, привітний персонал, сучасний інтер’єр і багато стильних деталей. Це не просто стрижка — це релакс і перезавантаження. Окрема подяка барберу Олегу — справжньому майстру, який відчуває, що потрібно клієнту. Хочеться повертатися знову і знову ❤️",
+    en: "The best barbershop in Lviv! Highly recommend M&Y Barber Studio. The vibe is unreal — warm welcome, friendly team, modern interior, lots of stylish details. It’s not just a haircut; it’s a reset. Big thanks to barber Oleh — a real pro who reads what the client needs. I keep wanting to come back ❤️",
   },
-  "reviews.items.1.name": { uk: "Тарас К.", en: "Taras K." },
+  "reviews.items.1.name": { uk: "Ярослав Ш.", en: "Yaroslav Sh." },
   "reviews.items.1.text": {
-    uk: "У Мирослава вже декілька разів. Фейд рівний, між візитами норм тримається",
-    en: "Been with Myroslav a few times now. Fade stays clean, holds up fine between visits",
+    uk: "Олег — топ-майстер! Справжній професіонал із золотими руками. Дуже уважний до деталей, стрижка вийшла чітко, стильно і саме так, як я просив. Всім рекомендую. Обов’язково повернусь ще раз.",
+    en: "Oleh is top-tier — a true pro with golden hands. Super attentive to detail; the cut turned out sharp, stylish, exactly how I asked. Recommend to everyone. I’ll definitely be back.",
   },
-  "reviews.items.2.name": { uk: "Роман Д.", en: "Roman D." },
+  "reviews.items.2.name": { uk: "Юлія Т.", en: "Yuliia T." },
   "reviews.items.2.text": {
-    uk: "Стрижка і борода разом, рушник теплий, приємно. За ціну претензій немає",
-    en: "Haircut and beard same visit, hot towel was a nice touch. Fair price for what you get",
+    uk: "Разом з чоловіком відвідали барбершоп і залишилися дуже задоволені! Майстри уважно вислухали побажання, порадили, що краще підійде, і в результаті обом зробили стрижки саме так, як хотілося. Атмосфера приємна: комфортно, затишно, без зайвого пафосу. Обов’язково прийдемо ще!",
+    en: "My husband and I came in together and left really happy. The barbers listened properly, suggested what would suit us better, and both cuts turned out just how we wanted. The vibe is comfy and low-key, no pretence. We’ll definitely return!",
   },
-  "reviews.items.3.name": { uk: "Іван П.", en: "Ivan P." },
+  "reviews.items.3.name": { uk: "Олександр Ш.", en: "Oleksandr Sh." },
   "reviews.items.3.text": {
-    uk: "Чисто, музика ок, хлопці знають роботу. Без нав'язливих «пакетів», це плюс",
-    en: "Clean place, music's fine, crew knows the job. No pushy packages, I appreciate that",
+    uk: "Професійний майстер, який уважно вислухав мої побажання та запропонував ідеальний варіант стрижки. Атмосфера дуже комфортна. Ціни цілком адекватні для такого рівня послуг. Рекомендую!",
+    en: "A pro who actually listened and suggested the perfect cut for me. Really comfortable atmosphere. Prices feel fair for this level of service. Recommend!",
   },
-  "reviews.items.4.name": { uk: "Максим С.", en: "Maksym S." },
+  "reviews.items.4.name": { uk: "Марина К.", en: "Maryna K." },
   "reviews.items.4.text": {
-    uk: "Олег з півслова зрозумів, хоча я сам криво пояснив. Респект",
-    en: "Oleh got it from half a sentence even though I explained it badly. Respect",
+    uk: "Хочу подякувати майстрам барбершопа! Стригли мого сина, і результат перевершив очікування. Дитина в захваті, а для батьків це найкраща оцінка 🙂 Дуже приємна атмосфера і професійний підхід. Ви найкращі ❤️",
+    en: "Huge thanks to the team! They cut my son’s hair and it exceeded our expectations. He’s thrilled — best feedback you can get 🙂 Lovely vibe and a professional approach. You’re the best ❤️",
   },
-  "reviews.items.5.name": { uk: "Андрій Б.", en: "Andrii B." },
+  "reviews.items.5.name": { uk: "Павло С.", en: "Pavlo S." },
   "reviews.items.5.text": {
-    uk: "Порадив друг, думав переплачу за інтер'єр. Ні, стрижка ок і без зайвої театральності",
-    en: "A friend sent me here, thought I'd just be paying for the look of the place. Nope, solid cut, no gimmicks",
+    uk: "Дуже круте місце! Атмосфера, майстри й сервіс — все на найвищому рівні 💈🔥 Рекомендую кожному, хто хоче виглядати стильно!",
+    en: "Such a cool spot! The vibe, the barbers, the service — all top level 💈🔥 Recommend it to anyone who wants to look sharp!",
   },
 
   // Contacts

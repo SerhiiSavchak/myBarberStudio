@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import SectionHeading from "./SectionHeading";
 import { useLocale } from "@/lib/locale-context";
@@ -21,6 +21,9 @@ const REVIEW_KEYS = [
   { nameKey: "reviews.items.5.name" as TranslationKey, textKey: "reviews.items.5.text" as TranslationKey, tag: "RVW-006" },
 ] as const;
 
+const REVIEW_BODY_FONT =
+  'var(--font-body), system-ui, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
+
 function ReviewCard({
   review,
   index,
@@ -35,6 +38,24 @@ function ReviewCard({
   /** Extra horizontal inset so overlay arrows don’t crowd the card on mobile carousel */
   carousel?: boolean;
 }) {
+  const text = t(review.textKey);
+  const pRef = useRef<HTMLParagraphElement>(null);
+  const [expanded, setExpanded] = useState(false);
+  const [canExpand, setCanExpand] = useState(false);
+
+  useLayoutEffect(() => {
+    const el = pRef.current;
+    if (!el) return;
+    const measure = () => {
+      if (expanded) return;
+      setCanExpand(el.scrollHeight > el.clientHeight + 1);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [text, expanded]);
+
   return (
     <div
       className={cn(
@@ -63,9 +84,26 @@ function ReviewCard({
         >
           {"\u201C"}
         </span>
-        <p className="relative z-[1] mx-0 max-w-none pt-[1.125rem] text-left text-pretty text-sm leading-relaxed text-muted-foreground">
-          {t(review.textKey)}
+        <p
+          ref={pRef}
+          className={cn(
+            "relative z-[1] mx-0 max-w-none pt-[1.125rem] text-left text-pretty text-sm leading-relaxed text-muted-foreground",
+            !expanded && "line-clamp-6"
+          )}
+          style={{ fontFamily: REVIEW_BODY_FONT }}
+        >
+          {text}
         </p>
+        {canExpand && (
+          <button
+            type="button"
+            aria-expanded={expanded}
+            onClick={() => setExpanded((x) => !x)}
+            className="relative z-[1] mt-2 text-left font-mono text-[9px] uppercase tracking-[0.25em] text-neon-red/70 transition-colors hover:text-neon-red focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-red/35"
+          >
+            {expanded ? t("reviews.readLess") : t("reviews.readMore")}
+          </button>
+        )}
       </div>
       <div
         className="mb-4 h-px w-full"
@@ -104,14 +142,14 @@ export default function Reviews() {
     amount: 0.12,
     margin: "0px",
   });
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const isMobile = useIsMobile();
   const [reducedMotion, setReducedMotion] = useState(false);
 
   const { scrollerRef, activeIndex, goTo, goNext, goPrev } = useScrollSnapCarousel(REVIEW_KEYS.length, {
     prefersReducedMotion: reducedMotion,
     autoplay: isMobile && isReviewsMobileSliderInView,
-    autoplayIntervalMs: 4000,
+    autoplayIntervalMs: 3000,
     autoplayResumeAfterMs: 5000,
   });
 
@@ -151,7 +189,7 @@ export default function Reviews() {
                 >
                   {REVIEW_KEYS.map((review, i) => (
                     <div
-                      key={review.tag}
+                      key={`${review.tag}-${locale}`}
                       className="min-w-full w-full max-w-full shrink-0 snap-center snap-always [scroll-snap-stop:always]"
                     >
                       <ReviewCard review={review} index={i} inView={inView} t={t} carousel />
@@ -237,7 +275,13 @@ export default function Reviews() {
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {REVIEW_KEYS.map((review, i) => (
-                <ReviewCard key={review.tag} review={review} index={i} inView={inView} t={t} />
+                <ReviewCard
+                  key={`${review.tag}-${locale}`}
+                  review={review}
+                  index={i}
+                  inView={inView}
+                  t={t}
+                />
               ))}
             </div>
           )}

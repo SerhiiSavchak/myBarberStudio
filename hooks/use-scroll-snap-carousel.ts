@@ -7,7 +7,7 @@ export type ScrollSnapCarouselGoToOptions = {
   fromAutoplay?: boolean;
 };
 
-const DEFAULT_AUTOPLAY_MS = 4000;
+const DEFAULT_AUTOPLAY_MS = 3000;
 const DEFAULT_RESUME_AFTER_MS = 5000;
 
 /**

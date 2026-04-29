@@ -12,7 +12,11 @@ export type ServiceItemDef = {
   priceTop?: number;
   /** Верхня межа (Expert / Owner) */
   priceExpert?: number;
-  /** Якщо true, показувати “ціну уточнюйте” замість чисел (наприклад, тату) */
+  /** Фіксована ціна (показується як «X ₴», без «від») */
+  fixedPrice?: number;
+  /** Не враховувати ціну в підсумку діапазону на картці категорії */
+  excludeFromCategoryRange?: boolean;
+  /** Якщо true, показувати “ціну уточнюйте” замість чисел */
   priceOnInquiry?: boolean;
   title: Record<Locale, string>;
   duration: Record<Locale, string>;
@@ -256,31 +260,31 @@ export const ALL_SERVICE_ITEMS: Record<string, ServiceItemDef> = {
       en: "Deep scalp cleanse with premium products: wash, scrub and care.",
     },
   },
-  /** Блок тату: без підтверджених цін */
   "tattoo-consult": {
     id: "tattoo-consult",
-    priceOnInquiry: true,
+    fixedPrice: 1,
+    excludeFromCategoryRange: true,
     title: {
-      uk: "Консультація та ескіз",
-      en: "Consultation & sketch",
+      uk: "Консультація у тату майстра",
+      en: "Tattoo artist consultation",
     },
-    duration: { uk: "за домовленістю", en: "By arrangement" },
+    duration: { uk: "30 хв", en: "30 min" },
     shortDescription: {
-      uk: "Обговорення ідеї, ескізу та подальших кроків. Вартість залежить від обраного формату.",
-      en: "Discussing the idea, sketch and next steps. Cost depends on the project.",
+      uk: "Консультація з тату майстром щодо ідеї, ескізу, розміщення та майбутнього сеансу.",
+      en: "Consultation on your idea, sketch, placement, and planning the session.",
     },
   },
   "tattoo-session": {
     id: "tattoo-session",
-    priceOnInquiry: true,
+    priceTop: 1000,
     title: {
-      uk: "Сеанс татуювання",
-      en: "Tattoo session",
+      uk: "Татуювання",
+      en: "Tattooing",
     },
-    duration: { uk: "за домовленістю", en: "By arrangement" },
+    duration: { uk: "1 год", en: "1 h" },
     shortDescription: {
-      uk: "Виконання татуювання після узгодження ескізу. Ціну уточнюйте після консультації.",
-      en: "Tattooing after the design is agreed. Price after consultation.",
+      uk: "Індивідуальне татуювання від майстра. Вартість залежить від розміру, складності та деталей ескізу.",
+      en: "Custom tattoo work. Price depends on size, complexity, and detail in the design.",
     },
   },
 };
@@ -288,13 +292,15 @@ export const ALL_SERVICE_ITEMS: Record<string, ServiceItemDef> = {
 export type PricingCategoryDef = {
   /** Ідентифікатор для стану модалки */
   id: string;
-  /** Відображується у куті картки (SVC-001 …) */
+  /** Відображається у куті картки (SVC-001 …) */
   protocolId: string;
   labelKey: TranslationKey;
   descKey: TranslationKey;
   serviceIds: string[];
   /** Посилання на запис як у блоці тату */
   useTattooBookingUrl?: boolean;
+  /** Підсумкова ціна на картці категорії (коли авто-діапазон не підходить) */
+  summaryPriceOverride?: Record<Locale, string>;
 };
 
 export const PRICING_CATEGORIES: PricingCategoryDef[] = [
@@ -359,8 +365,12 @@ export const PRICING_CATEGORIES: PricingCategoryDef[] = [
     protocolId: "SVC-007",
     labelKey: "pricing.cat.tattoo",
     descKey: "services.tattoo.desc",
-    serviceIds: ["tattoo-consult", "tattoo-session"],
+    serviceIds: ["tattoo-session", "tattoo-consult"],
     useTattooBookingUrl: true,
+    summaryPriceOverride: {
+      uk: "від 1 000 ₴",
+      en: "from 1,000 UAH",
+    },
   },
 ];
 

@@ -158,7 +158,7 @@ export default function About() {
     {
       prefersReducedMotion: reducedMotion,
       autoplay: true,
-      autoplayIntervalMs: 4000,
+      autoplayIntervalMs: 3000,
       autoplayResumeAfterMs: 5000,
     }
   );

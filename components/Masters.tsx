@@ -222,7 +222,7 @@ export default function Masters() {
   const { scrollerRef, activeIndex, goTo, goNext, goPrev } = useScrollSnapCarousel(MASTER_LIST.length, {
     prefersReducedMotion: reducedMotion,
     autoplay: isMobile && isMastersMobileSliderInView,
-    autoplayIntervalMs: 4000,
+    autoplayIntervalMs: 3000,
     autoplayResumeAfterMs: 5000,
   });
 

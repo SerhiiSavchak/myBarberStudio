@@ -1,6 +1,13 @@
 import type { Locale } from "@/lib/i18n";
 import type { ServiceItemDef } from "@/data/services";
 
+export function formatPriceNumber(n: number, locale: Locale): string {
+  if (!Number.isFinite(n)) return "";
+  return locale === "uk"
+    ? n.toLocaleString("uk-UA", { maximumFractionDigits: 0 })
+    : n.toLocaleString("en-US", { maximumFractionDigits: 0 });
+}
+
 export function formatServicePrice(
   item: ServiceItemDef,
   locale: Locale,
@@ -8,31 +15,49 @@ export function formatServicePrice(
 ): string {
   if (item.priceOnInquiry) return inquiryLabel;
 
+  if (item.fixedPrice != null && Number.isFinite(item.fixedPrice)) {
+    const num = formatPriceNumber(item.fixedPrice, locale);
+    return locale === "uk" ? `${num} ₴` : `${num} UAH`;
+  }
+
   const top = item.priceTop;
   const exp = item.priceExpert;
 
-  if (top != null && exp != null) {
-    if (top === exp) return locale === "uk" ? `${top} ₴` : `${top} UAH`;
-    return locale === "uk" ? `від ${top} до ${exp} ₴` : `from ${top} to ${exp} UAH`;
+  if (top != null && exp != null && Number.isFinite(top) && Number.isFinite(exp)) {
+    if (top === exp) {
+      const num = formatPriceNumber(top, locale);
+      return locale === "uk" ? `${num} ₴` : `${num} UAH`;
+    }
+    return locale === "uk"
+      ? `від ${formatPriceNumber(top, locale)} до ${formatPriceNumber(exp, locale)} ₴`
+      : `from ${formatPriceNumber(top, locale)} to ${formatPriceNumber(exp, locale)} UAH`;
   }
 
-  if (top != null && exp == null)
-    return locale === "uk" ? `від ${top} ₴` : `from ${top} UAH`;
+  if (top != null && Number.isFinite(top) && exp == null)
+    return locale === "uk"
+      ? `від ${formatPriceNumber(top, locale)} ₴`
+      : `from ${formatPriceNumber(top, locale)} UAH`;
 
-  if (top == null && exp != null)
-    return locale === "uk" ? `${exp} ₴` : `${exp} UAH`;
+  if (top == null && exp != null && Number.isFinite(exp)) {
+    const num = formatPriceNumber(exp, locale);
+    return locale === "uk" ? `${num} ₴` : `${num} UAH`;
+  }
 
   return inquiryLabel;
 }
 
 function itemNumericBounds(item: ServiceItemDef): { lo: number; hi: number } | null {
   if (item.priceOnInquiry) return null;
+  if (item.excludeFromCategoryRange) return null;
+  if (item.fixedPrice != null && Number.isFinite(item.fixedPrice)) {
+    return { lo: item.fixedPrice, hi: item.fixedPrice };
+  }
   const top = item.priceTop;
   const exp = item.priceExpert;
-  if (top != null && exp != null)
+  if (top != null && exp != null && Number.isFinite(top) && Number.isFinite(exp))
     return { lo: Math.min(top, exp), hi: Math.max(top, exp) };
-  if (top != null) return { lo: top, hi: top };
-  if (exp != null) return { lo: exp, hi: exp };
+  if (top != null && Number.isFinite(top)) return { lo: top, hi: top };
+  if (exp != null && Number.isFinite(exp)) return { lo: exp, hi: exp };
   return null;
 }
 
@@ -48,8 +73,13 @@ export function formatCategoryPriceRange(
   if (bounds.length === 0) return inquiryLabel;
   const lo = Math.min(...bounds.map((b) => b.lo));
   const hi = Math.max(...bounds.map((b) => b.hi));
-  if (lo === hi) return locale === "uk" ? `${lo} ₴` : `${lo} UAH`;
-  return locale === "uk" ? `від ${lo} до ${hi} ₴` : `from ${lo} to ${hi} UAH`;
+  if (lo === hi) {
+    const num = formatPriceNumber(lo, locale);
+    return locale === "uk" ? `${num} ₴` : `${num} UAH`;
+  }
+  return locale === "uk"
+    ? `від ${formatPriceNumber(lo, locale)} до ${formatPriceNumber(hi, locale)} ₴`
+    : `from ${formatPriceNumber(lo, locale)} to ${formatPriceNumber(hi, locale)} UAH`;
 }
 
 export function formatServicesCount(n: number, locale: Locale): string {
