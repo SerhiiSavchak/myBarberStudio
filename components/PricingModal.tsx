@@ -6,16 +6,19 @@ import { useLockBodyScroll } from "@/hooks/use-lock-body-scroll";
 import { BOOKING_URL } from "@/constants/routes";
 import { useLocale } from "@/lib/locale-context";
 
-interface ServiceItem {
+export interface PricingModalServiceRow {
+  id: string;
   name: string;
   price: string;
+  duration: string;
+  description: string;
 }
 
 interface PricingModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  items: ServiceItem[];
+  items: PricingModalServiceRow[];
   /** Defaults to main booking; e.g. tattoo category uses TATTOO_BOOKING_URL */
   bookingUrl?: string;
 }
@@ -90,10 +93,10 @@ export default function PricingModal({
             }}
           >
             {/* Header */}
-            <div className="flex shrink-0 items-center justify-between border-b border-neon-red/10 px-6 py-4">
+            <div className="flex shrink-0 items-center justify-between gap-3 border-b border-neon-red/10 px-6 py-4">
               <h2
                 id="pricing-modal-title"
-                className="font-display text-lg font-semibold uppercase tracking-wide text-foreground"
+                className="min-w-0 font-display text-lg font-semibold uppercase tracking-wide text-foreground break-words"
               >
                 {title}
               </h2>
@@ -101,7 +104,7 @@ export default function PricingModal({
                 ref={closeButtonRef}
                 type="button"
                 onClick={onClose}
-                className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-red/50"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-red/50"
                 aria-label="Close"
               >
                 <svg
@@ -118,26 +121,41 @@ export default function PricingModal({
 
             {/* Scrollable content */}
             <div className="flex-1 overflow-y-auto overscroll-contain px-6 py-5">
-              <ul className="flex flex-col gap-4">
+              <ul className="flex flex-col gap-5">
                 {items.map((item) => (
                   <li
-                    key={item.name}
-                    className="flex items-center justify-between gap-4 border-b border-neon-red/5 pb-4 last:border-0 last:pb-0"
+                    key={item.id}
+                    className="border-b border-neon-red/5 pb-5 last:border-0 last:pb-0"
                   >
-                    <span className="font-body text-sm text-foreground">
-                      {item.name}
-                    </span>
-                    <span
-                      className="shrink-0 font-mono text-sm font-semibold text-neon-red/80"
-                      style={{ textShadow: "0 0 8px hsl(var(--neon-red) / 0.25)" }}
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+                      <span className="min-w-0 font-body text-sm font-medium text-foreground break-words">
+                        {item.name}
+                      </span>
+                      <span
+                        className="shrink-0 font-mono text-sm font-semibold whitespace-nowrap text-neon-red/80 sm:text-right"
+                        style={{ textShadow: "0 0 8px hsl(var(--neon-red) / 0.25)" }}
+                      >
+                        {item.price}
+                      </span>
+                    </div>
+                    <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/85">
+                      {item.duration}
+                    </p>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground break-words">
+                      {item.description}
+                    </p>
+                    <a
+                      href={bookingUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3 inline-flex font-body text-[10px] font-medium uppercase tracking-[0.2em] text-neon-red/90 underline-offset-4 transition-colors hover:text-neon-red hover:underline"
                     >
-                      {item.price}
-                    </span>
+                      {t("pricing.book")}
+                    </a>
                   </li>
                 ))}
               </ul>
 
-              {/* Note */}
               <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/70">
                 {t("pricing.note")}
               </p>

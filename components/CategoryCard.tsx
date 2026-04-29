@@ -4,9 +4,11 @@ import { cn } from "@/lib/utils";
 import { useScrollSafeTap } from "@/hooks/use-scroll-safe-tap";
 
 interface CategoryCardProps {
+  protocolId: string;
   name: string;
   description: string;
-  id: string;
+  priceRange: string;
+  servicesCount: string;
   index: number;
   inView: boolean;
   onClick: () => void;
@@ -15,7 +17,9 @@ interface CategoryCardProps {
 export default function CategoryCard({
   name,
   description,
-  id,
+  protocolId,
+  priceRange,
+  servicesCount,
   index,
   inView,
   onClick,
@@ -46,7 +50,7 @@ export default function CategoryCard({
           SERVICE PROTOCOL
         </span>
         <span className="font-mono text-[7px] uppercase tracking-[0.3em] text-muted-foreground/30">
-          {id}
+          {protocolId}
         </span>
       </div>
       <div className="absolute left-0 top-0 h-5 w-5 border-l border-t border-neon-red/0 transition-all duration-500 group-hover:border-neon-red/40 group-hover:h-6 group-hover:w-6" />
@@ -56,9 +60,13 @@ export default function CategoryCard({
       <h3 className="mb-2 text-lg font-semibold uppercase tracking-wide text-foreground">
         {name}
       </h3>
-      <p className="mb-5 text-sm leading-relaxed text-muted-foreground">
+      <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
         {description}
       </p>
+      <div className="mb-5 flex flex-col gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em]">
+        <span className="text-neon-red/55">{priceRange}</span>
+        <span className="text-muted-foreground/55">{servicesCount}</span>
+      </div>
       <div className="flex items-center justify-between">
         <span
           className="font-mono text-[10px] uppercase tracking-[0.2em] text-neon-red/50"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import SectionHeading from "./SectionHeading";
 import CategoryCard from "./CategoryCard";
@@ -8,103 +8,49 @@ import PricingModal from "./PricingModal";
 import { useLocale } from "@/lib/locale-context";
 import { useSectionInView } from "@/hooks/use-section-in-view";
 import { BOOKING_URL, SECTION_IDS, TATTOO_BOOKING_URL } from "@/constants/routes";
-import type { TranslationKey } from "@/lib/i18n";
-
-interface ServiceItem {
-  name: string;
-  price: string;
-}
-
-interface Category {
-  id: string;
-  labelKey: TranslationKey;
-  descKey: TranslationKey;
-  items: { name: { uk: string; en: string }; price: string }[];
-}
-
-const PRICING_DATA: Category[] = [
-  {
-    id: "SVC-001",
-    labelKey: "pricing.cat.haircuts",
-    descKey: "services.haircuts.desc",
-    items: [
-      { name: { uk: "Стрижка", en: "Haircut" }, price: "500-1000 грн" },
-      { name: { uk: "Стрижка на подовжене волосся", en: "Long haircut" }, price: "600-1100 грн" },
-      { name: { uk: "Стрижка двома насадками", en: "Two-guard cut" }, price: "350-800 грн" },
-      { name: { uk: "Укладка волосся", en: "Hair styling" }, price: "250-350 грн" },
-      { name: { uk: "Моделювання", en: "Modeling" }, price: "300-600 грн" },
-      { name: { uk: "Хеір тату", en: "Hair tattoo" }, price: "200 грн" },
-      { name: { uk: "Дитяча стрижка", en: "Kids haircut" }, price: "500-1000 грн" },
-    ],
-  },
-  {
-    id: "SVC-002",
-    labelKey: "pricing.cat.beard",
-    descKey: "services.beard.desc",
-    items: [
-      { name: { uk: "Стрижка бороди", en: "Beard trim" }, price: "400-800 грн" },
-      { name: { uk: "Королівське гоління", en: "Royal shave" }, price: "525-850 грн" },
-    ],
-  },
-  {
-    id: "SVC-003",
-    labelKey: "pricing.cat.toning",
-    descKey: "services.toning.desc",
-    items: [
-      { name: { uk: "Тонування волосся", en: "Hair toning" }, price: "500-700 грн" },
-      { name: { uk: "Тонування бороди", en: "Beard toning" }, price: "450-650 грн" },
-    ],
-  },
-  {
-    id: "SVC-004",
-    labelKey: "pricing.cat.combo",
-    descKey: "services.combo.desc",
-    items: [
-      { name: { uk: "Стрижка + корекція бороди", en: "Haircut + beard trim" }, price: "1000-1800 грн" },
-      { name: { uk: "Тато + син", en: "Father + son" }, price: "1100-2000 грн" },
-    ],
-  },
-  {
-    /** Id referenced for modal booking link → TATTOO_BOOKING_URL */
-    id: "SVC-005",
-    labelKey: "pricing.cat.tattoo",
-    descKey: "services.tattoo.desc",
-    items: [
-      { name: { uk: "Консультація", en: "Consultation" }, price: "0 грн" },
-      { name: { uk: "Виконання роботи", en: "Tattoo work" }, price: "від 1000 грн" },
-    ],
-  },
-  {
-    id: "SVC-006",
-    labelKey: "pricing.cat.care",
-    descKey: "services.care.desc",
-    items: [
-      { name: { uk: "СПА процедура для обличчя", en: "Face SPA" }, price: "300 грн" },
-      { name: { uk: "СПА процедура DEPOT", en: "DEPOT SPA" }, price: "400 грн" },
-      { name: { uk: "Патчі під очі", en: "Under-eye patches" }, price: "100-200 грн" },
-      { name: { uk: "Воскова депіляція", en: "Waxing" }, price: "200-300 грн" },
-    ],
-  },
-];
+import { PRICING_CATEGORIES, getServicesByIds } from "@/data/services";
+import {
+  formatCategoryPriceRange,
+  formatServicePrice,
+  formatServicesCount,
+} from "@/lib/service-price";
 
 export default function Services() {
   const { ref, inView } = useSectionInView();
   const { t, locale } = useLocale();
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
 
-  const categories = PRICING_DATA.map((cat) => ({
-    ...cat,
-    title: t(cat.labelKey),
-    description: t(cat.descKey),
-    items: cat.items.map((item) => ({
-      name: item.name[locale],
-      price: item.price,
-    })),
-  }));
+  const categories = useMemo(() => {
+    const inquiry = t("pricing.priceInquiry");
+    return PRICING_CATEGORIES.map((cat) => {
+      const defs = getServicesByIds(cat.serviceIds);
+      return {
+        id: cat.id,
+        protocolId: cat.protocolId,
+        title: t(cat.labelKey),
+        description: t(cat.descKey),
+        priceRange: formatCategoryPriceRange(defs, locale, inquiry),
+        servicesCount: formatServicesCount(defs.length, locale),
+        useTattooBookingUrl: cat.useTattooBookingUrl ?? false,
+        modalItems: defs.map((def) => ({
+          id: def.id,
+          name: def.title[locale],
+          price: formatServicePrice(def, locale, inquiry),
+          duration: def.duration[locale],
+          description: def.shortDescription[locale],
+        })),
+      };
+    });
+  }, [locale, t]);
 
   const activeCategory = activeCategoryId
     ? categories.find((c) => c.id === activeCategoryId)
     : null;
+
+  const bookingUrl =
+    activeCategory?.useTattooBookingUrl === true
+      ? TATTOO_BOOKING_URL
+      : BOOKING_URL;
 
   return (
     <section id={SECTION_IDS.services} className="relative px-6 py-12 md:py-16 lg:px-8">
@@ -120,9 +66,11 @@ export default function Services() {
           {categories.map((cat, i) => (
             <CategoryCard
               key={cat.id}
-              id={cat.id}
+              protocolId={cat.protocolId}
               name={cat.title}
               description={cat.description}
+              priceRange={cat.priceRange}
+              servicesCount={cat.servicesCount}
               index={i}
               inView={inView}
               onClick={() => setActiveCategoryId(cat.id)}
@@ -130,7 +78,6 @@ export default function Services() {
           ))}
         </div>
 
-        {/* Notes */}
         <div
           className={cn(
             "mt-12 flex flex-col items-center gap-3 text-center scroll-reveal",
@@ -150,15 +97,12 @@ export default function Services() {
         </div>
       </div>
 
-      {/* Modal with price list */}
       <PricingModal
         isOpen={!!activeCategory}
         onClose={() => setActiveCategoryId(null)}
         title={activeCategory?.title ?? ""}
-        items={activeCategory?.items ?? []}
-        bookingUrl={
-          activeCategoryId === "SVC-005" ? TATTOO_BOOKING_URL : BOOKING_URL
-        }
+        items={activeCategory?.modalItems ?? []}
+        bookingUrl={bookingUrl}
       />
     </section>
   );
