@@ -225,13 +225,13 @@ const dict = {
   },
   "masters.iryna.title": { uk: "Адміністратор", en: "Administrator" },
   "masters.iryna.desc": {
-    uk: "Адміністратор, який допомагає з записом, комунікацією та комфортом гостей у студії. Відповідає за порядок, увагу до деталей і приємний сервіс.",
-    en: "An administrator who helps with bookings, communication, and guest comfort in the studio. Keeps things organized, attentive, and welcoming.",
+    uk: "Адміністратор, яка веде запис і комунікацію з гостями у студії: узгодження часу, зрозумілі відповіді та організація щоденного ритму. Тримає сервіс зібраним і передбачуваним, щоб кожен візит починався спокійно.",
+    en: "An administrator who handles bookings and guest communication in the studio—scheduling, clear answers, and a steady daily rhythm. Keeps service organized and predictable so every visit starts calmly.",
   },
   "masters.mariia.title": { uk: "Адміністратор", en: "Administrator" },
   "masters.mariia.desc": {
-    uk: "Адміністратор, яка допомагає з записом, комунікацією та комфортом гостей у студії. Відповідає за порядок, увагу до деталей і приємний сервіс.",
-    en: "Handles bookings, communication, and guest comfort in the studio. Keeps the front desk smooth, detail-oriented, and friendly.",
+    uk: "Адміністратор, яка зустрічає гостей у залі та допомагає впевнено пройти шлях від входу до зони майстрів. Піклується про комфорт і приємну атмосферу зустрічі, щоб перше враження від студії залишалося охайним.",
+    en: "An administrator who welcomes guests in the space and guides them confidently from the door to the work area. Focuses on comfort and a pleasant first impression so the studio feels welcoming from the start.",
   },
   "masters.vita.title": { uk: "Експерт", en: "Expert" },
   "masters.vita.desc": {
