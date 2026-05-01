@@ -99,7 +99,7 @@ export default function Hero() {
           priority
           fetchPriority="high"
           sizes="100vw"
-          quality={88}
+          quality={90}
           className="hero-video-poster object-cover object-center"
           aria-hidden
           onLoad={handlePosterLoad}

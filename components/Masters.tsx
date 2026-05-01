@@ -14,10 +14,7 @@ import { cn } from "@/lib/utils";
 import type { TranslationKey } from "@/lib/i18n";
 import { useScrollSnapCarousel } from "@/hooks/use-scroll-snap-carousel";
 import { SliderArrowButton } from "./SliderArrowButton";
-
-/** Minimal dark blur placeholder */
-const MASTER_IMAGE_BLUR =
-  "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8AkwA/2Q==";
+import { MASTERS_BLUR_BY_SRC, MASTERS_BLUR_FALLBACK } from "@/lib/blur-placeholders";
 
 type MasterDef = {
   nameKey: TranslationKey;
@@ -124,10 +121,10 @@ function MasterCard({
             src={master.image}
             alt={master.imageAlt}
             fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 1400px"
-            quality={95}
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, min(1120px, 72vw)"
+            quality={86}
             placeholder="blur"
-            blurDataURL={MASTER_IMAGE_BLUR}
+            blurDataURL={MASTERS_BLUR_BY_SRC[master.image] ?? MASTERS_BLUR_FALLBACK}
             className="masters-card-image object-cover [backface-visibility:hidden] transform-gpu transition-transform duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] md:group-hover:scale-[1.02] motion-reduce:md:group-hover:scale-100"
             style={{ objectPosition }}
           />

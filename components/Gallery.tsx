@@ -99,7 +99,7 @@ function GalleryModal({
               alt={t(image.altKey)}
               width={1920}
               height={1280}
-              quality={95}
+              quality={88}
               className="h-auto max-h-[85vh] w-full object-contain"
               sizes="(max-width: 1280px) 100vw, 1280px"
             />
@@ -155,8 +155,9 @@ function GalleryItem({
         src={img.src}
         alt={alt}
         fill
-        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 640px"
-        quality={90}
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 560px"
+        quality={82}
+        loading="lazy"
         className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
       />
       <div className="absolute inset-0 bg-background/0 transition-colors duration-500 group-hover:bg-background/30" />

@@ -10,6 +10,7 @@ import { useSectionInView } from "@/hooks/use-section-in-view";
 import { useInView } from "@/hooks/use-in-view";
 import { cn } from "@/lib/utils";
 import { ABOUT_SLIDES } from "@/constants/media";
+import { ABOUT_SLIDER_BLUR_DATA_URL } from "@/lib/blur-placeholders";
 import { useScrollSnapCarousel } from "@/hooks/use-scroll-snap-carousel";
 import { SliderArrowButton } from "./SliderArrowButton";
 
@@ -420,9 +421,11 @@ export default function About() {
                         alt={t(slide.altKey)}
                         fill
                         draggable={false}
-                        sizes="(max-width: 768px) 100vw, 960px"
-                        quality={90}
+                        sizes="(max-width: 768px) 100vw, min(960px, 90vw)"
+                        quality={82}
                         loading={i === 0 ? "eager" : "lazy"}
+                        placeholder="blur"
+                        blurDataURL={ABOUT_SLIDER_BLUR_DATA_URL}
                         className="pointer-events-none object-cover"
                         style={{ objectPosition: slide.objectPosition }}
                       />

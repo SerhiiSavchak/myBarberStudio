@@ -15,4 +15,5 @@ export const ABOUT_SLIDES = [
 /** Hero background — public/videos/hero (served as /videos/hero/...) */
 export const HERO_VIDEO_DESKTOP_SRC = "/videos/hero/hero-desktop.mp4";
 export const HERO_VIDEO_MOBILE_SRC = "/videos/hero/hero-mobile.mp4";
-export const HERO_VIDEO_POSTER_SRC = "/videos/hero/hero-poster.png";
+/** WebP from `node scripts/optimize-hero-poster.mjs` (~40% smaller than PNG, faster LCP). */
+export const HERO_VIDEO_POSTER_SRC = "/videos/hero/hero-poster.webp";

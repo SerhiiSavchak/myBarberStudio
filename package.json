@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "build:analyze": "ANALYZE=true next build --webpack",
-    "video:optimize": "bash scripts/optimize-hero-video.sh",
+    "video:optimize": "bash scripts/optimize-hero-videos.sh",
+    "optimize:poster": "node scripts/optimize-hero-poster.mjs",
+    "generate:blur-placeholders": "node scripts/generate-blur-placeholders.mjs",
     "start": "next start",
     "lint": "next lint",
     "favicon": "node scripts/generate-favicon-from-logo.mjs"

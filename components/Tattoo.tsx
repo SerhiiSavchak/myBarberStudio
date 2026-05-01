@@ -9,6 +9,7 @@ import SectionHeading from "./SectionHeading";
 import { useLocale } from "@/lib/locale-context";
 import { useSectionInView } from "@/hooks/use-section-in-view";
 import { TATTOO_BOOKING_URL } from "@/constants/routes";
+import { TATTOO_IMAGE_BLUR_DATA_URL } from "@/lib/blur-placeholders";
 
 const BULLET_KEYS = [
   "tattoo.point1",
@@ -55,7 +56,7 @@ export default function Tattoo() {
 
             {/* Image with mask reveal */}
             <motion.div
-              className="absolute inset-0"
+              className="absolute inset-0 bg-zinc-950"
               style={{
                 clipPath: useTransform(
                   clipProgress,
@@ -68,8 +69,11 @@ export default function Tattoo() {
                 src="/images/tattoo/tattoo-hq-v2.jpg"
                 alt={t("tattoo.imageAlt")}
                 fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 800px"
-                quality={95}
+                sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, min(840px, 58vw)"
+                quality={86}
+                loading="lazy"
+                placeholder="blur"
+                blurDataURL={TATTOO_IMAGE_BLUR_DATA_URL}
                 className="object-cover object-[50%_28%] md:object-[50%_22%]"
               />
             </motion.div>
