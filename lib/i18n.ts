@@ -16,10 +16,6 @@ const dict = {
   "nav.book": { uk: "Записатись", en: "Book Now" },
 
   // Hero
-  "hero.tag": {
-    uk: "LVIV DISTRICT 07 // Night Session",
-    en: "LVIV DISTRICT 07 // Night Session",
-  },
   "hero.line1": { uk: "Стиль", en: "Style" },
   "hero.line2": { uk: "народжується", en: "is born" },
   "hero.line3": { uk: "тут", en: "here" },
@@ -267,7 +263,10 @@ const dict = {
   "gallery.work01": { uk: "Інтер'єр студії", en: "Studio interior" },
   "gallery.work02": { uk: "Робота барбера", en: "Barber at work" },
   "gallery.work03": { uk: "У процесі", en: "Mid-session" },
-  "gallery.work04": { uk: "Майстер за роботою, стрижка в студії M&Y", en: "Barber at work during a cut at M&Y" },
+  "gallery.work04": {
+    uk: "Професійний барбер з машинкою робить стрижку перед дзеркалом у залі з експонованою цеглою та деревом",
+    en: "Professional barber using clippers reflected in the mirror against exposed brick and wood",
+  },
   "gallery.work05": { uk: "Команда студії", en: "Studio team" },
   "gallery.work06": { uk: "Робота з бородою", en: "Beard work" },
   "gallery.closeModal": { uk: "Закрити", en: "Close" },

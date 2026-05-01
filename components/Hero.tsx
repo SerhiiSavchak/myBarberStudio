@@ -156,19 +156,6 @@ export default function Hero() {
         style={{ transform: `translateY(${contentY})` }}
       >
         <div className="hero-content-block relative max-w-3xl w-full min-w-0">
-          <div className="hero-entrance-tag mb-6 md:mb-8 flex items-center gap-3">
-            <span
-              className="block h-px w-12"
-              style={{
-                background: "linear-gradient(90deg, hsl(var(--neon-red) / 0.7), transparent)",
-                boxShadow: "0 0 6px hsl(var(--neon-red) / 0.3)",
-              }}
-            />
-            <span className="hero-tag font-mono text-[8px] uppercase tracking-[0.5em] text-neon-red/50">
-              {t("hero.tag")}
-            </span>
-          </div>
-
           <div className="mb-2 overflow-visible md:overflow-hidden">
             <h1
               className="hero-entrance-line1 font-display text-[clamp(1.9rem,min(6.5vw,5rem),7rem)] font-bold uppercase leading-[1.2] tracking-[0.02em] text-foreground break-words"

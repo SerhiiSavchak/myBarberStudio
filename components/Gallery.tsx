@@ -16,9 +16,9 @@ const GALLERY_IMAGES: { src: string; altKey: "gallery.work01" | "gallery.work02"
   { src: "/gallery/gallery-1.png", altKey: "gallery.work01", tag: "IMG-001" },
   { src: "/gallery/gallery-2.png", altKey: "gallery.work02", tag: "IMG-002" },
   { src: "/gallery/gallery-3.png", altKey: "gallery.work03", tag: "IMG-003" },
-  { src: "/gallery/gallery-4.png", altKey: "gallery.work04", tag: "IMG-004" },
+  { src: "/gallery/gallery-6.png", altKey: "gallery.work06", tag: "IMG-004" },
   { src: "/gallery/gallery-5.png", altKey: "gallery.work05", tag: "IMG-005" },
-  { src: "/gallery/gallery-6.png", altKey: "gallery.work06", tag: "IMG-006" },
+  { src: "/gallery/gallery-4.png", altKey: "gallery.work04", tag: "IMG-006" },
 ];
 
 /* Cinematic lightbox modal */
