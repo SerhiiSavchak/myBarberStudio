@@ -422,7 +422,7 @@ export default function About() {
                         draggable={false}
                         sizes="(max-width: 768px) 100vw, 960px"
                         quality={90}
-                        priority={i === 0}
+                        loading={i === 0 ? "eager" : "lazy"}
                         className="pointer-events-none object-cover"
                         style={{ objectPosition: slide.objectPosition }}
                       />

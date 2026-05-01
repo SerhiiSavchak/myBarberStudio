@@ -1,21 +1,37 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useState, useEffect, useRef, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import SectionHeading from "./SectionHeading";
 import { useLocale } from "@/lib/locale-context";
 import { BOOKING_URL, SECTION_IDS } from "@/constants/routes";
 import { useSectionInView } from "@/hooks/use-section-in-view";
-import type { TranslationKey } from "@/lib/i18n";
+import { MAP_CENTER } from "@/lib/contacts-map";
+import type { TranslationKey, Locale } from "@/lib/i18n";
+
+const ContactsGoogleMap = dynamic(() => import("./ContactsGoogleMap"), {
+  ssr: false,
+  loading: () => null,
+});
+
+function hasGoogleMapsJsApiKey() {
+  const k = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  return typeof k === "string" && k.trim().length > 0;
+}
 
 const CONTACT_INFO = {
   phone: "+38 (066) 033 60 00",
   email: "mybarbershop36@gmail.com",
+  /** Opens the Google Maps business listing (place id), not a raw pin search */
   mapsUrl:
-    "https://www.google.com/maps/place/M%26Y+BARBER+STUDIO%2F%D0%91%D0%B0%D1%80%D0%B1%D0%B5%D1%80%D1%88%D0%BE%D0%BF/@49.8368613,24.0235925,17z/data=!3m1!4b1!4m6!3m5!1s0x473add2c785742b1:0xb00c85a63b08bc4a!8m2!3d49.8368579!4d24.0284688!16s%2Fg%2F11hzwg3vlm?entry=ttu&g_ep=EgoyMDI2MDQyMi4wIKXMDSoASAFQAw%3D%3D",
-  mapsEmbedUrl:
-    "https://maps.google.com/maps?q=Львів+вул.+Мирослава+Скорика+21&z=17&output=embed",
+    "https://www.google.com/maps/place/M%26Y+BARBER+STUDIO/data=!4m6!3m5!1s0x473add2c785742b1:0xb00c85a63b08bc4a!8m2!3d49.8368579!4d24.0284688!16s%2Fg%2F11hzwg3vlm",
 } as const;
+
+/** Coordinate-centred embed — iframe fallback without JS API (single native pin). */
+function googleMapsEmbedSrc(locale: Locale) {
+  return `https://www.google.com/maps?q=${MAP_CENTER.lat}%2C${MAP_CENTER.lng}&z=17&hl=${locale}&output=embed`;
+}
 
 const SOCIAL_LINKS: { labelKey: TranslationKey; href: string; icon: ReactNode }[] = [
   {
@@ -56,34 +72,6 @@ function CornerBrackets({ className = "" }: { className?: string }) {
       <div className="absolute right-0 top-0 h-4 w-4 border-r border-t border-neon-red/30" />
       <div className="absolute bottom-0 left-0 h-4 w-4 border-b border-l border-neon-red/30" />
       <div className="absolute bottom-0 right-0 h-4 w-4 border-b border-r border-neon-red/30" />
-    </div>
-  );
-}
-
-function RadarOverlay() {
-  return (
-    <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden">
-      {[0, 1, 2].map((i) => (
-        <div
-          key={i}
-          className="absolute rounded-full border border-neon-cyan/10 animate-radar-pulse"
-          style={{ width: "200px", height: "200px", animationDelay: `${i * 0.7}s` }}
-        />
-      ))}
-      <div
-        className="absolute h-[100px] w-px origin-bottom animate-radar-spin"
-        style={{ background: "linear-gradient(to top, hsl(var(--neon-cyan) / 0.2), transparent)" }}
-      />
-    </div>
-  );
-}
-
-function LocationMarker() {
-  return (
-    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-      <div className="absolute -inset-3 animate-signal-ping rounded-full border border-neon-red/40" />
-      <div className="absolute -inset-3 animate-signal-ping rounded-full border border-neon-red/20" style={{ animationDelay: "0.5s" }} />
-      <div className="relative h-3 w-3 rounded-full bg-neon-red animate-marker-glow" />
     </div>
   );
 }
@@ -130,7 +118,8 @@ function LazyMap() {
   const [shouldLoad, setShouldLoad] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
+  const useJsMap = hasGoogleMapsJsApiKey();
 
   useEffect(() => {
     const el = mapRef.current;
@@ -154,13 +143,21 @@ function LazyMap() {
           aria-hidden
         />
       )}
-      {/* iframe when in view */}
-      {shouldLoad && (
+      {shouldLoad && useJsMap && (
+        <div className="absolute inset-0 z-[10] touch-pan-y">
+          <ContactsGoogleMap onReady={() => setMapReady(true)} />
+        </div>
+      )}
+      {shouldLoad && !useJsMap && (
         <iframe
+          key={locale}
           title={t("contacts.mapIframeTitle")}
-          src={CONTACT_INFO.mapsEmbedUrl}
-          className="absolute inset-0 h-full w-full"
-          style={{ border: 0, filter: "invert(0.9) hue-rotate(180deg) saturate(0.3) brightness(0.6) contrast(1.3)" }}
+          src={googleMapsEmbedSrc(locale)}
+          className="absolute inset-0 z-0 h-full w-full"
+          style={{
+            border: 0,
+            filter: "invert(0.72) hue-rotate(180deg) saturate(0.52) brightness(0.82) contrast(1.05)",
+          }}
           allowFullScreen
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
@@ -170,16 +167,20 @@ function LazyMap() {
       {/* Skeleton overlay while map loads — removed instantly on load */}
       {shouldLoad && !mapReady && (
         <div
-          className="map-skeleton pointer-events-none absolute inset-0 z-[1]"
+          className="map-skeleton pointer-events-none absolute inset-0 z-[25]"
           aria-hidden
         />
       )}
-      <div className="pointer-events-none absolute inset-0 z-[2] mix-blend-multiply" style={{ background: "linear-gradient(180deg, hsl(0 0% 2% / 0.3) 0%, hsl(0 0% 2% / 0.15) 50%, hsl(0 0% 2% / 0.4) 100%)" }} />
-      <div className="pointer-events-none absolute inset-0 z-[3]" style={{ backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 3px, hsl(0 0% 0% / 0.04) 3px, hsl(0 0% 0% / 0.04) 6px)" }} />
-      <div className="pointer-events-none absolute inset-0 z-[3] opacity-20" style={{ backgroundImage: "linear-gradient(hsl(var(--neon-red) / 0.08) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--neon-red) / 0.08) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
-      <div className="pointer-events-none absolute inset-0 z-[4]"><RadarOverlay /></div>
-      <div className="pointer-events-none absolute inset-0 z-[5]"><LocationMarker /></div>
-      <div className="pointer-events-none absolute inset-0 z-[6]"><CornerBrackets /></div>
+      {shouldLoad && !useJsMap && mapReady && (
+        <>
+          <div className="pointer-events-none absolute inset-0 z-[2] mix-blend-multiply" style={{ background: "linear-gradient(180deg, hsl(0 0% 2% / 0.08) 0%, hsl(0 0% 2% / 0.04) 50%, hsl(0 0% 2% / 0.13) 100%)" }} />
+          <div className="pointer-events-none absolute inset-0 z-[3]" style={{ backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 3px, hsl(0 0% 0% / 0.018) 3px, hsl(0 0% 0% / 0.018) 6px)" }} />
+          <div className="pointer-events-none absolute inset-0 z-[3] opacity-[0.07]" style={{ backgroundImage: "linear-gradient(hsl(var(--neon-red) / 0.04) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--neon-red) / 0.04) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+        </>
+      )}
+      <div className="pointer-events-none absolute inset-0 z-[26]">
+        <CornerBrackets />
+      </div>
     </div>
   );
 }

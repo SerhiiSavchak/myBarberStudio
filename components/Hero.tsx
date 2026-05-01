@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocale } from "@/lib/locale-context";
 import { useHeroReady } from "@/lib/hero-ready-context";
@@ -90,18 +91,22 @@ export default function Hero() {
         className="hero-entrance-video absolute inset-0 z-0"
         style={{ transform: `translateY(${bgY})` }}
       >
-        <img
+        <Image
           ref={posterCallbackRef}
           src={HERO_VIDEO_POSTER_SRC}
           alt=""
-          className="hero-video-poster absolute inset-0 h-full w-full object-cover object-center"
-          aria-hidden
+          fill
+          priority
           fetchPriority="high"
+          sizes="100vw"
+          quality={88}
+          className="hero-video-poster object-cover object-center"
+          aria-hidden
           onLoad={handlePosterLoad}
           onError={handlePosterError}
         />
         {/*
-          No native poster on <video>: browser can flash it at loop boundary; the <img> is the only first-load poster.
+          No native poster on <video>: browser can flash it at loop boundary; the Next/Image layer is the only first-load poster.
         */}
         <video
           ref={mobileCallbackRef}
@@ -109,7 +114,7 @@ export default function Hero() {
           muted
           loop
           playsInline
-          preload="auto"
+          preload="none"
           width={1920}
           height={1080}
           disablePictureInPicture
@@ -125,7 +130,7 @@ export default function Hero() {
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="none"
           width={1920}
           height={1080}
           disablePictureInPicture

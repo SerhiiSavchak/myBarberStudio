@@ -353,7 +353,7 @@ const dict = {
   "contacts.bookingLine": { uk: "Система запису // онлайн", en: "Booking // online" },
   "contacts.ctaPretitle": { uk: "Готові приймати", en: "Ready when you are" },
   "contacts.mapIframeTitle": { uk: "M&Y Barber Studio на карті", en: "M&Y Barber Studio on the map" },
-  "contacts.coords": { uk: "49.8376N // 24.0305E", en: "49.8376N // 24.0305E" },
+  "contacts.coords": { uk: "49.8369°N // 24.0285°E", en: "49.8369°N // 24.0285°E" },
   "contacts.social.instagram": { uk: "Instagram", en: "Instagram" },
   "contacts.social.telegram": { uk: "Telegram", en: "Telegram" },
   "contacts.social.phone": { uk: "Телефон", en: "Phone" },

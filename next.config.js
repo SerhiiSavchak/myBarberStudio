@@ -6,6 +6,7 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 const nextConfig = {
   images: {
     unoptimized: false,
+    minimumCacheTTL: 86_400,
     /* 1400/1536: large team portraits in expanded flex (sizes ~1400px) */
     deviceSizes: [640, 750, 828, 1080, 1200, 1400, 1536, 1920, 2048, 2560, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384, 640],

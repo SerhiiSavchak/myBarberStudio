@@ -27,6 +27,6 @@ export const HERO_MEDIA_CONSTANTS = {
   EXIT_DURATION_MS: 350,
   /** Fallback when no Hero on page — interface readiness, not media */
   NO_HERO_FALLBACK_MS: 800,
-  /** Delay before starting full video load — lets critical resources load first */
-  VIDEO_LOAD_DELAY_MS: 1200,
+  /** Delay before starting full video buffer — avoids contending with LCP poster + fonts */
+  VIDEO_LOAD_DELAY_MS: 900,
 } as const;

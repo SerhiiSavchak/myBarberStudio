@@ -130,7 +130,6 @@ function MasterCard({
             blurDataURL={MASTER_IMAGE_BLUR}
             className="masters-card-image object-cover [backface-visibility:hidden] transform-gpu transition-transform duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] md:group-hover:scale-[1.02] motion-reduce:md:group-hover:scale-100"
             style={{ objectPosition }}
-            priority={index < 2}
           />
           <div className="masters-card-overlay pointer-events-none absolute inset-0 bg-gradient-to-t from-zinc-950/75 via-zinc-950/10 to-zinc-950/0 transition-colors duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] md:from-zinc-950/60 md:via-zinc-950/0 md:group-hover:from-zinc-950/70" />
           <div
