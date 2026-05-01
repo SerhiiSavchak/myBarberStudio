@@ -12,7 +12,6 @@
     "favicon": "node scripts/generate-favicon-from-logo.mjs"
   },
   "dependencies": {
-    "@react-google-maps/api": "^2.20.8",
     "@vercel/speed-insights": "^2.0.0",
     "clsx": "^2.1.1",
     "framer-motion": "^11.18.0",

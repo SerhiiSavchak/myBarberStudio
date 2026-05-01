@@ -1,24 +1,12 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { useState, useEffect, useRef, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import SectionHeading from "./SectionHeading";
 import { useLocale } from "@/lib/locale-context";
 import { BOOKING_URL, SECTION_IDS } from "@/constants/routes";
 import { useSectionInView } from "@/hooks/use-section-in-view";
-import { MAP_CENTER } from "@/lib/contacts-map";
 import type { TranslationKey, Locale } from "@/lib/i18n";
-
-const ContactsGoogleMap = dynamic(() => import("./ContactsGoogleMap"), {
-  ssr: false,
-  loading: () => null,
-});
-
-function hasGoogleMapsJsApiKey() {
-  const k = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-  return typeof k === "string" && k.trim().length > 0;
-}
 
 const CONTACT_INFO = {
   phone: "+38 (066) 033 60 00",
@@ -28,9 +16,21 @@ const CONTACT_INFO = {
     "https://www.google.com/maps/place/M%26Y+BARBER+STUDIO/data=!4m6!3m5!1s0x473add2c785742b1:0xb00c85a63b08bc4a!8m2!3d49.8368579!4d24.0284688!16s%2Fg%2F11hzwg3vlm",
 } as const;
 
-/** Coordinate-centred embed — iframe fallback without JS API (single native pin). */
+/**
+ * Consumer embed (no API key): `embed?pb=…` matches “Share → Embed” for the verified place,
+ * so the pin shows the business listing / name like on the full Maps page.
+ * `output=embed` + raw coordinates only shows a generic pin without the place label.
+ */
 function googleMapsEmbedSrc(locale: Locale) {
-  return `https://www.google.com/maps?q=${MAP_CENTER.lat}%2C${MAP_CENTER.lng}&z=17&hl=${locale}&output=embed`;
+  const hl = locale === "uk" ? "uk" : "en";
+  /** `!1m14!1m8!…` = consumer “Embed map” shape; pin is the verified place → name/label like in full Maps */
+  const pb =
+    "!1m14!1m8!1m3!1d2574.086!2d24.0284688!3d49.8368579!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x473add2c785742b1%3A0xb00c85a63b08bc4a!2sM%26Y%20BARBER%20STUDIO!5e0!3m2!1s" +
+    hl +
+    "!2sua!4v1738281600!5m2!1s" +
+    hl +
+    "!2sua";
+  return `https://www.google.com/maps/embed?pb=${pb}&hl=${hl}`;
 }
 
 const SOCIAL_LINKS: { labelKey: TranslationKey; href: string; icon: ReactNode }[] = [
@@ -119,7 +119,6 @@ function LazyMap() {
   const [mapReady, setMapReady] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
   const { t, locale } = useLocale();
-  const useJsMap = hasGoogleMapsJsApiKey();
 
   useEffect(() => {
     const el = mapRef.current;
@@ -143,40 +142,33 @@ function LazyMap() {
           aria-hidden
         />
       )}
-      {shouldLoad && useJsMap && (
-        <div className="absolute inset-0 z-[10] touch-pan-y">
-          <ContactsGoogleMap onReady={() => setMapReady(true)} />
+      {shouldLoad && (
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          {/*
+            Clip top-left: Google place card + top chrome; iframe is cross-origin — crop only.
+          */}
+          <iframe
+            key={locale}
+            title={t("contacts.mapIframeTitle")}
+            src={googleMapsEmbedSrc(locale)}
+            className="pointer-events-auto absolute max-w-none border-0
+              w-[calc(100%+260px)] h-[calc(100%+168px)]
+              -left-[188px] -top-[132px]
+              md:w-[calc(100%+340px)] md:h-[calc(100%+192px)]
+              md:-left-[248px] md:-top-[152px]"
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            onLoad={() => setMapReady(true)}
+          />
         </div>
       )}
-      {shouldLoad && !useJsMap && (
-        <iframe
-          key={locale}
-          title={t("contacts.mapIframeTitle")}
-          src={googleMapsEmbedSrc(locale)}
-          className="absolute inset-0 z-0 h-full w-full"
-          style={{
-            border: 0,
-            filter: "invert(0.72) hue-rotate(180deg) saturate(0.52) brightness(0.82) contrast(1.05)",
-          }}
-          allowFullScreen
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          onLoad={() => setMapReady(true)}
-        />
-      )}
-      {/* Skeleton overlay while map loads — removed instantly on load */}
+      {/* Skeleton overlay while map loads — removed on iframe load */}
       {shouldLoad && !mapReady && (
         <div
           className="map-skeleton pointer-events-none absolute inset-0 z-[25]"
           aria-hidden
         />
-      )}
-      {shouldLoad && !useJsMap && mapReady && (
-        <>
-          <div className="pointer-events-none absolute inset-0 z-[2] mix-blend-multiply" style={{ background: "linear-gradient(180deg, hsl(0 0% 2% / 0.08) 0%, hsl(0 0% 2% / 0.04) 50%, hsl(0 0% 2% / 0.13) 100%)" }} />
-          <div className="pointer-events-none absolute inset-0 z-[3]" style={{ backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 3px, hsl(0 0% 0% / 0.018) 3px, hsl(0 0% 0% / 0.018) 6px)" }} />
-          <div className="pointer-events-none absolute inset-0 z-[3] opacity-[0.07]" style={{ backgroundImage: "linear-gradient(hsl(var(--neon-red) / 0.04) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--neon-red) / 0.04) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
-        </>
       )}
       <div className="pointer-events-none absolute inset-0 z-[26]">
         <CornerBrackets />
