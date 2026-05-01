@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Exo_2, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import SiteLoader from "@/components/SiteLoader";
@@ -115,6 +116,7 @@ export default function RootLayout({
             <HeroReadyProvider>
               <SiteLoader />
               {children}
+              <SpeedInsights />
             </HeroReadyProvider>
           </LocaleProvider>
         </ThemeProvider>
