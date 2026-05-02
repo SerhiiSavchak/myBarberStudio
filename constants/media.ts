@@ -12,7 +12,7 @@ export const ABOUT_SLIDES = [
   { src: "/images/about/about-slide-07.png", objectPosition: "50% 50%" as const, altKey: "about.slideAlt.7" as const },
 ] as const;
 
-/** Hero background — optimized H.264 (see `pnpm video:optimize`). Originals kept as *.mp4 backups. */
+/** Hero background — H.264 transcoded (see `pnpm video:optimize`). Stronger optional: `*.optimized.v2.mp4` (verify quality locally). */
 export const HERO_VIDEO_DESKTOP_SRC = "/videos/hero/hero-desktop.optimized.mp4";
 export const HERO_VIDEO_MOBILE_SRC = "/videos/hero/hero-mobile.optimized.mp4";
 /** WebP from `node scripts/optimize-hero-poster.mjs` (~40% smaller than PNG, faster LCP). */

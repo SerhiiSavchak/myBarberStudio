@@ -152,28 +152,27 @@ export default function Header() {
         </a>
 
         {/* Desktop Nav */}
-        <ul className="hidden items-center gap-8 lg:flex">
+        <ul className="hidden items-center gap-2 lg:flex xl:gap-3">
           {NAV_LINKS.map((link) => (
             <li key={link.href}>
               <a
                 href={link.href}
                 className={cn(
-                  "header-nav-link group relative select-none font-body text-[11px] font-medium uppercase tracking-[0.2em] transition-colors duration-300 cursor-pointer",
+                  "header-nav-link group relative inline-flex items-center rounded-sm px-3 py-2 font-body text-[11px] font-medium uppercase tracking-[0.2em] transition-colors duration-300 cursor-pointer select-none",
                   overHero
                     ? "text-zinc-100/90 hover:text-white"
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                {t(link.key)}
-                {/* Scanning underline */}
-                <span className="absolute -bottom-1.5 left-0 h-px w-0 transition-all duration-500 group-hover:w-full"
+                <span className="pointer-events-none absolute inset-0 rounded-sm bg-neon-red/0 transition-colors duration-300 group-hover:bg-neon-red/[0.04]" />
+                <span className="relative z-[1]">{t(link.key)}</span>
+                <span
+                  className="pointer-events-none absolute bottom-1 left-2 z-[1] h-px w-0 transition-all duration-500 group-hover:w-[calc(100%-1rem)]"
                   style={{
                     background: "linear-gradient(90deg, hsl(var(--neon-red) / 0.6), transparent)",
                     boxShadow: "0 0 6px hsl(var(--neon-red) / 0.3)",
                   }}
                 />
-                {/* Subtle glow on hover */}
-                <span className="pointer-events-none absolute -inset-x-2 -inset-y-1 bg-neon-red/0 transition-all duration-300 group-hover:bg-neon-red/[0.03]" />
               </a>
             </li>
           ))}

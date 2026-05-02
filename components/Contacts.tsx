@@ -318,7 +318,7 @@ export default function Contacts() {
               href={BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="neon-btn inline-flex items-center gap-3 px-10 py-4 font-body text-sm font-medium uppercase tracking-[0.2em] neon-flicker"
+              className="premium-cta neon-btn inline-flex min-h-[52px] items-center justify-center gap-3 rounded-none px-8 py-3.5 font-body text-xs font-medium uppercase leading-snug tracking-[0.19em] cursor-pointer select-none sm:px-9 sm:text-sm sm:tracking-[0.2em]"
             >
               <span className="h-1.5 w-1.5 animate-pulse-red bg-neon-red/60" style={{ boxShadow: "0 0 6px hsl(var(--neon-red) / 0.4)" }} />
               {t("contacts.bookNow")}

@@ -504,6 +504,86 @@
   box-shadow: 0 0 12px hsl(var(--neon-red) / 0.2);
 }
 
+/* Section premium CTAs — glass, symmetric border (Tattoo, booking flow, contacts) */
+.premium-cta.neon-btn {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid hsl(var(--neon-red) / 0.58);
+  background: linear-gradient(
+    145deg,
+    hsl(0 0% 4% / 0.92) 0%,
+    hsl(var(--neon-red) / 0.11) 42%,
+    hsl(0 0% 7% / 0.9) 100%
+  );
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow:
+    0 0 0 1px hsl(0 0% 0% / 0.45) inset,
+    0 0 24px hsl(var(--neon-red) / 0.14),
+    0 4px 20px hsl(0 0% 0% / 0.4);
+  color: hsl(var(--neon-red));
+  text-shadow: 0 0 12px hsl(var(--neon-red) / 0.4), 0 1px 1px hsl(0 0% 0% / 0.55);
+  transition: border-color 0.35s ease, background 0.35s ease, box-shadow 0.35s ease, transform 0.22s ease,
+    text-shadow 0.35s ease;
+}
+.premium-cta.neon-btn:hover {
+  border-color: hsl(var(--neon-red) / 0.88);
+  background: linear-gradient(
+    145deg,
+    hsl(0 0% 5% / 0.96) 0%,
+    hsl(var(--neon-red) / 0.2) 40%,
+    hsl(0 0% 8% / 0.92) 100%
+  );
+  box-shadow:
+    0 0 0 1px hsl(var(--neon-red) / 0.12) inset,
+    0 0 32px hsl(var(--neon-red) / 0.22),
+    0 6px 28px hsl(0 0% 0% / 0.45);
+  text-shadow: 0 0 18px hsl(var(--neon-red) / 0.55), 0 1px 1px hsl(0 0% 0% / 0.45);
+  transform: translateY(-1px);
+}
+.premium-cta.neon-btn:active {
+  transform: translateY(0);
+}
+.premium-cta.neon-btn:focus-visible {
+  outline: 2px solid hsl(var(--neon-red) / 0.75);
+  outline-offset: 3px;
+}
+.light .premium-cta.neon-btn {
+  border-color: hsl(var(--neon-red) / 0.48);
+  background: linear-gradient(
+    145deg,
+    hsl(0 0% 100% / 0.16) 0%,
+    hsl(var(--neon-red) / 0.09) 45%,
+    hsl(0 0% 100% / 0.12) 100%
+  );
+  box-shadow:
+    0 0 0 1px hsl(0 0% 0% / 0.1) inset,
+    0 0 20px hsl(var(--neon-red) / 0.12),
+    0 4px 16px hsl(0 0% 0% / 0.12);
+  text-shadow: 0 0 10px hsl(var(--neon-red) / 0.3);
+}
+.light .premium-cta.neon-btn:hover {
+  border-color: hsl(var(--neon-red) / 0.72);
+  background: linear-gradient(
+    145deg,
+    hsl(0 0% 100% / 0.22) 0%,
+    hsl(var(--neon-red) / 0.16) 42%,
+    hsl(0 0% 100% / 0.14) 100%
+  );
+  box-shadow:
+    0 0 0 1px hsl(var(--neon-red) / 0.08) inset,
+    0 0 26px hsl(var(--neon-red) / 0.18),
+    0 6px 20px hsl(0 0% 0% / 0.1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .premium-cta.neon-btn,
+  .premium-cta.neon-btn:hover,
+  .premium-cta.neon-btn:active {
+    transform: none;
+    transition-duration: 0.01ms;
+  }
+}
+
 /* Hero CTA: subtle border/glow pulse only — no whole-button opacity (replaces .neon-flicker here) */
 @keyframes hero-cta-ambient-dark {
   0%,

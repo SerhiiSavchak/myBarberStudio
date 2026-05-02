@@ -90,7 +90,7 @@ export default function BookingFlow() {
               href={BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="neon-btn neon-flicker inline-flex items-center gap-3 px-10 py-4 font-body text-[13px] font-medium uppercase tracking-[0.2em] cursor-pointer select-none"
+              className="premium-cta neon-btn inline-flex min-h-[52px] items-center gap-3 rounded-none px-8 py-3.5 font-body text-[12px] font-medium uppercase leading-snug tracking-[0.19em] cursor-pointer select-none sm:text-[13px] sm:tracking-[0.2em]"
             >
               {t("booking.cta")}
               <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-3.5 w-3.5">

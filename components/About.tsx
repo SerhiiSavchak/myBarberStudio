@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect, useCallback, useLayoutEffect } from "react";
+import { useRef, useState, useEffect, useCallback, useLayoutEffect, useMemo } from "react";
 import Image from "next/image";
 import { motion, useTransform } from "framer-motion";
 import { useScrollSuppressed } from "@/hooks/use-scroll-suppressed";
@@ -10,7 +10,6 @@ import { useSectionInView } from "@/hooks/use-section-in-view";
 import { useInView } from "@/hooks/use-in-view";
 import { cn } from "@/lib/utils";
 import { ABOUT_SLIDES } from "@/constants/media";
-import { ABOUT_SLIDER_BLUR_DATA_URL } from "@/lib/blur-placeholders";
 import { useScrollSnapCarousel } from "@/hooks/use-scroll-snap-carousel";
 import { SliderArrowButton } from "./SliderArrowButton";
 
@@ -22,6 +21,10 @@ const ABOUT_CAROUSEL_DRAG_MULTIPLIER = 2.25;
 const ABOUT_DRAG_FOLLOW_SMOOTHING = 0.26;
 /** Snap after release (ms), ease-out; not used when prefers-reduced-motion. */
 const ABOUT_SNAP_EASE_MS = 450;
+
+/** ~one column in `max-w-7xl` md grid (not 90vw — avoids oversized `_next/image` requests). */
+const ABOUT_SLIDER_IMAGE_SIZES =
+  "(max-width: 768px) 100vw, (max-width: 1280px) 48vw, min(720px, 46vw)";
 
 function easeOutCubic(t: number): number {
   return 1 - (1 - t) ** 3;
@@ -129,6 +132,11 @@ function CyberCounter({
 
 export default function About() {
   const { ref, inView } = useSectionInView();
+  const { ref: setAboutSliderWarmRef, inView: aboutSliderWarm } = useInView<HTMLDivElement>({
+    once: true,
+    amount: 0,
+    margin: "0px 0px 900px 0px",
+  });
   const { ref: statsRef, inView: statsInView } = useInView({
     once: true,
     amount: 0.15,
@@ -166,6 +174,25 @@ export default function About() {
 
   const [isPtrDragging, setIsPtrDragging] = useState(false);
   const [scrollerEl, setScrollerEl] = useState<HTMLDivElement | null>(null);
+  const [slideVisualReady, setSlideVisualReady] = useState<Record<number, boolean>>({});
+
+  const markSlideVisualReady = useCallback((index: number) => {
+    setSlideVisualReady((prev) => (prev[index] ? prev : { ...prev, [index]: true }));
+  }, []);
+
+  const eagerSlideIndices = useMemo(() => {
+    const s = new Set<number>();
+    if (aboutSliderWarm || inView) {
+      s.add(0);
+      s.add(1);
+      s.add(2);
+    }
+    for (let d = -1; d <= 2; d++) {
+      const j = activeIndex + d;
+      if (j >= 0 && j < aboutSlideCount) s.add(j);
+    }
+    return s;
+  }, [aboutSliderWarm, inView, activeIndex, aboutSlideCount]);
   const aboutDragRef = useRef<{
     pointerId: number;
     startX: number;
@@ -388,7 +415,8 @@ export default function About() {
           {/* Image with parallax + TRON frame — same nav pattern as Masters: side arrows on slide, bar+dots below */}
           <div className="flex min-w-0 flex-col gap-3">
             <div
-              className="group/about-slider relative aspect-[4/5] min-h-0 w-full overflow-hidden"
+              ref={setAboutSliderWarmRef}
+              className="group/about-slider relative aspect-[4/5] min-h-0 w-full overflow-hidden bg-zinc-950"
               style={{
                 clipPath: inView ? "inset(0 0% 0 0)" : "inset(0 100% 0 0)",
                 opacity: inView ? 1 : 0,
@@ -411,26 +439,43 @@ export default function About() {
                     !isPtrDragging && "md:cursor-grab"
                   )}
                 >
-                  {ABOUT_SLIDES.map((slide, i) => (
-                    <div
-                      key={slide.src}
-                      className="relative h-full w-full min-h-0 min-w-full shrink-0 snap-center [scroll-snap-stop:normal]"
-                    >
-                      <Image
-                        src={slide.src}
-                        alt={t(slide.altKey)}
-                        fill
-                        draggable={false}
-                        sizes="(max-width: 768px) 100vw, min(960px, 90vw)"
-                        quality={82}
-                        loading={i === 0 ? "eager" : "lazy"}
-                        placeholder="blur"
-                        blurDataURL={ABOUT_SLIDER_BLUR_DATA_URL}
-                        className="pointer-events-none object-cover"
-                        style={{ objectPosition: slide.objectPosition }}
-                      />
-                    </div>
-                  ))}
+                  {ABOUT_SLIDES.map((slide, i) => {
+                    const eager = eagerSlideIndices.has(i);
+                    const fetchPriority: "high" | "low" | "auto" =
+                      i === 0 && (aboutSliderWarm || inView)
+                        ? "high"
+                        : i === activeIndex
+                          ? "high"
+                          : Math.abs(i - activeIndex) === 1
+                            ? "auto"
+                            : "low";
+                    return (
+                      <div
+                        key={slide.src}
+                        className="relative h-full w-full min-h-0 min-w-full shrink-0 snap-center [scroll-snap-stop:normal] bg-zinc-950"
+                      >
+                        <Image
+                          src={slide.src}
+                          alt={t(slide.altKey)}
+                          fill
+                          draggable={false}
+                          sizes={ABOUT_SLIDER_IMAGE_SIZES}
+                          quality={86}
+                          loading={eager ? "eager" : "lazy"}
+                          fetchPriority={fetchPriority}
+                          priority={i === 0 && (aboutSliderWarm || inView)}
+                          placeholder="empty"
+                          className={cn(
+                            "pointer-events-none object-cover transition-opacity duration-500 ease-out motion-reduce:transition-none",
+                            slideVisualReady[i] ? "opacity-100" : "opacity-0"
+                          )}
+                          style={{ objectPosition: slide.objectPosition }}
+                          onLoadingComplete={() => markSlideVisualReady(i)}
+                          onError={() => markSlideVisualReady(i)}
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
               </motion.div>
               <div className="about-image-overlay pointer-events-none absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />

@@ -153,12 +153,12 @@ export default function Tattoo() {
               }}
             />
 
-            {/* CTA */}
+            {/* CTA — premium-cta: glass style (globals.css) */}
             <a
               href={TATTOO_BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="tattoo-booking-cta neon-btn inline-flex w-fit min-h-[48px] max-w-full items-center justify-center gap-2.5 rounded-none px-10 py-3.5 font-body text-xs font-medium uppercase leading-tight tracking-[0.2em] cursor-pointer select-none sm:min-h-0 sm:px-12 sm:py-4 sm:text-sm md:px-14"
+              className="tattoo-booking-cta premium-cta neon-btn inline-flex w-full max-w-[min(100%,20.5rem)] min-h-[48px] items-center justify-center rounded-none px-7 py-3.5 font-body text-[11px] font-medium uppercase leading-snug tracking-[0.18em] cursor-pointer select-none text-balance sm:w-auto sm:max-w-none sm:min-h-[52px] sm:px-9 sm:py-3.5 sm:text-xs sm:tracking-[0.2em] md:text-[13px]"
             >
               {t("tattoo.bookConsult")}
             </a>
