@@ -6,7 +6,6 @@ import { useLocale } from "@/lib/locale-context";
 import { useHeroReady } from "@/lib/hero-ready-context";
 import { useHeroMediaLifecycle } from "@/hooks/use-hero-media-lifecycle";
 import { BOOKING_URL, SECTION_IDS } from "@/constants/routes";
-import { HERO_MEDIA_CONSTANTS } from "@/lib/hero-media-types";
 import {
   HERO_VIDEO_DESKTOP_SRC,
   HERO_VIDEO_MOBILE_SRC,
@@ -43,10 +42,8 @@ export default function Hero() {
     signalReadyWhenPosterLoaded();
   }, [signalReadyWhenPosterLoaded]);
 
-  const { mobileCallbackRef, desktopCallbackRef, state: videoState, hasRevealedVideo } =
-    useHeroMediaLifecycle({
-      loadDelayMs: HERO_MEDIA_CONSTANTS.VIDEO_LOAD_DELAY_MS,
-    });
+  const { videoCallbackRef, bpNarrowReady, state: videoState, hasRevealedVideo } =
+    useHeroMediaLifecycle();
 
   /* Native scroll-based parallax — throttled via rAF */
   useEffect(() => {
@@ -106,40 +103,31 @@ export default function Hero() {
           onError={handlePosterError}
         />
         {/*
-          No native poster on <video>: browser can flash it at loop boundary; the Next/Image layer is the only first-load poster.
+          Single &lt;video&gt; for the active breakpoint only — avoids two MP4s in the DOM.
+          No native poster on &lt;video&gt;: Next/Image poster avoids loop-seam flash.
         */}
-        <video
-          ref={mobileCallbackRef}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="none"
-          width={1920}
-          height={1080}
-          disablePictureInPicture
-          disableRemotePlayback
-          className="hero-video absolute inset-0 h-full w-full object-cover object-center md:hidden"
-          aria-hidden
-        >
-          <source src={HERO_VIDEO_MOBILE_SRC} type="video/mp4" />
-        </video>
-        <video
-          ref={desktopCallbackRef}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="none"
-          width={1920}
-          height={1080}
-          disablePictureInPicture
-          disableRemotePlayback
-          className="hero-video absolute inset-0 hidden h-full w-full object-cover object-center md:block"
-          aria-hidden
-        >
-          <source src={HERO_VIDEO_DESKTOP_SRC} type="video/mp4" />
-        </video>
+        {bpNarrowReady !== null && (
+          <video
+            key={bpNarrowReady ? "hero-v-m" : "hero-v-d"}
+            ref={videoCallbackRef}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            width={1920}
+            height={1080}
+            disablePictureInPicture
+            disableRemotePlayback
+            className="hero-video absolute inset-0 h-full w-full object-cover object-center"
+            aria-hidden
+          >
+            <source
+              src={bpNarrowReady ? HERO_VIDEO_MOBILE_SRC : HERO_VIDEO_DESKTOP_SRC}
+              type="video/mp4"
+            />
+          </video>
+        )}
         <div
           className="hero-video-overlay pointer-events-none absolute inset-0 z-[2] bg-gradient-to-t from-background/50 via-background/15 to-transparent"
           style={{ opacity: overlayOpacity }}

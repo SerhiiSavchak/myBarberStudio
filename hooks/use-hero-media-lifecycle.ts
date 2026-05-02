@@ -17,8 +17,21 @@ export interface UseHeroMediaLifecycleOptions {
   fallbackMs?: number;
 }
 
+/** Yields one paint before `cb` so the poster can commit without competing for bandwidth. */
+function cancelableDoubleRaf(cb: () => void) {
+  let raf1 = 0;
+  let raf2 = 0;
+  raf1 = requestAnimationFrame(() => {
+    raf2 = requestAnimationFrame(cb);
+  });
+  return () => {
+    cancelAnimationFrame(raf1);
+    cancelAnimationFrame(raf2);
+  };
+}
+
 /**
- * Hero background: poster-first, delayed load, one active &lt;video&gt; (mobile or desktop).
+ * Hero background: poster-first, one mounted &lt;video&gt; (mobile or desktop only).
  * Readiness: loadeddata, canplay, canplaythrough, or playing.
  */
 export function useHeroMediaLifecycle(options: UseHeroMediaLifecycleOptions = {}) {
@@ -27,44 +40,45 @@ export function useHeroMediaLifecycle(options: UseHeroMediaLifecycleOptions = {}
     fallbackMs = HERO_MEDIA_CONSTANTS.FALLBACK_MS,
   } = options;
 
-  const [isNarrow, setIsNarrow] = useState(false);
-  const mobileRef = useRef<HTMLVideoElement | null>(null);
-  const desktopRef = useRef<HTMLVideoElement | null>(null);
+  const [bpNarrow, setBpNarrow] = useState<boolean | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [state, setState] = useState<HeroMediaState>("loading");
   const [refsVersion, setRefsVersion] = useState(0);
-  /**
-   * Latched: true after first `playing` for the current active element + breakpoint.
-   * Drives CSS poster — never false on `ended`/`waiting`/loop; only false on error or breakpoint change.
-   * Fixes poster flashing when `state` briefly leaves `"playing"` (e.g. second attach on ref order, `el.load()`).
-   */
   const [hasRevealedVideo, setHasRevealedVideo] = useState(false);
   const lastIsN = useRef<boolean | null>(null);
 
-  const mobileCallbackRef = useCallback((el: HTMLVideoElement | null) => {
-    mobileRef.current = el;
-    if (el) setRefsVersion((v) => v + 1);
-  }, []);
-
-  const desktopCallbackRef = useCallback((el: HTMLVideoElement | null) => {
-    desktopRef.current = el;
+  const videoCallbackRef = useCallback((el: HTMLVideoElement | null) => {
+    videoRef.current = el;
     if (el) setRefsVersion((v) => v + 1);
   }, []);
 
   useLayoutEffect(() => {
     const mm = window.matchMedia(MOBILE_MQ);
+    const sync = () => setBpNarrow(mm.matches);
+    sync();
+    mm.addEventListener("change", sync);
+    return () => mm.removeEventListener("change", sync);
+  }, []);
+
+  useLayoutEffect(() => {
+    if (bpNarrow === null) return;
+
+    const mm = window.matchMedia(MOBILE_MQ);
     let lifecycleTeardown: (() => void) | null = null;
+    let cancelScheduled: (() => void) | null = null;
 
     const attachLifecycle = (isN: boolean) => {
       lifecycleTeardown?.();
       lifecycleTeardown = null;
+      cancelScheduled?.();
+      cancelScheduled = null;
 
-      setIsNarrow(isN);
       if (lastIsN.current !== null && lastIsN.current !== isN) {
         setHasRevealedVideo(false);
       }
       lastIsN.current = isN;
 
-      const el = isN ? mobileRef.current : desktopRef.current;
+      const el = videoRef.current;
       if (!el) return;
 
       const loadDelayRef: { r: ReturnType<typeof setTimeout> | null } = { r: null };
@@ -115,7 +129,6 @@ export function useHeroMediaLifecycle(options: UseHeroMediaLifecycleOptions = {}
         signaledRef.current = true;
       };
 
-      /** Re-assert on every `playing` (including each loop) so UI never reverts if state flickers. */
       const onPlayingAny = () => {
         if (!effectActive) return;
         setHasRevealedVideo(true);
@@ -147,7 +160,8 @@ export function useHeroMediaLifecycle(options: UseHeroMediaLifecycleOptions = {}
 
       const mediaListeners: Array<{ ev: string; fn: () => void }> = [];
 
-      loadDelayRef.r = setTimeout(() => {
+      const runLoad = () => {
+        if (!effectActive) return;
         loadDelayRef.r = null;
         loadTriggeredRef.current = true;
 
@@ -186,7 +200,13 @@ export function useHeroMediaLifecycle(options: UseHeroMediaLifecycleOptions = {}
         if (el.readyState >= 2) {
           startPlaybackOnce();
         }
-      }, loadDelayMs);
+      };
+
+      if (loadDelayMs > 0) {
+        loadDelayRef.r = setTimeout(runLoad, loadDelayMs);
+      } else {
+        cancelScheduled = cancelableDoubleRaf(runLoad);
+      }
 
       timeoutRef.r = setTimeout(() => {
         timeoutRef.r = null;
@@ -203,28 +223,28 @@ export function useHeroMediaLifecycle(options: UseHeroMediaLifecycleOptions = {}
           el.removeEventListener(ev, fn);
         }
         clearTimers();
+        cancelScheduled?.();
+        cancelScheduled = null;
       };
     };
 
-    const onViewport = () => {
-      attachLifecycle(mm.matches);
-    };
+    const onViewport = () => attachLifecycle(mm.matches);
 
-    onViewport();
+    attachLifecycle(mm.matches);
     mm.addEventListener("change", onViewport);
 
     return () => {
       mm.removeEventListener("change", onViewport);
       lifecycleTeardown?.();
+      cancelScheduled?.();
     };
-  }, [refsVersion, loadDelayMs, fallbackMs]);
+  }, [refsVersion, bpNarrow, loadDelayMs, fallbackMs]);
 
   return {
-    mobileCallbackRef,
-    desktopCallbackRef,
+    videoCallbackRef,
+    /** Null until client layout reads viewport — then `true` = mobile hero source */
+    bpNarrowReady: bpNarrow,
     state,
-    isNarrow,
-    /** When true, CSS shows video and hides still poster; latched, not tied to `ended`/loop. */
     hasRevealedVideo,
     isVisualReady: state === "playing" || state === "fallback",
   };

@@ -69,9 +69,10 @@ export default function Tattoo() {
                 src="/images/tattoo/tattoo-hq-v2.jpg"
                 alt={t("tattoo.imageAlt")}
                 fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, min(840px, 58vw)"
-                quality={86}
+                sizes="(max-width: 768px) 100vw, (max-width: 1280px) 48vw, min(440px, 42vw)"
+                quality={88}
                 loading="lazy"
+                decoding="async"
                 placeholder="blur"
                 blurDataURL={TATTOO_IMAGE_BLUR_DATA_URL}
                 className="object-cover object-[50%_28%] md:object-[50%_22%]"

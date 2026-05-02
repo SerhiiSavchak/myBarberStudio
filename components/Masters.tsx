@@ -28,6 +28,10 @@ type MasterDef = {
   posWide: string;
 };
 
+/** ~1/3 row at max-w-7xl; carousel slide = full viewport width */
+const MASTER_IMAGE_SIZES =
+  "(max-width: 768px) 100vw, (max-width: 1280px) 34vw, min(420px, 30vw)";
+
 const MASTER_LIST: readonly MasterDef[] = [
   { nameKey: "masters.n.myroslav", titleKey: "masters.myroslav.title", descKey: "masters.myroslav.desc", image: "/masters/miroslav.png", altKey: "masters.portrait.miroslav", posNarrow: "50% 8%", posWide: "50% 14%" },
   { nameKey: "masters.n.oleh", titleKey: "masters.oleh.title", descKey: "masters.oleh.desc", image: "/masters/oleg.png", altKey: "masters.portrait.oleh", posNarrow: "50% 7%", posWide: "50% 13%" },
@@ -56,6 +60,8 @@ function MasterCard({
   onMouseEnter,
   onMouseLeave,
   isNarrow,
+  imageLoading,
+  imageFetchPriority,
 }: {
   master: { description: string; image: string; imageAlt: string };
   posNarrow: string;
@@ -68,6 +74,8 @@ function MasterCard({
   onMouseEnter: () => void;
   onMouseLeave: () => void;
   isNarrow: boolean;
+  imageLoading: "lazy" | "eager";
+  imageFetchPriority?: "high" | "low" | "auto";
 }) {
   const { ref, tapHandlers } = useScrollSafeTap();
   const objectPosition = isNarrow ? posNarrow : posWide;
@@ -121,8 +129,10 @@ function MasterCard({
             src={master.image}
             alt={master.imageAlt}
             fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, min(1120px, 72vw)"
+            sizes={MASTER_IMAGE_SIZES}
             quality={86}
+            loading={imageLoading}
+            fetchPriority={imageFetchPriority}
             placeholder="blur"
             blurDataURL={MASTERS_BLUR_BY_SRC[master.image] ?? MASTERS_BLUR_FALLBACK}
             className="masters-card-image object-cover [backface-visibility:hidden] transform-gpu transition-transform duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] md:group-hover:scale-[1.02] motion-reduce:md:group-hover:scale-100"
@@ -298,6 +308,8 @@ export default function Masters() {
                           index={i}
                           isOpen={isOpen}
                           isNarrow
+                          imageLoading={i === activeIndex ? "eager" : "lazy"}
+                          imageFetchPriority={i === activeIndex ? "high" : "low"}
                           onToggle={() => setExpanded(isOpen ? null : i)}
                           onMouseEnter={() => undefined}
                           onMouseLeave={() => undefined}
@@ -408,6 +420,8 @@ export default function Masters() {
                     index={i}
                     isOpen={isOpen}
                     isNarrow={isMobile}
+                    imageLoading="lazy"
+                    imageFetchPriority="low"
                     onToggle={() => isMobile && setExpanded(isOpen ? null : i)}
                     onMouseEnter={() => !isMobile && setHoveredDesktop(i)}
                     onMouseLeave={() => !isMobile && setHoveredDesktop(null)}
@@ -437,6 +451,8 @@ export default function Masters() {
                     index={globalIndex}
                     isOpen={isOpen}
                     isNarrow={isMobile}
+                    imageLoading="lazy"
+                    imageFetchPriority="low"
                     onToggle={() => isMobile && setExpanded(isOpen ? null : globalIndex)}
                     onMouseEnter={() => !isMobile && setHoveredDesktop(globalIndex)}
                     onMouseLeave={() => !isMobile && setHoveredDesktop(null)}
@@ -466,6 +482,8 @@ export default function Masters() {
                     index={globalIndex}
                     isOpen={isOpen}
                     isNarrow={isMobile}
+                    imageLoading="lazy"
+                    imageFetchPriority="low"
                     onToggle={() => isMobile && setExpanded(isOpen ? null : globalIndex)}
                     onMouseEnter={() => !isMobile && setHoveredDesktop(globalIndex)}
                     onMouseLeave={() => !isMobile && setHoveredDesktop(null)}

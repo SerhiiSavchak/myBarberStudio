@@ -10,7 +10,7 @@
     "optimize:poster": "node scripts/optimize-hero-poster.mjs",
     "generate:blur-placeholders": "node scripts/generate-blur-placeholders.mjs",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "tsc --noEmit",
     "favicon": "node scripts/generate-favicon-from-logo.mjs"
   },
   "dependencies": {

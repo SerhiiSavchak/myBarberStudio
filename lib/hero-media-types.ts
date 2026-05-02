@@ -19,14 +19,14 @@ export type VisualReady = boolean;
 export type RevealAllowed = boolean;
 
 export const HERO_MEDIA_CONSTANTS = {
-  /** Max wait before forcing fallback — single source of truth */
-  FALLBACK_MS: 4500,
+  /** Max wait before forcing fallback — allow slow networks + large buffers after optimized transcodes */
+  FALLBACK_MS: 15_000,
   /** Min loader display time — polish */
   MIN_LOADER_MS: 500,
   /** Loader exit fade duration */
   EXIT_DURATION_MS: 350,
   /** Fallback when no Hero on page — interface readiness, not media */
   NO_HERO_FALLBACK_MS: 800,
-  /** Delay before starting full video buffer — after poster LCP; balances images + first bytes of video */
-  VIDEO_LOAD_DELAY_MS: 700,
+  /** 0 = start after next paint (double rAF); optional override if re-prioritizing vs images */
+  VIDEO_LOAD_DELAY_MS: 0,
 } as const;

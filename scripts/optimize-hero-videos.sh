@@ -18,16 +18,16 @@ if ! command -v ffmpeg >/dev/null 2>&1; then
   exit 1
 fi
 
-echo "=== Desktop (max 1920w, CRF 23, no audio, faststart) ==="
+echo "=== Desktop (max 1600w, CRF 23, no audio, faststart) ==="
 ffmpeg -y -i "$DES" -an \
-  -vf "scale='min(1920,iw)':-2,fps=30" \
+  -vf "scale='min(1600,iw)':-2,fps=30" \
   -c:v libx264 -preset slow -crf 23 -pix_fmt yuv420p \
   -movflags +faststart \
   "$OUT_DES"
 
-echo "=== Mobile (max 960w, CRF 23, no audio, faststart) ==="
+echo "=== Mobile (max 900w, CRF 23, no audio, faststart) ==="
 ffmpeg -y -i "$MOB" -an \
-  -vf "scale='min(960,iw)':-2,fps=30" \
+  -vf "scale='min(900,iw)':-2,fps=30" \
   -c:v libx264 -preset slow -crf 23 -pix_fmt yuv420p \
   -movflags +faststart \
   "$OUT_MOB"
