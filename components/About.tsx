@@ -10,6 +10,7 @@ import { useSectionInView } from "@/hooks/use-section-in-view";
 import { useInView } from "@/hooks/use-in-view";
 import { cn } from "@/lib/utils";
 import { ABOUT_SLIDES } from "@/constants/media";
+import { ABOUT_SLIDER_BLUR_DATA_URL } from "@/lib/blur-placeholders";
 import { useScrollSnapCarousel } from "@/hooks/use-scroll-snap-carousel";
 import { SliderArrowButton } from "./SliderArrowButton";
 
@@ -174,11 +175,6 @@ export default function About() {
 
   const [isPtrDragging, setIsPtrDragging] = useState(false);
   const [scrollerEl, setScrollerEl] = useState<HTMLDivElement | null>(null);
-  const [slideVisualReady, setSlideVisualReady] = useState<Record<number, boolean>>({});
-
-  const markSlideVisualReady = useCallback((index: number) => {
-    setSlideVisualReady((prev) => (prev[index] ? prev : { ...prev, [index]: true }));
-  }, []);
 
   const eagerSlideIndices = useMemo(() => {
     const s = new Set<number>();
@@ -464,14 +460,10 @@ export default function About() {
                           loading={eager ? "eager" : "lazy"}
                           fetchPriority={fetchPriority}
                           priority={i === 0 && (aboutSliderWarm || inView)}
-                          placeholder="empty"
-                          className={cn(
-                            "pointer-events-none object-cover transition-opacity duration-500 ease-out motion-reduce:transition-none",
-                            slideVisualReady[i] ? "opacity-100" : "opacity-0"
-                          )}
+                          placeholder="blur"
+                          blurDataURL={ABOUT_SLIDER_BLUR_DATA_URL}
+                          className="pointer-events-none object-cover"
                           style={{ objectPosition: slide.objectPosition }}
-                          onLoadingComplete={() => markSlideVisualReady(i)}
-                          onError={() => markSlideVisualReady(i)}
                         />
                       </div>
                     );
