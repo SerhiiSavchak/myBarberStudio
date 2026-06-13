@@ -336,7 +336,7 @@ const dict = {
     uk: "Львів, вул. Мирослава Скорика, 21",
     en: "Lviv, Myroslava Skoryka St, 21",
   },
-  "contacts.hoursLine": { uk: "Пн–Нд: 10:00–20:00", en: "Mon–Sun: 10:00–20:00" },
+  "contacts.hoursLine": { uk: "Пн–Нд: 10:00–21:00", en: "Mon–Sun: 10:00–21:00" },
   "contacts.subline": {
     uk: "Район 07 // Точка доступу // Барбер-хаб",
     en: "District 07 // Access point // Barber hub",
